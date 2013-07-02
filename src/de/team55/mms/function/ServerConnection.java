@@ -213,6 +213,8 @@ public class ServerConnection {
 	}
 
 	public ArrayList<User> getStellvertreter(String eMail) {
+		if(eMail.isEmpty())
+			return new ArrayList<User>();
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("user/stellv").path(eMail).accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<User>>(){});

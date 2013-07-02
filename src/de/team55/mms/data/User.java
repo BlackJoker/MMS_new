@@ -2,7 +2,7 @@ package de.team55.mms.data;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
+//
 @XmlRootElement(name = "User")
 @XmlType(propOrder = { "eMail", "titel", "vorname", "nachname", "password",
 		"manageUsers", "acceptModule", "createModule", "readModule" })

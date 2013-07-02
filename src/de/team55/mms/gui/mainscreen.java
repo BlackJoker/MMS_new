@@ -243,6 +243,7 @@ public class mainscreen {
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				if (current!=null){
 				if (current.geteMail().equals("gast@gast.gast")) {
 					logindialog log = new logindialog(frame, "Login", database);
 					int resp = log.showCustomDialog();
@@ -264,7 +265,7 @@ public class mainscreen {
 					btnUserVerwaltung.setEnabled(false);
 					showCard("welcome page");
 				}
-
+				} else noConnection();
 			}
 		});
 		btnLogin.setPreferredSize(btnSz);
@@ -833,7 +834,7 @@ public class mainscreen {
 		//
 		tmodel = new DefaultTableModel(new Object[][] {}, new String[] {
 				"Titel", "Vorname", "Nachnahme", "e-Mail", "User bearbeiten",
-				"Module einreichen", "Module Annehmen", "Module lesen" }) {
+				"Module einreichen", "Module Annehmen", "Verwaltung" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class, String.class,
 					String.class, String.class, boolean.class, boolean.class,

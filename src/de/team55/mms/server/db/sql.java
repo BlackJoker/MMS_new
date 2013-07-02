@@ -75,7 +75,7 @@ public class sql {
 					+ "  `userchange` BOOLEAN NOT NULL,"
 					+ "  `modcreate` BOOLEAN NOT NULL,"
 					+ "  `modacc` BOOLEAN NOT NULL,"
-					+ "  `modread` BOOLEAN NOT NULL,"
+					+ "  `manage` BOOLEAN NOT NULL,"
 					+ "  `adminwork` BOOLEAN NOT NULL" + ")");
 			this.con.commit();
 
@@ -113,7 +113,7 @@ public class sql {
 			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`) VALUES"
 					+ "	(1, 'admin@mms.de', NULL, 'Admin', 'Admin', 'a384b6463fc216a5f8ecb6670f86456a');");
 			this.con.commit();
-			stmt.executeUpdate("INSERT IGNORE INTO `rights` (`id`, `userchange`, `modcreate`, `modacc`, `modread`) VALUES"
+			stmt.executeUpdate("INSERT IGNORE INTO `rights` (`id`, `userchange`, `modcreate`, `modacc`, `manage`) VALUES"
 					+ "	(1, 1, 1, 1, 1);");
 			this.con.commit();
 			stmt.close();
@@ -386,7 +386,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT u.*,userchange,modcreate,modacc,modread FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email='"
+						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email='"
 								+ email + "' and password='" + pass + "';");
 				if (res.first()) {
 					zws = new User(res.getString("vorname"),
@@ -394,7 +394,7 @@ public class sql {
 							res.getString("email"), res.getString("password"),
 							res.getBoolean("userchange"),
 							res.getBoolean("modcreate"),
-							res.getBoolean("modacc"), res.getBoolean("modread"));
+							res.getBoolean("modacc"), res.getBoolean("manage"));
 				}
 				res.close();
 				state.close();
@@ -550,14 +550,14 @@ public class sql {
 			try {
 				state = con.createStatement();
 				res = state
-						.executeQuery("SELECT u.*,userchange,modcreate,modacc,modread FROM user AS u JOIN rights AS r ON u.id=r.id;");
+						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage FROM user AS u JOIN rights AS r ON u.id=r.id;");
 				while (res.next()) {
 					zws = new User(res.getString("vorname"),
 							res.getString("namen"), res.getString("titel"),
 							res.getString("email"), res.getString("password"),
 							res.getBoolean("userchange"),
 							res.getBoolean("modcreate"),
-							res.getBoolean("modacc"), res.getBoolean("modread"));
+							res.getBoolean("modacc"), res.getBoolean("manage"));
 					list.add(zws);
 				}
 				res.close();
@@ -605,7 +605,7 @@ public class sql {
 			if (id != -1) {
 				try {
 					state = con
-							.prepareStatement("INSERT INTO rights (id,userchange,modcreate,modacc,modread) VALUES (?,?,?,?,?)");
+							.prepareStatement("INSERT INTO rights (id,userchange,modcreate,modacc,manage) VALUES (?,?,?,?,?)");
 					state.setInt(1, id);
 					state.setBoolean(2, user.getManageUsers());
 					state.setBoolean(3, user.getCreateModule());
@@ -685,7 +685,7 @@ public class sql {
 						}
 
 						state = con
-								.prepareStatement("UPDATE rights SET userchange = ?, modcreate =?, modacc =?, modread =? WHERE id = ?;");
+								.prepareStatement("UPDATE rights SET userchange = ?, modcreate =?, modacc =?, manage =? WHERE id = ?;");
 						state.setBoolean(1, user.getManageUsers());
 						state.setBoolean(2, user.getCreateModule());
 						state.setBoolean(3, user.getAcceptModule());
@@ -1044,7 +1044,7 @@ public class sql {
 							res.getString("email"), res.getString("password"),
 							res.getBoolean("userchange"),
 							res.getBoolean("modcreate"),
-							res.getBoolean("modacc"), res.getBoolean("modread")));
+							res.getBoolean("modacc"), res.getBoolean("manage")));
 				}
 				res.close();
 				state.close();

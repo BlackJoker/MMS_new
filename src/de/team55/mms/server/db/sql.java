@@ -220,7 +220,7 @@ public class sql {
 		ResultSet res = null;
 		Statement state = null;
 		int version = 0;
-		String Modulhandbuch = "";
+		int jahrgang = 0;
 		ArrayList<Studiengang> Studiengang = new ArrayList<Studiengang>();
 		Date datum = new Date();
 		boolean akzeptiert = false;
@@ -228,6 +228,8 @@ public class sql {
 		ArrayList<String> labels = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
 		ArrayList<Boolean> dezernat = new ArrayList<Boolean>();
+		ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
+		String user="";
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
@@ -240,19 +242,28 @@ public class sql {
 
 				if (version != 0) {
 					res = state
-							.executeQuery("SELECT *, s.name AS sname FROM module AS m JOIN studiengang as s ON s.id=m.sid WHERE name = '"
+							.executeQuery("SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE name = '"
 									+ name + "'AND version =" + version + ";");
 					if (res.first()) {
-						Modulhandbuch = res.getString("Modulhandbuchname");
+						jahrgang = res.getInt("jahrgang");
 						datum = res.getDate("Datum");
 						akzeptiert = res.getBoolean("akzeptiert");
 						inbearbeitung = res.getBoolean("inbearbeitung");
-						Studiengang.add(new Studiengang(res.getInt("sid"), res
-								.getString("sname")));
+						int tid = res.getInt("typid");
+						String tname = res.getString("tname");
+						String sname = res.getString("sname");
+						int sid = res.getInt("sid");
+						String abschluss = res.getString("abschluss");
+						user = res.getString("user");
+						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
 					while (res.next()) {
-						Studiengang.add(new Studiengang(res.getInt("sid"), res
-								.getString("sname")));
+						int tid = res.getInt("typid");
+						String tname = res.getString("tname");
+						String sname = res.getString("sname");
+						int sid = res.getInt("sid");
+						String abschluss = res.getString("abschluss");
+						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
 				}
 				res.close();
@@ -279,9 +290,11 @@ public class sql {
 				e.printStackTrace();
 			}
 			disconnect();
+			
 		}
-		return new Modul(name, Studiengang, Modulhandbuch, version, datum,
-				labels, values, dezernat, akzeptiert, inbearbeitung);
+		
+		return new Modul(name, zs, jahrgang, labels, values, version, dezernat, datum,
+				 akzeptiert, inbearbeitung,user);
 
 	}
 
@@ -451,7 +464,7 @@ public class sql {
 	}
 
 	/*
-	 * Hier muss man leider noch mehr machen, da ich nicht weiß wie du dich
+	 * Hier muss man leider noch mehr machen, da ich nicht weiÃŸ wie du dich
 	 * entschieden hast den dynmaischen text zu speichern
 	 */
 	public void setModul(String name, int version /* LISTE? aka Text zeug */) {
@@ -757,12 +770,7 @@ public class sql {
 		ResultSet res = null;
 		Statement state = null;
 		Statement state2 = null;
-		boolean ack;
-		if (b == false) {
-			ack = true;
-		} else {
-			ack = false;
-		}
+		boolean ack=false;
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
@@ -782,25 +790,34 @@ public class sql {
 
 					ArrayList<Studiengang> sgs = new ArrayList<Studiengang>();
 					res2 = state
-							.executeQuery("SELECT m.*, s.name AS sname FROM module AS m JOIN studiengang AS s ON sid=id WHERE m.name = '"
-									+ name + "' AND version=" + version + ";");
-					String mh = "";
+							.executeQuery("SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE name = '"
+								+ name + "'AND version =" + version + ";");
+					int jahrgang = 0;
+					ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
+					String user="";
 					Date datum = null;
 					boolean inedit = false;
 					if (res2.first()) {
+						user = res2.getString("user");
+						jahrgang = res2.getInt("jahrgang");
+						datum = res2.getDate("Datum");
 						ack = res2.getBoolean("akzeptiert");
-						mh = res2.getString("modulhandbuchname");
-						datum = res2.getDate("datum");
 						inedit = res2.getBoolean("inbearbeitung");
-						int sid = res2.getInt("sid");
+						int tid = res2.getInt("typid");
+						String tname = res2.getString("tname");
 						String sname = res2.getString("sname");
-						sgs.add(new Studiengang(sid, sname));
+						int sid = res2.getInt("sid");
+						String abschluss = res2.getString("abschluss");						
+						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
 					if (b == ack) {
 						while (res2.next()) {
-							int sid = res2.getInt("sid");
+							int tid = res2.getInt("typid");
+							String tname = res2.getString("tname");
 							String sname = res2.getString("sname");
-							sgs.add(new Studiengang(sid, sname));
+							int sid = res2.getInt("sid");
+							String abschluss = res2.getString("abschluss");						
+							zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 						}
 
 						ArrayList<String> labels = new ArrayList<String>();
@@ -821,8 +838,8 @@ public class sql {
 						}
 						res2.close();
 
-						module.add(new Modul(name, sgs, mh, version, datum,
-								labels, values, dezernat, ack, inedit));
+						module.add(new Modul(name, zs, jahrgang, labels, values, version, dezernat, datum,
+								 ack, inedit,user));
 					}
 
 				}
@@ -884,7 +901,7 @@ public class sql {
 
 	}
 
-	// überlegung wie man das einbaut
+	// Ã¼berlegung wie man das einbaut
 
 	// public ArrayList<User> getUserRelation(User main){
 	// ResultSet res = null;

@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -64,12 +65,12 @@ public class mainscreen {
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
-														// Studiengängen
+														// StudiengÃ¤ngen
 	private ArrayList<Modulhandbuch> modbuchlist = null; // Liste mit
-															// Modulhandbüchern
+															// ModulhandbÃ¼chern
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
-																					// für
+																					// fÃ¼r
 																					// Dynamische
 																					// Buttons
 	private ArrayList<String> modtyplist = null;
@@ -92,7 +93,7 @@ public class mainscreen {
 	private JButton btnModulVerwaltung = new JButton("Modul Verwaltung");
 	private JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 	private JButton btnMHB = new JButton(
-			"<html>Modulhandbücher<br>Durchstöbern");
+			"<html>ModulhandbÃ¼cher<br>DurchstÃ¶bern");
 	private JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private JButton btnLogin = new JButton("Einloggen");
 
@@ -278,7 +279,7 @@ public class mainscreen {
 					// Tabelle leeren
 					tmodel.setRowCount(0);
 
-					// Tabelle mit neuen daten füllen
+					// Tabelle mit neuen daten fÃ¼llen
 					worklist = database.userload();
 					for (int i = 0; i < worklist.size(); i++) {
 						addToTable(worklist.get(i));
@@ -288,7 +289,7 @@ public class mainscreen {
 					userdialog dlg = new userdialog(frame, "User bearbeiten",
 							current, false, database);
 					int response = dlg.showCustomDialog();
-					// Wenn ok gedückt wird
+					// Wenn ok gedÃ¼ckt wird
 					// neuen User abfragen
 					if (response == 1) {
 						User tmp = dlg.getUser();
@@ -313,7 +314,7 @@ public class mainscreen {
 		btnModulVerwaltung.setPreferredSize(btnSz);
 		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// Jemand ne bessere idee für einen Button mit Zeilenumbruch?
+		// Jemand ne bessere idee fÃ¼r einen Button mit Zeilenumbruch?
 		left.add(btnMHB);
 		btnMHB.setEnabled(true);
 		btnMHB.setPreferredSize(btnSz);
@@ -387,8 +388,8 @@ public class mainscreen {
 						// Aus ButtonMap entfernen
 						buttonmap.remove(e.getSource());
 
-						// ids der Buttons ändern, damit auch ein Feld aus der
-						// Mitte gelöscht werden kann
+						// ids der Buttons Ã¤ndern, damit auch ein Feld aus der
+						// Mitte gelÃ¶scht werden kann
 						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
 						Iterator<Entry<JButton, Integer>> entries = buttonmap
 								.entrySet().iterator();
@@ -417,7 +418,7 @@ public class mainscreen {
 		});
 		pnl_bottom.add(btnNeuesFeld);
 
-		JButton btnHome = new JButton("Zurück");
+		JButton btnHome = new JButton("ZurÃ¼ck");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -461,7 +462,7 @@ public class mainscreen {
 
 		pnl_MH.add(cb_Z);
 
-		JButton z_btn = new JButton("Zuordnung auswählen");
+		JButton z_btn = new JButton("Zuordnung auswÃ¤hlen");
 		z_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -499,7 +500,7 @@ public class mainscreen {
 									name = JOptionPane
 											.showInputDialog(
 													frame,
-													"Bitte gültigen Namen des neuen Studiengangs eingeben:",
+													"Bitte gÃ¼ltigen Namen des neuen Studiengangs eingeben:",
 													"neuer Studiengang",
 													JOptionPane.PLAIN_MESSAGE);
 								}
@@ -546,7 +547,7 @@ public class mainscreen {
 								.getText().isEmpty())
 								&& (option == JOptionPane.OK_OPTION)) {
 							Object[] messageEmpty = {
-									"Bitte alle Felder ausfüllen!",
+									"Bitte alle Felder ausfÃ¼llen!",
 									"Name des Types:", neu_Name, "Abschluss:",
 									neu_Abschluss, "Studiengang:", sp };
 							option = JOptionPane.showConfirmDialog(frame,
@@ -624,7 +625,7 @@ public class mainscreen {
 		//
 		// pnl_Sg.add(sgbox);
 		//
-		// JButton sg = new JButton("Studiengang auswählen");
+		// JButton sg = new JButton("Studiengang auswÃ¤hlen");
 		// sg.addActionListener(new ActionListener() {
 		// @Override
 		// public void actionPerformed(ActionEvent e) {
@@ -648,7 +649,7 @@ public class mainscreen {
 		// name = JOptionPane
 		// .showInputDialog(
 		// frame,
-		// "Bitte gültigen Namen des neuen Studiengangs eingeben:",
+		// "Bitte gÃ¼ltigen Namen des neuen Studiengangs eingeben:",
 		// "neuer Studiengang",
 		// JOptionPane.PLAIN_MESSAGE);
 		// }
@@ -694,8 +695,8 @@ public class mainscreen {
 		panel.add(defaultmodulPanel("Name", ""));
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		// Panel Kürzel + Platzhalter
-		panel.add(defaultmodulPanel("Kürzel", ""));
+		// Panel KÃ¼rzel + Platzhalter
+		panel.add(defaultmodulPanel("KÃ¼rzel", ""));
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Titel + Platzhaler
@@ -738,8 +739,8 @@ public class mainscreen {
 		panel.add(defaultmodulPanel("Sprache", ""));
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		// Panel Prüfungsform + Platzhalter
-		panel.add(defaultmodulPanel("Prüfungsform", ""));
+		// Panel PrÃ¼fungsform + Platzhalter
+		panel.add(defaultmodulPanel("PrÃ¼fungsform", ""));
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Notenbildung + Platzhalter
@@ -784,9 +785,11 @@ public class mainscreen {
 					dez.add(dezernat2);
 				}
 				int version = database.getModulVersion(Name) + 1;
+				
+				Date d = new Date();
 
 				Modul neu = new Modul(Name, zlist, jahrgang, labels, values,
-						version, dez);
+						version, dez,d,false,false,current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();
@@ -851,13 +854,13 @@ public class mainscreen {
 
 		usrtbl.setModel(tmodel);
 
-		JButton btnUserAdd = new JButton("User hinzufügen");
+		JButton btnUserAdd = new JButton("User hinzufÃ¼gen");
 		btnUserAdd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(frame, "User hinzufügen",database);
+				userdialog dlg = new userdialog(frame, "User hinzufÃ¼gen",database);
 				int response = dlg.showCustomDialog();
-				// Wenn ok gedückt wird
+				// Wenn ok gedÃ¼ckt wird
 				// neuen User abfragen
 				//save!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (response == 1) {
@@ -891,7 +894,7 @@ public class mainscreen {
 					userdialog dlg = new userdialog(frame, "User bearbeiten",
 							alt, true, database);
 					int response = dlg.showCustomDialog();
-					// Wenn ok gedückt wird
+					// Wenn ok gedÃ¼ckt wird
 					// neuen User abfragen
 					if (response == 1) {
 						User tmp = dlg.getUser();
@@ -914,9 +917,9 @@ public class mainscreen {
 		});
 		usrpan.add(btnUserEdit);
 
-		JButton btnUserDel = new JButton("User löschen");
+		JButton btnUserDel = new JButton("User lÃ¶schen");
 		btnUserDel
-				.setToolTipText("Zum Löschen Benutzer in der Tabelle markieren");
+				.setToolTipText("Zum LÃ¶schen Benutzer in der Tabelle markieren");
 		btnUserDel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -927,8 +930,8 @@ public class mainscreen {
 						removeFromTable(row);
 					} else
 						JOptionPane.showMessageDialog(frame,
-								"Löschen Fehlgeschlagen",
-								"Fehler beim Löschen",
+								"LÃ¶schen Fehlgeschlagen",
+								"Fehler beim LÃ¶schen",
 								JOptionPane.ERROR_MESSAGE);
 
 				}
@@ -936,7 +939,7 @@ public class mainscreen {
 		});
 		usrpan.add(btnUserDel);
 
-		JButton btnHome = new JButton("Zurück");
+		JButton btnHome = new JButton("ZurÃ¼ck");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1114,8 +1117,8 @@ public class mainscreen {
 						// Aus ButtonMap entfernen
 						buttonmap.remove(e.getSource());
 
-						// ids der Buttons ändern, damit auch ein Feld aus der
-						// Mitte gelöscht werden kann
+						// ids der Buttons Ã¤ndern, damit auch ein Feld aus der
+						// Mitte gelÃ¶scht werden kann
 						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
 						Iterator<Entry<JButton, Integer>> entries = buttonmap
 								.entrySet().iterator();
@@ -1144,7 +1147,7 @@ public class mainscreen {
 		});
 		pnl_bottom.add(btnNeuesFeld);
 
-		JButton btnHome = new JButton("Zurück");
+		JButton btnHome = new JButton("ZurÃ¼ck");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1201,7 +1204,7 @@ public class mainscreen {
 								.getText().isEmpty())
 								&& (option == JOptionPane.OK_OPTION)) {
 							Object[] messageEmpty = {
-									"Bitte alle Felder ausfüllen!",
+									"Bitte alle Felder ausfÃ¼llen!",
 									"Name des Modulhandbuches:", neu_Name,
 									"Studiengang:", neu_sgbox, "Jahrgang:",
 									neu_Jahrgang };
@@ -1285,7 +1288,7 @@ public class mainscreen {
 
 		pnl_Sg.add(sgbox);
 
-		JButton sg = new JButton("Studiengang auswählen");
+		JButton sg = new JButton("Studiengang auswÃ¤hlen");
 		sg.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1309,7 +1312,7 @@ public class mainscreen {
 						name = JOptionPane
 								.showInputDialog(
 										frame,
-										"Bitte gültigen Namen des neuen Studiengangs eingeben:",
+										"Bitte gÃ¼ltigen Namen des neuen Studiengangs eingeben:",
 										"neuer Studiengang",
 										JOptionPane.PLAIN_MESSAGE);
 					}
@@ -1401,8 +1404,11 @@ ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
 				for (int i = 0; i < lm.getSize(); i++) {
 //					zlist.add(lm.getElementAt(i));
 				}
+				
+				Date d = new Date();
+				
 				Modul neu = new Modul(Name, zlist,
-						Jahrgang, labels, values, version, dez);
+						Jahrgang, labels, values, version, dez,d,false,false,current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();

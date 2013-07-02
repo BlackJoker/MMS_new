@@ -101,8 +101,6 @@ public class mainscreen {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		current = database.login(current.geteMail(), current.getPassword());
-
 		centerscr();
 		topscr();
 		leftscr();
@@ -243,29 +241,38 @@ public class mainscreen {
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (current!=null){
-				if (current.geteMail().equals("gast@gast.gast")) {
-					logindialog log = new logindialog(frame, "Login", database);
-					int resp = log.showCustomDialog();
-					if (resp == 1) {
-						current = log.getUser();
-						database = log.getServerConnection();
-						btnLogin.setText("Ausloggen");
-						checkRights();
+				current = database.login(current.geteMail(),
+						current.getPassword());
+				if (current != null) {
+					if (current.geteMail().equals("gast@gast.gast")) {
+						logindialog log = new logindialog(frame, "Login",
+								database);
+						int resp = log.showCustomDialog();
+						if (resp == 1) {
+							current = log.getUser();
+							database = log.getServerConnection();
+							btnLogin.setText("Ausloggen");
+							checkRights();
+						}
+					} else {
+						current = new User("gast", "gast", "",
+								"gast@gast.gast",
+								"d4061b1486fe2da19dd578e8d970f7eb", false,
+								false, false, false);
+						if (database.isConnected() == SUCCES) {
+							checkRights();
+						}
+						btnLogin.setText("Einloggen");
+						btnUserVerwaltung.setText("User Verwaltung");
+						btnUserVerwaltung.setEnabled(false);
+						showCard("welcome page");
 					}
 				} else {
 					current = new User("gast", "gast", "", "gast@gast.gast",
 							"d4061b1486fe2da19dd578e8d970f7eb", false, false,
 							false, false);
-					if (database.isConnected() == SUCCES) {
-						checkRights();
-					}
-					btnLogin.setText("Einloggen");
-					btnUserVerwaltung.setText("User Verwaltung");
-					btnUserVerwaltung.setEnabled(false);
-					showCard("welcome page");
+					noConnection();
 				}
-				} else noConnection();
 			}
 		});
 		btnLogin.setPreferredSize(btnSz);
@@ -324,15 +331,24 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				studmodel.setRowCount(0);
-				studienlist = database.getStudiengaenge();
-				for (int i = 0; i < studienlist.size(); i++) {
-					addToTable(studienlist.get(i));
+				current = database.login(current.geteMail(),
+						current.getPassword());
+				if (current != null) {
+					studmodel.setRowCount(0);
+					studienlist = database.getStudiengaenge();
+					for (int i = 0; i < studienlist.size(); i++) {
+						addToTable(studienlist.get(i));
+					}
+
+					typen = database.getZuordnungen();
+
+					showCard("studiengang show");
+				} else {
+					current = new User("gast", "gast", "", "gast@gast.gast",
+							"d4061b1486fe2da19dd578e8d970f7eb", false, false,
+							false, false);
+					noConnection();
 				}
-				
-				typen = database.getZuordnungen();
-				
-				showCard("studiengang show");
 			}
 
 		});
@@ -786,11 +802,11 @@ public class mainscreen {
 					dez.add(dezernat2);
 				}
 				int version = database.getModulVersion(Name) + 1;
-				
+
 				Date d = new Date();
 
 				Modul neu = new Modul(Name, zlist, jahrgang, labels, values,
-						version, dez,d,false,false,current.geteMail());
+						version, dez, d, false, false, current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();
@@ -859,11 +875,12 @@ public class mainscreen {
 		btnUserAdd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(frame, "User hinzufügen",database);
+				userdialog dlg = new userdialog(frame, "User hinzufügen",
+						database);
 				int response = dlg.showCustomDialog();
 				// Wenn ok gedückt wird
 				// neuen User abfragen
-				//save!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				// save!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (response == 1) {
 					User tmp = dlg.getUser();
 					database.usersave(tmp);
@@ -1352,7 +1369,8 @@ public class mainscreen {
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Jahrgang + Platzhalter
-		panel.add(defaultmodulPanel("Jahrgang", Integer.toString(m.getJahrgang())));
+		panel.add(defaultmodulPanel("Jahrgang",
+				Integer.toString(m.getJahrgang())));
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Name + Platzhalter
@@ -1380,8 +1398,8 @@ public class mainscreen {
 				ArrayList<String> labels = new ArrayList<String>();
 				ArrayList<String> values = new ArrayList<String>();
 				ArrayList<Boolean> dez = new ArrayList<Boolean>();
-ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				
+				ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
+
 				// Eintraege der Reihe nach auslesen
 				for (int i = 6; i < panel.getComponentCount(); i = i + 2) {
 					JPanel tmp = (JPanel) panel.getComponent(i);
@@ -1403,13 +1421,13 @@ ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
 				ArrayList<Studiengang> Studiengang = new ArrayList<Studiengang>();
 
 				for (int i = 0; i < lm.getSize(); i++) {
-//					zlist.add(lm.getElementAt(i));
+					// zlist.add(lm.getElementAt(i));
 				}
-				
+
 				Date d = new Date();
-				
-				Modul neu = new Modul(Name, zlist,
-						Jahrgang, labels, values, version, dez,d,false,false,current.geteMail());
+
+				Modul neu = new Modul(Name, zlist, Jahrgang, labels, values,
+						version, dez, d, false, false, current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();
@@ -1469,7 +1487,6 @@ ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
 		});
 
 	}
-
 
 	private void modtypshowCard() {
 		JPanel modtypshow = new JPanel();

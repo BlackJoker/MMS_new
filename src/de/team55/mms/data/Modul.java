@@ -10,8 +10,6 @@ import de.team55.mms.data.Zuordnung;
 @XmlRootElement(name = "Modul")
 public class Modul {
 
-	
-
 	private String name;
 	private ArrayList<Studiengang> studiengang;
 	private int jahrgang;
@@ -240,7 +238,7 @@ public class Modul {
 	public Modul(String name2, ArrayList<Zuordnung> zs, int jg,
 			ArrayList<String> labels2, ArrayList<String> values2, int version2,
 			ArrayList<Boolean> dezernat2, String user2, Date datum2) {
-		this.name=name;
+		this.name=name2;
 		this.zuordnungen=zs;
 		this.jahrgang=jg;
 		this.labels=labels2;
@@ -249,6 +247,23 @@ public class Modul {
 		this.dezernat=dezernat2;
 		this.user=user2;
 		this.datum=datum2;
+	}
+
+	public Modul(String name2, ArrayList<Zuordnung> zs, int jahrgang2,
+			ArrayList<String> labels2, ArrayList<String> values2, int version2,
+			ArrayList<Boolean> dezernat2, Date datum2, boolean akzeptiert2,
+			boolean inbearbeitung2, String user2) {
+		this.name=name2;
+		this.zuordnungen=zs;
+		this.jahrgang=jahrgang2;
+		this.dezernat=dezernat2;
+		this.labels=labels2;
+		this.values=values2;
+		this.version=version2;
+		this.datum=datum2;
+		this.akzeptiert=akzeptiert2;
+		this.inbearbeitung=inbearbeitung2;
+		this.user=user;
 	}
 
 	public String getUser() {
@@ -273,9 +288,7 @@ public class Modul {
 
 	public ArrayList<String> getLabels() {
 		return labels;
-	}
-
-	
+	}	
 
 	public String getName() {
 		return name;

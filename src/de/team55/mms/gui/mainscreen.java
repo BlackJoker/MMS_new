@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -784,9 +785,11 @@ public class mainscreen {
 					dez.add(dezernat2);
 				}
 				int version = database.getModulVersion(Name) + 1;
+				
+				Date d = new Date();
 
 				Modul neu = new Modul(Name, zlist, jahrgang, labels, values,
-						version, dez);
+						version, dez,d,false,false,current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();
@@ -1401,8 +1404,11 @@ ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
 				for (int i = 0; i < lm.getSize(); i++) {
 //					zlist.add(lm.getElementAt(i));
 				}
+				
+				Date d = new Date();
+				
 				Modul neu = new Modul(Name, zlist,
-						Jahrgang, labels, values, version, dez);
+						Jahrgang, labels, values, version, dez,d,false,false,current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();

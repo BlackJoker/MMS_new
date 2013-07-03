@@ -1001,12 +1001,16 @@ public class sql {
 		if (connect() == true) {
 			try {
 				String eMail = sl.geteMail();
+				int size = 0;
 				ArrayList<String> l = sl.getUsr();
+				if(l!=null){
+					size=l.size();	
+				}
 				state = con
 						.prepareStatement("DELETE FROM user_relation WHERE main_email=?");
 				state.setString(1, eMail);
 				state.executeUpdate();
-				for (int i = 0; i < l.size(); i++) {
+				for (int i = 0; i < size; i++) {
 					state = con
 							.prepareStatement("INSERT INTO user_relation (main_email, stellver_email) VALUES(?,?)");
 					state.setString(1, eMail);

@@ -2,8 +2,10 @@ package de.team55.mms.data;
 
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "Zuordnung")
+@XmlType(propOrder = { "id", "name", "sid","studiengang","abschluss"})
 public class Zuordnung {
 	
 	private String name;

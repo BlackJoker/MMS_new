@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
+import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.StellvertreterList;
@@ -221,29 +222,28 @@ public class sql {
 		Statement state = null;
 		int version = 0;
 		int jahrgang = 0;
-		ArrayList<Studiengang> Studiengang = new ArrayList<Studiengang>();
 		Date datum = new Date();
 		boolean akzeptiert = false;
 		boolean inbearbeitung = false;
-		ArrayList<String> labels = new ArrayList<String>();
-		ArrayList<String> values = new ArrayList<String>();
-		ArrayList<Boolean> dezernat = new ArrayList<Boolean>();
+		ArrayList<Feld> felder = new ArrayList<Feld>();
 		ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
 		String user="";
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
+				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE name = '"
+						+ name + "';";
 				res = state
-						.executeQuery("SELECT IFNULL(MAX(Version),0) as version FROM module WHERE = '"
-								+ name + "';");
+						.executeQuery(sql);
 				if (res.first()) {
 					version = res.getInt("version");
 				}
 
 				if (version != 0) {
+					sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+							+ name + "'AND version =" + version + ";";
 					res = state
-							.executeQuery("SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE name = '"
-									+ name + "'AND version =" + version + ";");
+							.executeQuery(sql);
 					if (res.first()) {
 						jahrgang = res.getInt("jahrgang");
 						datum = res.getDate("Datum");
@@ -274,13 +274,11 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT label, text, dezernat FROM text WHERE name = '"
+						.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '"
 								+ name + "' AND version = " + version + ";");
 
 				while (res.next()) {
-					labels.add(res.getString("label"));
-					values.add(res.getString("text"));
-					dezernat.add(res.getBoolean("dezernat"));
+					felder.add(new Feld(res.getString("label"),res.getString("text"),res.getBoolean("dezernat2")));
 				}
 
 				res.close();
@@ -293,7 +291,7 @@ public class sql {
 			
 		}
 		
-		return new Modul(name, zs, jahrgang, labels, values, version, dezernat, datum,
+		return new Modul(name, zs, jahrgang, felder, version, datum,
 				 akzeptiert, inbearbeitung,user);
 
 	}
@@ -789,9 +787,10 @@ public class sql {
 					}
 
 					ArrayList<Studiengang> sgs = new ArrayList<Studiengang>();
+					String sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+							+ name + "'AND version =" + version + ";";
 					res2 = state
-							.executeQuery("SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE name = '"
-								+ name + "'AND version =" + version + ";");
+							.executeQuery(sql);
 					int jahrgang = 0;
 					ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
 					String user="";
@@ -816,13 +815,11 @@ public class sql {
 							String tname = res2.getString("tname");
 							String sname = res2.getString("sname");
 							int sid = res2.getInt("sid");
-							String abschluss = res2.getString("abschluss");						
+							String abschluss = res2.getString("abschluss");		
 							zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 						}
 
-						ArrayList<String> labels = new ArrayList<String>();
-						ArrayList<String> values = new ArrayList<String>();
-						ArrayList<Boolean> dezernat = new ArrayList<Boolean>();
+						ArrayList<Feld> felder = new ArrayList<Feld>();
 
 						res2 = state
 								.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '"
@@ -832,13 +829,11 @@ public class sql {
 										+ ";");
 
 						while (res2.next()) {
-							labels.add(res2.getString("label"));
-							values.add(res2.getString("text"));
-							dezernat.add(res2.getBoolean("dezernat2"));
+							felder.add(new Feld(res.getString("label"),res.getString("text"),res.getBoolean("dezernat2")));
 						}
 						res2.close();
 
-						module.add(new Modul(name, zs, jahrgang, labels, values, version, dezernat, datum,
+						module.add(new Modul(name, zs, jahrgang, felder, version, datum,
 								 ack, inedit,user));
 					}
 

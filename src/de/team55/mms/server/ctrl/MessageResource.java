@@ -121,7 +121,7 @@ public class MessageResource {
 	public String getModulVersion(@PathParam("name") String name) {
 		return Integer.toString(new sql().getModulVersion(name));
 	}
-
+	
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/get/{name}")
@@ -137,6 +137,13 @@ public class MessageResource {
 		if(a.equals("true"))
 			b = true;
 		return new sql().getModule(b);
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XHTML_XML)
+	@Path("/modul/get/{name}/HTML")
+	public Modul getModulHTML(@PathParam("name") String a) {
+		return new sql().getModul(a);
 	}
 
 	@POST

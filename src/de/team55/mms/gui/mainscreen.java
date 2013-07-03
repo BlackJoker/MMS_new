@@ -46,33 +46,23 @@ public class mainscreen {
 
 	private static JFrame frame;
 
-	// Konstanten
-	private static final int NOCONNECTION = 0;
-	private static final int LOGINFALSE = 1;
 	private static final int SUCCES = 2;
 	private final Dimension btnSz = new Dimension(140, 50);
 	public ServerConnection database = new ServerConnection();
 
 	// Variablen
-	private User current = new User("gast", "gast", "", "gast@gast.gast",
-			"d4061b1486fe2da19dd578e8d970f7eb", false, false, false, false); // Gast
-																				// User
-	private String uebergabeString = "test";
-
-	// Listen
+	private User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false,
+			false, false, false); // Gast 
+	
+	//Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
-	private ArrayList<Studiengang> studienlist = null; // Liste mit
-														// Studiengängen
-	private ArrayList<Modulhandbuch> modbuchlist = null; // Liste mit
-															// Modulhandbüchern
+	private ArrayList<Studiengang> studienlist = null; // Liste mit Studiengängen
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
-	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
-																					// für
-																					// Dynamische
-																					// Buttons
-	private ArrayList<String> modtyplist = null;
+	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map der Dynamischen Buttons
+	private ArrayList<String> defaultlabels = new ArrayList<String>();
 
-	// Modelle
+	
+	//Modelle
 	private DefaultTableModel tmodel;
 	private DefaultTableModel studmodel;
 	private DefaultTableModel modbuchmodel;
@@ -85,12 +75,11 @@ public class mainscreen {
 	// Komponenten
 	private JPanel cards = new JPanel();
 	private JPanel mod = new JPanel();
-	private static JPanel panel = new JPanel();
+	private static JPanel modul_panel = new JPanel();
 	private JButton btnModulEinreichen = new JButton("Modul Einreichen");
 	private JButton btnModulVerwaltung = new JButton("Verwaltung");
 	private JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
-	private JButton btnMHB = new JButton(
-			"<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
+	private JButton btnMHB = new JButton("<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
 	private JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private JButton btnLogin = new JButton("Einloggen");
 
@@ -101,7 +90,7 @@ public class mainscreen {
 		centerscr();
 		topscr();
 		leftscr();
-		
+
 		frame.setVisible(true);
 	}
 
@@ -109,7 +98,7 @@ public class mainscreen {
 
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
 		cards.setLayout(new CardLayout(0, 0));
-		// cards.add(mod);
+		defaultlabels.add("Zuordnung");
 
 		homecard();
 		usermgtcard();
@@ -134,10 +123,8 @@ public class mainscreen {
 	}
 
 	private void addToTable(User usr) {
-		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(),
-				usr.getNachname(), usr.geteMail(), usr.getManageUsers(),
-				usr.getCreateModule(), usr.getAcceptModule(),
-				usr.getReadModule() });
+		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(),
+				usr.getManageUsers(), usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
 	}
 
 	private void addToTable(Studiengang stud) {
@@ -148,9 +135,12 @@ public class mainscreen {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
 
-	private JPanel defaultmodulPanel(String name, String string) {
+	private JPanel defaultmodulPanel(String name, String string, boolean b) {
 		final Dimension preferredSize = new Dimension(120, 20);
-
+		
+		if(!defaultlabels.contains(name)){
+			defaultlabels.add(name);
+		}
 		JPanel pnl = new JPanel();
 		// panel.add(pnl);
 		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
@@ -163,6 +153,9 @@ public class mainscreen {
 		txt.setLineWrap(true);
 		pnl.add(txt);
 
+		JCheckBox dez = new JCheckBox("Dezernat 2", b);
+		pnl.add(dez);
+
 		return pnl;
 	}
 
@@ -172,8 +165,7 @@ public class mainscreen {
 		flowLayout_2.setVgap(20);
 		cards.add(welcome, "welcome page");
 
-		JLabel lblNewLabel = new JLabel(
-				"Willkommen beim Modul Management System");
+		JLabel lblNewLabel = new JLabel("Willkommen beim Modul Management System");
 		welcome.add(lblNewLabel);
 
 	}
@@ -238,12 +230,10 @@ public class mainscreen {
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				current = database.login(current.geteMail(),
-						current.getPassword());
+				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					if (current.geteMail().equals("gast@gast.gast")) {
-						logindialog log = new logindialog(frame, "Login",
-								database);
+						logindialog log = new logindialog(frame, "Login", database);
 						int resp = log.showCustomDialog();
 						if (resp == 1) {
 							current = log.getUser();
@@ -252,10 +242,8 @@ public class mainscreen {
 							checkRights();
 						}
 					} else {
-						current = new User("gast", "gast", "",
-								"gast@gast.gast",
-								"d4061b1486fe2da19dd578e8d970f7eb", false,
-								false, false, false);
+						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
+								false, false, false, false);
 						if (database.isConnected() == SUCCES) {
 							checkRights();
 						}
@@ -265,9 +253,8 @@ public class mainscreen {
 						showCard("welcome page");
 					}
 				} else {
-					current = new User("gast", "gast", "", "gast@gast.gast",
-							"d4061b1486fe2da19dd578e8d970f7eb", false, false,
-							false, false);
+					current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false,
+							false, false, false);
 					noConnection();
 				}
 			}
@@ -291,20 +278,17 @@ public class mainscreen {
 					}
 					showCard("user managment");
 				} else {
-					userdialog dlg = new userdialog(frame, "User bearbeiten",
-							current, false, database);
+					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, database);
 					int response = dlg.showCustomDialog();
 					// Wenn ok ged\u00fcckt wird
 					// neuen User abfragen
 					if (response == 1) {
 						User tmp = dlg.getUser();
-						if (database.userupdate(tmp, current.geteMail())
-								.getStatus() == 201) {
+						if (database.userupdate(tmp, current.geteMail()).getStatus() == 201) {
 							current = tmp;
 							checkRights();
 						} else
-							JOptionPane.showMessageDialog(frame,
-									"Update Fehlgeschlagen!", "Update Error",
+							JOptionPane.showMessageDialog(frame, "Update Fehlgeschlagen!", "Update Error",
 									JOptionPane.ERROR_MESSAGE);
 
 					}
@@ -327,9 +311,8 @@ public class mainscreen {
 		btnMHB.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0){
-				current = database.login(current.geteMail(),
-						current.getPassword());
+			public void actionPerformed(ActionEvent arg0) {
+				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					studmodel.setRowCount(0);
 					studienlist = database.getStudiengaenge();
@@ -341,9 +324,8 @@ public class mainscreen {
 
 					showCard("studiengang show");
 				} else {
-					current = new User("gast", "gast", "", "gast@gast.gast",
-							"d4061b1486fe2da19dd578e8d970f7eb", false, false,
-							false, false);
+					current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false,
+							false, false, false);
 					noConnection();
 				}
 			}
@@ -354,7 +336,12 @@ public class mainscreen {
 	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 	private void newmodulecard() {
 		final JPanel pnl_newmod = new JPanel();
-
+		if(!buttonmap.isEmpty()){
+			for(int i=0;i<buttonmap.size();i++)
+				buttonmap.remove(i);
+		}
+		final ArrayList<String> labels = new ArrayList<String>();
+		labels.addAll(defaultlabels);
 		final Dimension preferredSize = new Dimension(120, 20);
 		pnl_newmod.setLayout(new BorderLayout(0, 0));
 
@@ -365,69 +352,78 @@ public class mainscreen {
 		btnNeuesFeld.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// Platzhalter
-				JPanel pnl_tmp = new JPanel();
-				panel.add(pnl_tmp);
-				panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-				int numOfPanels = panel.getComponentCount();
-				pnl_tmp.setLayout(new BoxLayout(pnl_tmp, BoxLayout.X_AXIS));
-
-				JCheckBox checkbox = new JCheckBox("Dezernat 2 Feld");
 				String text = "Name des Feldes";
-				Object[] params = { checkbox, text };
-				String name = JOptionPane.showInputDialog(frame, params);
-				boolean dezernat2 = checkbox.isSelected();
-
-				JLabel label_tmp = new JLabel(name);
-				label_tmp.setPreferredSize(preferredSize);
-				pnl_tmp.add(label_tmp);
-
-				JTextArea txt_tmp = new JTextArea();
-				txt_tmp.setLineWrap(true);
-				pnl_tmp.add(txt_tmp);
-
-				JCheckBox dez = new JCheckBox("Dezernat 2", dezernat2);
-				pnl_tmp.add(dez);
-
-				JButton btn_tmp_entf = new JButton("Entfernen");
-				btn_tmp_entf.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						int id = buttonmap.get(e.getSource());
-						// Feld mit ID id von Panel entfernen
-						panel.remove(id);
-						// Platzhalter entfernen
-						panel.remove(id - 1);
-						// Aus ButtonMap entfernen
-						buttonmap.remove(e.getSource());
-
-						// ids der Buttons \u00e4ndern, damit auch ein Feld aus der
-						// Mitte gel\u00f6scht werden kann
-						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-						Iterator<Entry<JButton, Integer>> entries = buttonmap
-								.entrySet().iterator();
-						while (entries.hasNext()) {
-							Entry<JButton, Integer> thisEntry = entries.next();
-							JButton key = thisEntry.getKey();
-							int value = thisEntry.getValue();
-							if (value > id) {
-								value = value - 2;
-							}
-							tmpmap.put(key, value);
-						}
-						buttonmap = tmpmap;
-						panel.revalidate();
-
+				String name = JOptionPane.showInputDialog(frame, text);
+				try {
+					while (name.isEmpty()||labels.contains(name)) {
+						Object[] params = { "Bitte geben Sie eine gültige Bezeichnung ein!", text };
+						name = JOptionPane.showInputDialog(frame, params);
 					}
-				});
+					labels.add(name);
+					// Platzhalter
+					JPanel pnl_tmp = new JPanel();
+					modul_panel.add(pnl_tmp);
+					modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-				// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
-				buttonmap.put(btn_tmp_entf, numOfPanels - 2);
+					int numOfPanels = modul_panel.getComponentCount();
+					pnl_tmp.setLayout(new BoxLayout(pnl_tmp, BoxLayout.X_AXIS));
 
-				pnl_tmp.add(btn_tmp_entf);
+					JLabel label_tmp = new JLabel(name);
+					label_tmp.setPreferredSize(preferredSize);
+					pnl_tmp.add(label_tmp);
 
-				panel.revalidate();
+					JTextArea txt_tmp = new JTextArea();
+					txt_tmp.setLineWrap(true);
+					pnl_tmp.add(txt_tmp);
+
+					JCheckBox dez = new JCheckBox("Dezernat 2", false);
+					pnl_tmp.add(dez);
+
+					JButton btn_tmp_entf = new JButton("Entfernen");
+					btn_tmp_entf.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int id = buttonmap.get(e.getSource());
+							//Bezeichnung aus Liste entfernen
+							String name = ((JLabel) ((JPanel) modul_panel.getComponent(id)).getComponent(0)).getText();
+							labels.remove(name);
+							
+							// Feld mit ID id von Panel entfernen
+							modul_panel.remove(id);
+							// Platzhalter entfernen
+							modul_panel.remove(id - 1);
+							// Aus ButtonMap entfernen
+							buttonmap.remove(e.getSource());
+
+							// ids der Buttons ändern, damit auch ein Feld aus
+							// der Mitte gelöscht werden kann
+							HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
+							Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
+							while (entries.hasNext()) {
+								Entry<JButton, Integer> thisEntry = entries.next();
+								JButton key = thisEntry.getKey();
+								int value = thisEntry.getValue();
+								if (value > id) {
+									value = value - 2;
+								}
+								tmpmap.put(key, value);
+							}
+							buttonmap = tmpmap;
+							modul_panel.revalidate();
+
+						}
+					});
+
+					// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
+					buttonmap.put(btn_tmp_entf, numOfPanels - 2);
+
+					pnl_tmp.add(btn_tmp_entf);
+
+					modul_panel.revalidate();
+
+				} catch (NullPointerException npe) {
+					// nichts tuen
+				}
 			}
 		});
 		pnl_bottom.add(btnNeuesFeld);
@@ -436,22 +432,23 @@ public class mainscreen {
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				panel.removeAll();
-				panel.revalidate();
+				modul_panel.removeAll();
+				modul_panel.revalidate();
 				newmodulecard();
 				showCard("welcome page");
 			}
 		});
 		pnl_bottom.add(btnHome);
 
-		JScrollPane scrollPane = new JScrollPane(panel,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane = new JScrollPane(modul_panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		modul_panel.setLayout(new BoxLayout(modul_panel, BoxLayout.Y_AXIS));
 
 		// Panel Zuordnung + Platzhalter
 		JPanel pnl_MH = new JPanel();
+		pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
 		JLabel label_MH = new JLabel("Zuordnung");
+		
 		label_MH.setPreferredSize(preferredSize);
 		pnl_MH.add(label_MH);
 
@@ -460,11 +457,9 @@ public class mainscreen {
 
 		zlist.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false,
-						false);
+				super.getListCellRendererComponent(list, value, index, false, false);
 
 				return this;
 			}
@@ -494,8 +489,7 @@ public class mainscreen {
 
 					JTextField neu_Name = new JTextField();
 					JTextField neu_Abschluss = new JTextField();
-					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(
-							cbmodel);
+					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
 					JPanel sp = new JPanel();
 					sp.add(neu_sgbox);
 
@@ -505,18 +499,13 @@ public class mainscreen {
 						public void actionPerformed(ActionEvent e) {
 
 							try {
-								String name = JOptionPane.showInputDialog(
-										frame, "Name des neuen Studiengangs:",
-										"neuer Studiengang",
-										JOptionPane.PLAIN_MESSAGE);
+								String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:",
+										"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
 
 								while (name.isEmpty()) {
-									name = JOptionPane
-											.showInputDialog(
-													frame,
-													"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
-													"neuer Studiengang",
-													JOptionPane.PLAIN_MESSAGE);
+									name = JOptionPane.showInputDialog(frame,
+											"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
+											"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
 								}
 
 								studienlist = database.getStudiengaenge();
@@ -534,12 +523,8 @@ public class mainscreen {
 									for (int i = 0; i < studienlist.size(); i++)
 										cbmodel.addElement(studienlist.get(i));
 								} else {
-									JOptionPane
-											.showMessageDialog(
-													frame,
-													"Studiengang ist schon vorhanden",
-													"Fehler",
-													JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler",
+											JOptionPane.ERROR_MESSAGE);
 								}
 							} catch (NullPointerException np) {
 
@@ -549,30 +534,22 @@ public class mainscreen {
 					});
 
 					sp.add(nsg);
-					Object[] message = { "Name des Types:", neu_Name,
-							"Abschluss:", neu_Abschluss, "Studiengang:", sp };
+					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", sp };
 
-					int option = JOptionPane.showConfirmDialog(frame, message,
-							"Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen",
+							JOptionPane.OK_CANCEL_OPTION);
 					if (option == JOptionPane.OK_OPTION) {
 
-						while ((neu_Name.getText().isEmpty()
-								|| (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
-								.getText().isEmpty())
-								&& (option == JOptionPane.OK_OPTION)) {
-							Object[] messageEmpty = {
-									"Bitte alle Felder ausf\u00fcllen!",
-									"Name des Types:", neu_Name, "Abschluss:",
-									neu_Abschluss, "Studiengang:", sp };
-							option = JOptionPane.showConfirmDialog(frame,
-									messageEmpty, "Neuen Typ anlegen",
+						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
+								.getText().isEmpty()) && (option == JOptionPane.OK_OPTION)) {
+							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name,
+									"Abschluss:", neu_Abschluss, "Studiengang:", sp };
+							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen",
 									JOptionPane.OK_CANCEL_OPTION);
 						}
 						if (option == JOptionPane.OK_OPTION) {
-							Studiengang s = (Studiengang) neu_sgbox
-									.getSelectedItem();
-							Zuordnung z = new Zuordnung(neu_Name.getText(), s
-									.getName(), s.getId(), neu_Abschluss
+							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
+							Zuordnung z = new Zuordnung(neu_Name.getText(), s.getName(), s.getId(), neu_Abschluss
 									.getText());
 
 							boolean neu = true;
@@ -589,9 +566,8 @@ public class mainscreen {
 								for (int i = 0; i < typen.size(); i++)
 									cbmodel_Z.addElement(typen.get(i));
 							} else {
-								JOptionPane.showMessageDialog(frame,
-										"Zuordnung ist schon vorhanden",
-										"Fehler", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler",
+										JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
@@ -604,206 +580,144 @@ public class mainscreen {
 		});
 		pnl_MH.add(nMH_btn);
 
-		pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
-		panel.add(pnl_MH);
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Studiengang + Platzhalter
-		// JPanel pnl_Sg = new JPanel();
-		// JLabel label = new JLabel("Studiengang");
-		// label.setPreferredSize(preferredSize);
-		// pnl_Sg.add(label);
-		//
-		// final DefaultListModel<String> lm = new DefaultListModel<String>();
-		// JList<String> st = new JList<String>(lm);
-		//
-		// st.setCellRenderer(new DefaultListCellRenderer() {
-		// @Override
-		// public Component getListCellRendererComponent(JList list,
-		// Object value, int index, boolean isSelected,
-		// boolean cellHasFocus) {
-		// super.getListCellRendererComponent(list, value, index, false,
-		// false);
-		//
-		// return this;
-		// }
-		// });
-		// pnl_Sg.add(st);
-		//
-		// // final DefaultComboBoxModel cbmodel = new
-		// // DefaultComboBoxModel(database.getStudiengaenge().toArray());
-		//
-		// final JComboBox sgbox = new JComboBox(cbmodel);
-		// sgbox.setMaximumSize(new Dimension(sgbox.getMaximumSize().width,
-		// 20));
-		//
-		// pnl_Sg.add(sgbox);
-		//
-		// JButton sg = new JButton("Studiengang ausw\u00e4hlen");
-		// sg.addActionListener(new ActionListener() {
-		// @Override
-		// public void actionPerformed(ActionEvent e) {
-		// if (!lm.contains(sgbox.getSelectedItem().toString()))
-		// lm.addElement(sgbox.getSelectedItem().toString());
-		// }
-		// });
-		// pnl_Sg.add(sg);
-
-		// JButton nsg = new JButton("Neuer Studiengang");
-		// nsg.addActionListener(new ActionListener() {
-		// @Override
-		// public void actionPerformed(ActionEvent e) {
-		//
-		// try {
-		// String name = JOptionPane.showInputDialog(frame,
-		// "Name des neuen Studiengangs:",
-		// "neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
-		//
-		// while (name.isEmpty()) {
-		// name = JOptionPane
-		// .showInputDialog(
-		// frame,
-		// "Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
-		// "neuer Studiengang",
-		// JOptionPane.PLAIN_MESSAGE);
-		// }
-		//
-		// ArrayList<Studiengang> sgs = database.getStudiengaenge();
-		// boolean neu = true;
-		// for (int i = 0; i < sgs.size(); i++) {
-		// if (sgs.get(i).equals(name)) {
-		// neu = false;
-		// break;
-		// }
-		// }
-		// if (neu) {
-		// database.setStudiengang(name);
-		// cbmodel.removeAllElements();
-		// sgs = database.getStudiengaenge();
-		// for (int i = 0; i < sgs.size(); i++)
-		// cbmodel.addElement(sgs.get(i));
-		//
-		// // cbmodel.addElement(name);
-		// } else {
-		// JOptionPane.showMessageDialog(frame,
-		// "Studiengang ist schon vorhanden", "Fehler",
-		// JOptionPane.ERROR_MESSAGE);
-		// }
-		// } catch (NullPointerException np) {
-		//
-		// }
-		// }
-		//
-		// });
-		// pnl_Sg.add(nsg);
-
-		// pnl_Sg.setLayout(new BoxLayout(pnl_Sg, BoxLayout.X_AXIS));
-		// panel.add(pnl_Sg);
-		// panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
+//		pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
+		modul_panel.add(pnl_MH);
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		
 		// Panel Jahrgang + Platzhalter
-		panel.add(defaultmodulPanel("Jahrgang", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Jahrgang", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Name + Platzhalter
-		panel.add(defaultmodulPanel("Name", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Name", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel K\u00fcrzel + Platzhalter
-		panel.add(defaultmodulPanel("K\u00fcrzel", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("K\u00fcrzel", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		labels.add("Kürzel");
 
 		// Panel Titel + Platzhaler
-		panel.add(defaultmodulPanel("Titel", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Titel", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel LP + Platzhalter
-		panel.add(defaultmodulPanel("Leistungspunkte", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
+		modul_panel.add(defaultmodulPanel("Leistungspunkte", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		
 		// Panel Dauer + Platzhalter
-		panel.add(defaultmodulPanel("Dauer", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Dauer", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Turnus + Platzhalter
-		panel.add(defaultmodulPanel("Turnus", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Turnus", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Modulverantwortlicher + Platzhalter
-		panel.add(defaultmodulPanel("Modulverantwortlicher", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Modulverantwortlicher", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Dozenten + Platzhalter
-		panel.add(defaultmodulPanel("Dozenten", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Dozenten", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Inhalt + Platzhalter
-		panel.add(defaultmodulPanel("Inhalt", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Inhalt", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Ziele + Platzhalter
-		panel.add(defaultmodulPanel("Lernziele", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Lernziele", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Literatur + Platzhalter
-		panel.add(defaultmodulPanel("Literatur", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Literatur", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Sprache + Platzhalter
-		panel.add(defaultmodulPanel("Sprache", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Sprache", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Pr\u00fcfungsform + Platzhalter
-		panel.add(defaultmodulPanel("Pr\u00fcfungsform", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Pr\u00fcfungsform", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		labels.add("Prüfungsform");
 
 		// Panel Notenbildung + Platzhalter
-		panel.add(defaultmodulPanel("Notenbildung", ""));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Notenbildung", "", false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		JButton btnOk = new JButton("Annehmen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<Modulhandbuch> mblist = new ArrayList<Modulhandbuch>();
 				ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				String jg = ((JTextArea) ((JPanel) panel.getComponent(2))
-						.getComponent(1)).getText();
-				int jahrgang = Integer.parseInt(jg);
-
+				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2)).getComponent(1)).getText();
+				int jahrgang;
+				try {
+					jahrgang = Integer.parseInt(jg);
+				} catch (NumberFormatException nfe) {
+					jahrgang = 0;
+				}
 				for (int i = 0; i < lm.getSize(); i++) {
 					zlist.add(lm.getElementAt(i));
 				}
 
-				String Name = ((JTextArea) ((JPanel) panel.getComponent(4))
-						.getComponent(1)).getText();
+				if (!zlist.isEmpty()) {
 
-				ArrayList<Feld> felder = new ArrayList<Feld>();
-				// Eintraege der Reihe nach auslesen
-				for (int i = 6; i < panel.getComponentCount(); i = i + 2) {
-					JPanel tmp = (JPanel) panel.getComponent(i);
-					JLabel tmplbl = (JLabel) tmp.getComponent(0);
-					JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
-					boolean dezernat2 = false;
-					if (tmp.getComponentCount() > 3) {
-						dezernat2 = ((JCheckBox) tmp.getComponent(2))
-								.isSelected();
+					if (jahrgang != 0) {
+
+						String Name = ((JTextArea) ((JPanel) modul_panel.getComponent(4)).getComponent(1)).getText();
+
+						if (Name.isEmpty()) {
+							JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
+									JOptionPane.ERROR_MESSAGE);
+						} else {
+
+							boolean filled = true;
+							ArrayList<Feld> felder = new ArrayList<Feld>();
+							// Eintraege der Reihe nach auslesen
+							for (int i = 6; i < modul_panel.getComponentCount(); i = i + 2) {
+								JPanel tmp = (JPanel) modul_panel.getComponent(i);
+								JLabel tmplbl = (JLabel) tmp.getComponent(0);
+								JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
+
+								boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
+								String value = tmptxt.getText();
+								String label = tmplbl.getText();
+								if (label.isEmpty()) {
+									filled = false;
+									break;
+								}
+								felder.add(new Feld(label, value, dezernat2));
+							}
+							if (filled == true) {
+								int version = database.getModulVersion(Name) + 1;
+
+								Date d = new Date();
+
+								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
+										.geteMail());
+								System.out.println(neu);
+								database.setModul(neu);
+								labels.removeAll(labels);
+								modul_panel.removeAll();
+								modul_panel.revalidate();
+								newmodulecard();
+								showCard("newmodule");
+							} else {
+								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
+										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					} else {
+						JOptionPane.showMessageDialog(frame,
+								"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
+								JOptionPane.ERROR_MESSAGE);
 					}
-					String value = tmptxt.getText();
-					String label = tmplbl.getText();
-					felder.add(new Feld(label,value,dezernat2));
+				} else {
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!",
+							"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
 				}
-				int version = database.getModulVersion(Name) + 1;
-
-				Date d = new Date();
-
-				Modul neu = new Modul(Name, zlist, jahrgang, felder,
-						version, d, false, false, current.geteMail());
-				database.setModul(neu);
-				panel.removeAll();
-				panel.revalidate();
-				newmodulecard();
-				showCard("newmodule");
 			}
 		});
 		pnl_bottom.add(btnOk);
@@ -840,13 +754,11 @@ public class mainscreen {
 		//
 		// Inhalt der Tabelle
 		//
-		tmodel = new DefaultTableModel(new Object[][] {}, new String[] {
-				"Titel", "Vorname", "Nachnahme", "e-Mail", "Benutzer verwalten",
-				"Module einreichen", "Module Annehmen", "Verwaltung" }) {
+		tmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Titel", "Vorname", "Nachnahme", "e-Mail",
+				"Benutzer verwalten", "Module einreichen", "Module Annehmen", "Verwaltung" }) {
 			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] { String.class, String.class,
-					String.class, String.class, boolean.class, boolean.class,
-					boolean.class, boolean.class };
+			Class[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, boolean.class,
+					boolean.class, boolean.class, boolean.class };
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
@@ -867,8 +779,7 @@ public class mainscreen {
 		btnUserAdd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(frame, "User hinzuf\u00fcgen",
-						database);
+				userdialog dlg = new userdialog(frame, "User hinzuf\u00fcgen", database);
 				int response = dlg.showCustomDialog();
 				// Wenn ok ged\u00fcckt wird
 				// neuen User abfragen
@@ -884,8 +795,7 @@ public class mainscreen {
 		usrpan.add(btnUserAdd);
 
 		JButton btnUserEdit = new JButton("User bearbeiten");
-		btnUserEdit
-				.setToolTipText("Zum Bearbeiten Benutzer in der Tabelle markieren");
+		btnUserEdit.setToolTipText("Zum Bearbeiten Benutzer in der Tabelle markieren");
 		btnUserEdit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -901,8 +811,7 @@ public class mainscreen {
 					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
 					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4);
 
-					userdialog dlg = new userdialog(frame, "User bearbeiten",
-							alt, true, database);
+					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, database);
 					int response = dlg.showCustomDialog();
 					// Wenn ok ged\u00fcckt wird
 					// neuen User abfragen
@@ -916,8 +825,7 @@ public class mainscreen {
 								checkRights();
 							}
 						} else
-							JOptionPane.showMessageDialog(frame,
-									"Update Fehlgeschlagen", "Update Fehler",
+							JOptionPane.showMessageDialog(frame, "Update Fehlgeschlagen", "Update Fehler",
 									JOptionPane.ERROR_MESSAGE);
 
 					}
@@ -928,20 +836,16 @@ public class mainscreen {
 		usrpan.add(btnUserEdit);
 
 		JButton btnUserDel = new JButton("User l\u00f6schen");
-		btnUserDel
-				.setToolTipText("Zum L\u00f6schen Benutzer in der Tabelle markieren");
+		btnUserDel.setToolTipText("Zum L\u00f6schen Benutzer in der Tabelle markieren");
 		btnUserDel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int row = usrtbl.getSelectedRow();
 				if (row != -1) {
-					if (database.deluser((String) usrtbl.getValueAt(row, 3))
-							.getStatus() != 201) {
+					if (database.deluser((String) usrtbl.getValueAt(row, 3)).getStatus() != 201) {
 						removeFromTable(row);
 					} else
-						JOptionPane.showMessageDialog(frame,
-								"L\u00f6schen Fehlgeschlagen",
-								"Fehler beim L\u00f6schen",
+						JOptionPane.showMessageDialog(frame, "L\u00f6schen Fehlgeschlagen", "Fehler beim L\u00f6schen",
 								JOptionPane.ERROR_MESSAGE);
 
 				}
@@ -996,8 +900,7 @@ public class mainscreen {
 		panel.add(tabs, BorderLayout.CENTER);
 
 		JPanel nichtakzeptiert = new JPanel();
-		tabs.addTab("Noch nicht akzeptierte Module", null, nichtakzeptiert,
-				null);
+		tabs.addTab("Noch nicht akzeptierte Module", null, nichtakzeptiert, null);
 		nichtakzeptiert.setLayout(new BorderLayout(0, 0));
 		final JList<Modul> list_notack = new JList<Modul>(lm);
 		list_notack.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -1078,7 +981,7 @@ public class mainscreen {
 
 	private JPanel modeditCard(Modul m) {
 		final JPanel pnl_newmod = new JPanel();
-		panel.removeAll();
+		modul_panel.removeAll();
 
 		final Dimension preferredSize = new Dimension(120, 20);
 		pnl_newmod.setLayout(new BorderLayout(0, 0));
@@ -1092,10 +995,10 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Platzhalter
 				JPanel pnl_tmp = new JPanel();
-				panel.add(pnl_tmp);
-				panel.add(Box.createRigidArea(new Dimension(0, 5)));
+				modul_panel.add(pnl_tmp);
+				modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-				int numOfPanels = panel.getComponentCount();
+				int numOfPanels = modul_panel.getComponentCount();
 				pnl_tmp.setLayout(new BoxLayout(pnl_tmp, BoxLayout.X_AXIS));
 
 				JCheckBox checkbox = new JCheckBox("Dezernat 2 Feld");
@@ -1121,17 +1024,16 @@ public class mainscreen {
 					public void actionPerformed(ActionEvent e) {
 						int id = buttonmap.get(e.getSource());
 						// Feld mit ID id von Panel entfernen
-						panel.remove(id);
+						modul_panel.remove(id);
 						// Platzhalter entfernen
-						panel.remove(id - 1);
+						modul_panel.remove(id - 1);
 						// Aus ButtonMap entfernen
 						buttonmap.remove(e.getSource());
 
 						// ids der Buttons ändern, damit auch ein Feld aus der
 						// Mitte gelöscht werden kann
 						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-						Iterator<Entry<JButton, Integer>> entries = buttonmap
-								.entrySet().iterator();
+						Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
 						while (entries.hasNext()) {
 							Entry<JButton, Integer> thisEntry = entries.next();
 							JButton key = thisEntry.getKey();
@@ -1142,7 +1044,7 @@ public class mainscreen {
 							tmpmap.put(key, value);
 						}
 						buttonmap = tmpmap;
-						panel.revalidate();
+						modul_panel.revalidate();
 
 					}
 				});
@@ -1152,7 +1054,7 @@ public class mainscreen {
 
 				pnl_tmp.add(btn_tmp_entf);
 
-				panel.revalidate();
+				modul_panel.revalidate();
 			}
 		});
 		pnl_bottom.add(btnNeuesFeld);
@@ -1161,18 +1063,17 @@ public class mainscreen {
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				panel.removeAll();
-				panel.revalidate();
+				modul_panel.removeAll();
+				modul_panel.revalidate();
 				newmodulecard();
 				showCard("welcome page");
 			}
 		});
 		pnl_bottom.add(btnHome);
 
-		JScrollPane scrollPane = new JScrollPane(panel,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane = new JScrollPane(modul_panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		modul_panel.setLayout(new BoxLayout(modul_panel, BoxLayout.Y_AXIS));
 
 		// Panel Modulhandbuch + Platzhalter
 		JPanel pnl_MH = new JPanel();
@@ -1197,40 +1098,27 @@ public class mainscreen {
 
 					JTextField neu_Name = new JTextField();
 					JTextField neu_Jahrgang = new JTextField();
-					DefaultComboBoxModel cbm = new DefaultComboBoxModel(
-							database.getStudiengaenge().toArray());
+					DefaultComboBoxModel cbm = new DefaultComboBoxModel(database.getStudiengaenge().toArray());
 					JComboBox neu_sgbox = new JComboBox(cbm);
-					Object[] message = { "Name des Modulhandbuches:", neu_Name,
-							"Studiengang:", neu_sgbox, "Jahrgang:",
+					Object[] message = { "Name des Modulhandbuches:", neu_Name, "Studiengang:", neu_sgbox, "Jahrgang:",
 							neu_Jahrgang };
 
-					int option = JOptionPane.showConfirmDialog(frame, message,
-							"Neues Modulhandbuch anlegen",
+					int option = JOptionPane.showConfirmDialog(frame, message, "Neues Modulhandbuch anlegen",
 							JOptionPane.OK_CANCEL_OPTION);
 					if (option == JOptionPane.OK_OPTION) {
 
-						while ((neu_Name.getText().isEmpty()
-								|| (neu_sgbox.getSelectedItem() == null) || neu_Jahrgang
-								.getText().isEmpty())
-								&& (option == JOptionPane.OK_OPTION)) {
-							Object[] messageEmpty = {
-									"Bitte alle Felder ausf\u00fcllen!",
-									"Name des Modulhandbuches:", neu_Name,
-									"Studiengang:", neu_sgbox, "Jahrgang:",
-									neu_Jahrgang };
-							option = JOptionPane.showConfirmDialog(frame,
-									messageEmpty,
-									"Neues Modulhandbuch anlegen",
+						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Jahrgang
+								.getText().isEmpty()) && (option == JOptionPane.OK_OPTION)) {
+							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Modulhandbuches:",
+									neu_Name, "Studiengang:", neu_sgbox, "Jahrgang:", neu_Jahrgang };
+							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neues Modulhandbuch anlegen",
 									JOptionPane.OK_CANCEL_OPTION);
 						}
 						if (option == JOptionPane.OK_OPTION) {
-							Studiengang s = (Studiengang) neu_sgbox
-									.getSelectedItem();
+							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
 							int id = s.getId();
-							Modulhandbuch neu_mh = new Modulhandbuch(
-									neu_Jahrgang.getText(), id);
-							ArrayList<Modulhandbuch> MHs = database
-									.getModulhandbuecher();
+							Modulhandbuch neu_mh = new Modulhandbuch(neu_Jahrgang.getText(), id);
+							ArrayList<Modulhandbuch> MHs = database.getModulhandbuecher();
 							boolean neu = true;
 							for (int i = 0; i < MHs.size(); i++) {
 								Modulhandbuch alt = MHs.get(i);
@@ -1246,9 +1134,8 @@ public class mainscreen {
 								for (int i = 0; i < MHs.size(); i++)
 									cbmodel_MH.addElement(MHs.get(i));
 							} else {
-								JOptionPane.showMessageDialog(frame,
-										"Modulhandbuch ist schon vorhanden",
-										"Fehler", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Modulhandbuch ist schon vorhanden", "Fehler",
+										JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
@@ -1262,8 +1149,8 @@ public class mainscreen {
 		pnl_MH.add(nMH_btn);
 
 		pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
-		panel.add(pnl_MH);
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(pnl_MH);
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Studiengang + Platzhalter
 		JPanel pnl_Sg = new JPanel();
@@ -1274,16 +1161,14 @@ public class mainscreen {
 		final DefaultListModel<String> lm = new DefaultListModel<String>();
 		JList<String> st = new JList<String>(lm);
 
-//		ArrayList<Studiengang> sgs = m.getStudiengang();
-//		for (int i = 0; i < sgs.size(); i++)
-//			lm.addElement(sgs.get(i).getName());
+		// ArrayList<Studiengang> sgs = m.getStudiengang();
+		// for (int i = 0; i < sgs.size(); i++)
+		// lm.addElement(sgs.get(i).getName());
 		st.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false,
-						false);
+				super.getListCellRendererComponent(list, value, index, false, false);
 
 				return this;
 			}
@@ -1314,17 +1199,13 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					String name = JOptionPane.showInputDialog(frame,
-							"Name des neuen Studiengangs:",
+					String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:",
 							"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
 
 					while (name.isEmpty()) {
-						name = JOptionPane
-								.showInputDialog(
-										frame,
-										"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
-										"neuer Studiengang",
-										JOptionPane.PLAIN_MESSAGE);
+						name = JOptionPane.showInputDialog(frame,
+								"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:", "neuer Studiengang",
+								JOptionPane.PLAIN_MESSAGE);
 					}
 
 					ArrayList<Studiengang> sgs = database.getStudiengaenge();
@@ -1344,8 +1225,7 @@ public class mainscreen {
 
 						// cbmodel.addElement(name);
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Studiengang ist schon vorhanden", "Fehler",
+						JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (NullPointerException np) {
@@ -1357,48 +1237,44 @@ public class mainscreen {
 		pnl_Sg.add(nsg);
 
 		pnl_Sg.setLayout(new BoxLayout(pnl_Sg, BoxLayout.X_AXIS));
-		panel.add(pnl_Sg);
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(pnl_Sg);
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Jahrgang + Platzhalter
-		panel.add(defaultmodulPanel("Jahrgang",
-				Integer.toString(m.getJahrgang())));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Jahrgang", Integer.toString(m.getJahrgang()), false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Panel Name + Platzhalter
-		panel.add(defaultmodulPanel("Name", m.getName()));
-		panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		modul_panel.add(defaultmodulPanel("Name", m.getName(), false));
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		ArrayList<Feld> f = m.getFelder();
+		m.getFelder();
 
-//		for (int i = 0; i < l.size(); i++) {
-//			panel.add(defaultmodulPanel(l.get(i), v.get(i)));
-//			panel.add(Box.createRigidArea(new Dimension(0, 5)));
-//		}
+		// for (int i = 0; i < l.size(); i++) {
+		// panel.add(defaultmodulPanel(l.get(i), v.get(i)));
+		// panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		// }
 		JButton btnOk = new JButton("Annehmen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String Name = ((JTextArea) ((JPanel) panel.getComponent(4))
-						.getComponent(1)).getText();
-				String jg = ((JTextArea) ((JPanel) panel.getComponent(2))
-						.getComponent(1)).getText();
-				int Jahrgang = Integer.parseInt(jg);
+				String Name = ((JTextArea) ((JPanel) modul_panel.getComponent(4)).getComponent(1)).getText();
+				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2)).getComponent(1)).getText();
+				Integer.parseInt(jg);
 
 				ArrayList<String> labels = new ArrayList<String>();
 				ArrayList<String> values = new ArrayList<String>();
 				ArrayList<Boolean> dez = new ArrayList<Boolean>();
-				ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
+				new ArrayList<Zuordnung>();
 
 				// Eintraege der Reihe nach auslesen
-				for (int i = 6; i < panel.getComponentCount(); i = i + 2) {
-					JPanel tmp = (JPanel) panel.getComponent(i);
+				for (int i = 6; i < modul_panel.getComponentCount(); i = i + 2) {
+					JPanel tmp = (JPanel) modul_panel.getComponent(i);
 					JLabel tmplbl = (JLabel) tmp.getComponent(0);
 					JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
 					boolean dezernat2 = false;
 					if (tmp.getComponentCount() > 3) {
-						dezernat2 = ((JCheckBox) tmp.getComponent(2))
-								.isSelected();
+						dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
 					}
 					String value = tmptxt.getText();
 					String label = tmplbl.getText();
@@ -1406,21 +1282,19 @@ public class mainscreen {
 					values.add(value);
 					dez.add(dezernat2);
 				}
-				int version = database.getModulVersion(Name) + 1;
-
-				ArrayList<Studiengang> Studiengang = new ArrayList<Studiengang>();
+				new ArrayList<Studiengang>();
 
 				for (int i = 0; i < lm.getSize(); i++) {
 					// zlist.add(lm.getElementAt(i));
 				}
 
-				Date d = new Date();
+				new Date();
 
-//				Modul neu = new Modul(Name, zlist, Jahrgang, labels, values,
-//						version, dez, d, false, false, current.geteMail());
-//				database.setModul(neu);
-				panel.removeAll();
-				panel.revalidate();
+				// Modul neu = new Modul(Name, zlist, Jahrgang, labels, values,
+				// version, dez, d, false, false, current.geteMail());
+				// database.setModul(neu);
+				modul_panel.removeAll();
+				modul_panel.revalidate();
 				newmodulecard();
 				showCard("newmodule");
 			}
@@ -1445,8 +1319,7 @@ public class mainscreen {
 		studiengangshow.add(studscp);
 		studiengangshow.add(goforit, BorderLayout.SOUTH);
 
-		studmodel = new DefaultTableModel(new Object[][] {},
-				new String[] { "Studiengang" }) {
+		studmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Studiengang" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
 
@@ -1470,7 +1343,6 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int openrow = studtable.getSelectedRow();
 				String zwsstring = (String) studtable.getValueAt(openrow, 0);
-				uebergabeString = zwsstring;
 				modtypshowCard();
 				showCard("modtyp show");
 			}
@@ -1490,8 +1362,7 @@ public class mainscreen {
 		modtypshow.add(modtypscp);
 		modtypshow.add(goforit, BorderLayout.SOUTH);
 
-		modtypmodel = new DefaultTableModel(new Object[][] {},
-				new String[] { "Modul Typ" }) {
+		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
 
@@ -1522,7 +1393,6 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int openrow = modtyptable.getSelectedRow();
 				String zwsstring = (String) modtyptable.getValueAt(openrow, 0);
-				uebergabeString = zwsstring;
 				modshowCard();
 				showCard("mod show");
 			}
@@ -1537,8 +1407,8 @@ public class mainscreen {
 	}
 
 	public static void noConnection() {
-		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!",
-				"Connection error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void addToTable(String modtyp) {

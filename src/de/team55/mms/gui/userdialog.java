@@ -35,9 +35,6 @@ import de.team55.mms.data.Zuordnung;
 
 public class userdialog extends JDialog {
 	private JFrame owner;
-	
-	//committeeeeeeeeeeeeeeeeeeeeee
-	//tu es tu es tu es!!!
 
 	public static final int OK_OPTION = 1;
 	public static final int CANCEL_OPTION = 0;

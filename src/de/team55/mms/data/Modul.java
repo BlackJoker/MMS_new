@@ -290,7 +290,15 @@ public class Modul {
 
 	@Override
 	public String toString() {
-		return name;
+		return "Modul [name=" + name + ", jahrgang=" + jahrgang + ", version="
+				+ version + ", datum=" + datum + ", akzeptiert=" + akzeptiert
+				+ ", inbearbeitung=" + inbearbeitung + ", user=" + user
+				+ ", zuordnungen=" + zuordnungen + ", felder=" + felder + "]";
 	}
+
+//	@Override
+//	public String toString() {
+//		return name;
+//	}
 
 }

@@ -41,6 +41,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.bind.JAXBException;
 
 import de.team55.mms.data.*;
 import de.team55.mms.function.ServerConnection;
@@ -104,7 +105,7 @@ public class mainscreen {
 		centerscr();
 		topscr();
 		leftscr();
-
+		
 		frame.setVisible(true);
 	}
 
@@ -330,7 +331,7 @@ public class mainscreen {
 		btnMHB.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0){
 				current = database.login(current.geteMail(),
 						current.getPassword());
 				if (current != null) {
@@ -781,10 +782,7 @@ public class mainscreen {
 				String Name = ((JTextArea) ((JPanel) panel.getComponent(4))
 						.getComponent(1)).getText();
 
-				ArrayList<String> labels = new ArrayList<String>();
-				ArrayList<String> values = new ArrayList<String>();
-				ArrayList<Boolean> dez = new ArrayList<Boolean>();
-
+				ArrayList<Feld> felder = new ArrayList<Feld>();
 				// Eintraege der Reihe nach auslesen
 				for (int i = 6; i < panel.getComponentCount(); i = i + 2) {
 					JPanel tmp = (JPanel) panel.getComponent(i);
@@ -797,16 +795,14 @@ public class mainscreen {
 					}
 					String value = tmptxt.getText();
 					String label = tmplbl.getText();
-					labels.add(label);
-					values.add(value);
-					dez.add(dezernat2);
+					felder.add(new Feld(label,value,dezernat2));
 				}
 				int version = database.getModulVersion(Name) + 1;
 
 				Date d = new Date();
 
-				Modul neu = new Modul(Name, zlist, jahrgang, labels, values,
-						version, dez, d, false, false, current.geteMail());
+				Modul neu = new Modul(Name, zlist, jahrgang, felder,
+						version, d, false, false, current.geteMail());
 				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();
@@ -1282,9 +1278,9 @@ public class mainscreen {
 		final DefaultListModel<String> lm = new DefaultListModel<String>();
 		JList<String> st = new JList<String>(lm);
 
-		ArrayList<Studiengang> sgs = m.getStudiengang();
-		for (int i = 0; i < sgs.size(); i++)
-			lm.addElement(sgs.get(i).getName());
+//		ArrayList<Studiengang> sgs = m.getStudiengang();
+//		for (int i = 0; i < sgs.size(); i++)
+//			lm.addElement(sgs.get(i).getName());
 		st.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
 			public Component getListCellRendererComponent(JList list,
@@ -1377,14 +1373,12 @@ public class mainscreen {
 		panel.add(defaultmodulPanel("Name", m.getName()));
 		panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		ArrayList<String> l = m.getLabels();
-		ArrayList<String> v = m.getValues();
-		ArrayList<Boolean> d = m.getDezernat();
+		ArrayList<Feld> f = m.getFelder();
 
-		for (int i = 0; i < l.size(); i++) {
-			panel.add(defaultmodulPanel(l.get(i), v.get(i)));
-			panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		}
+//		for (int i = 0; i < l.size(); i++) {
+//			panel.add(defaultmodulPanel(l.get(i), v.get(i)));
+//			panel.add(Box.createRigidArea(new Dimension(0, 5)));
+//		}
 		JButton btnOk = new JButton("Annehmen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
@@ -1426,9 +1420,9 @@ public class mainscreen {
 
 				Date d = new Date();
 
-				Modul neu = new Modul(Name, zlist, Jahrgang, labels, values,
-						version, dez, d, false, false, current.geteMail());
-				database.setModul(neu);
+//				Modul neu = new Modul(Name, zlist, Jahrgang, labels, values,
+//						version, dez, d, false, false, current.geteMail());
+//				database.setModul(neu);
 				panel.removeAll();
 				panel.revalidate();
 				newmodulecard();

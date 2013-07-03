@@ -129,6 +129,7 @@ public class MessageResource {
 		return new sql().getModul(name);
 	}
 	
+	
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getList/{accepted}")
@@ -137,13 +138,6 @@ public class MessageResource {
 		if(a.equals("true"))
 			b = true;
 		return new sql().getModule(b);
-	}
-	
-	@GET
-	@Produces(MediaType.APPLICATION_XHTML_XML)
-	@Path("/modul/get/{name}/HTML")
-	public Modul getModulHTML(@PathParam("name") String a) {
-		return new sql().getModul(a);
 	}
 
 	@POST

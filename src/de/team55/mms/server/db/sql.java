@@ -227,14 +227,13 @@ public class sql {
 		boolean inbearbeitung = false;
 		ArrayList<Feld> felder = new ArrayList<Feld>();
 		ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
-		String user="";
+		String user = "";
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
 				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE name = '"
 						+ name + "';";
-				res = state
-						.executeQuery(sql);
+				res = state.executeQuery(sql);
 				if (res.first()) {
 					version = res.getInt("version");
 				}
@@ -242,8 +241,7 @@ public class sql {
 				if (version != 0) {
 					sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
 							+ name + "'AND version =" + version + ";";
-					res = state
-							.executeQuery(sql);
+					res = state.executeQuery(sql);
 					if (res.first()) {
 						jahrgang = res.getInt("jahrgang");
 						datum = res.getDate("Datum");
@@ -265,34 +263,29 @@ public class sql {
 						String abschluss = res.getString("abschluss");
 						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
+					res = state
+							.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '"
+									+ name + "' AND version = " + version + ";");
+
+					while (res.next()) {
+						felder.add(new Feld(res.getString("label"), res
+								.getString("text"), res.getBoolean("dezernat2")));
+					}
 				}
 				res.close();
 				state.close();
 			} catch (SQLException e) {
 
-			}
-			try {
-				state = this.con.createStatement();
-				res = state
-						.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '"
-								+ name + "' AND version = " + version + ";");
-
-				while (res.next()) {
-					felder.add(new Feld(res.getString("label"),res.getString("text"),res.getBoolean("dezernat2")));
-				}
-
-				res.close();
-				state.close();
-			} catch (SQLException e) {
-				// TODO fehler fenster aufrufen
-				e.printStackTrace();
 			}
 			disconnect();
-			
+
 		}
-		
-		return new Modul(name, zs, jahrgang, felder, version, datum,
-				 akzeptiert, inbearbeitung,user);
+
+		if (version != 0) {
+			return new Modul(name, zs, jahrgang, felder, version, datum,
+					akzeptiert, inbearbeitung, user);
+		} else
+			return new Modul();
 
 	}
 
@@ -415,21 +408,24 @@ public class sql {
 		PreparedStatement state = null;
 		if (connect() == true) {
 			ArrayList<Zuordnung> typen = neu.getZuordnungen();
-			ArrayList<Modulhandbuch> mb = neu.getModulhandbuch();
+			// ArrayList<Modulhandbuch> mb = neu.getModulhandbuch();
 			String name = neu.getName();
 			int version = neu.getVersion();
-			ArrayList<String> labels = neu.getLabels();
-			ArrayList<String> values = neu.getValues();
-			ArrayList<Boolean> dezernat = neu.getDezernat();
+			ArrayList<Feld> felder = neu.getFelder();
+			String user = neu.getUser();
+			// ArrayList<String> labels = neu.getLabels();
+			// ArrayList<String> values = neu.getValues();
+			// ArrayList<Boolean> dezernat = neu.getDezernat();
 			try {
 				for (int i = 0; i < typen.size(); i++) {
 					state = con
-							.prepareStatement("INSERT INTO module (name, jahrgang, version, datum, typid) VALUES(?,?,?,?,?)");
+							.prepareStatement("INSERT INTO module (name, jahrgang, version, datum, typid, user) VALUES(?,?,?,?,?,?)");
 					state.setString(1, name);
 					state.setInt(2, neu.getJahrgang());
 					state.setInt(3, version);
 					state.setDate(4, convertToSQLDate(neu.getDatum()));
 					state.setInt(5, typen.get(i).getId());
+					state.setString(6, user);
 					state.executeUpdate();
 				}
 				/*
@@ -441,12 +437,13 @@ public class sql {
 				 */
 				state = con
 						.prepareStatement("INSERT INTO text (name,version, label, text, dezernat2) VALUES(?,?,?,?,?)");
-				for (int i = 0; i < labels.size(); i++) {
+				for (int i = 0; i < felder.size(); i++) {
+					Feld f = felder.get(i);
 					state.setString(1, name);
 					state.setInt(2, version);
-					state.setString(3, labels.get(i));
-					state.setString(4, values.get(i));
-					state.setBoolean(5, dezernat.get(i));
+					state.setString(3, f.getLabel());
+					state.setString(4, f.getValue());
+					state.setBoolean(5, f.isDezernat());
 					state.executeUpdate();
 				}
 				state.close();
@@ -768,7 +765,7 @@ public class sql {
 		ResultSet res = null;
 		Statement state = null;
 		Statement state2 = null;
-		boolean ack=false;
+		boolean ack = false;
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
@@ -789,11 +786,10 @@ public class sql {
 					ArrayList<Studiengang> sgs = new ArrayList<Studiengang>();
 					String sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
 							+ name + "'AND version =" + version + ";";
-					res2 = state
-							.executeQuery(sql);
+					res2 = state.executeQuery(sql);
 					int jahrgang = 0;
 					ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
-					String user="";
+					String user = "";
 					Date datum = null;
 					boolean inedit = false;
 					if (res2.first()) {
@@ -806,7 +802,7 @@ public class sql {
 						String tname = res2.getString("tname");
 						String sname = res2.getString("sname");
 						int sid = res2.getInt("sid");
-						String abschluss = res2.getString("abschluss");						
+						String abschluss = res2.getString("abschluss");
 						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
 					if (b == ack) {
@@ -815,8 +811,9 @@ public class sql {
 							String tname = res2.getString("tname");
 							String sname = res2.getString("sname");
 							int sid = res2.getInt("sid");
-							String abschluss = res2.getString("abschluss");		
-							zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
+							String abschluss = res2.getString("abschluss");
+							zs.add(new Zuordnung(tid, tname, sname, sid,
+									abschluss));
 						}
 
 						ArrayList<Feld> felder = new ArrayList<Feld>();
@@ -829,12 +826,14 @@ public class sql {
 										+ ";");
 
 						while (res2.next()) {
-							felder.add(new Feld(res.getString("label"),res.getString("text"),res.getBoolean("dezernat2")));
+							felder.add(new Feld(res.getString("label"), res
+									.getString("text"), res
+									.getBoolean("dezernat2")));
 						}
 						res2.close();
 
-						module.add(new Modul(name, zs, jahrgang, felder, version, datum,
-								 ack, inedit,user));
+						module.add(new Modul(name, zs, jahrgang, felder,
+								version, datum, ack, inedit, user));
 					}
 
 				}
@@ -1032,14 +1031,15 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT * FROM user_relation as ur JOIN user AS u ON ur.stellver_email=u.email JOIN rights AS r ON u.id=r.id WHERE main_email='"+mail+"';");
+						.executeQuery("SELECT * FROM user_relation as ur JOIN user AS u ON ur.stellver_email=u.email JOIN rights AS r ON u.id=r.id WHERE main_email='"
+								+ mail + "';");
 				while (res.next()) {
-					stellv.add(new User(res.getString("vorname"),
-							res.getString("namen"), res.getString("titel"),
-							res.getString("email"), res.getString("password"),
-							res.getBoolean("userchange"),
-							res.getBoolean("modcreate"),
-							res.getBoolean("modacc"), res.getBoolean("manage")));
+					stellv.add(new User(res.getString("vorname"), res
+							.getString("namen"), res.getString("titel"), res
+							.getString("email"), res.getString("password"), res
+							.getBoolean("userchange"), res
+							.getBoolean("modcreate"), res.getBoolean("modacc"),
+							res.getBoolean("manage")));
 				}
 				res.close();
 				state.close();

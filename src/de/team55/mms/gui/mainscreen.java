@@ -1354,7 +1354,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int openrow = studtable.getSelectedRow();
 				String zwsstring = (String) studtable.getValueAt(openrow, 0);
-				modhandshowCard();
+				modbuchshowCard();
 				showCard("modbuch show");
 			}
 		});
@@ -1362,7 +1362,7 @@ public class mainscreen {
 	}
 
 	@SuppressWarnings("serial")
-	private void modhandshowCard(){
+	private void modbuchshowCard(){
 		JPanel modbuchshow = new JPanel();
 		cards.add(modbuchshow, "modbuch show");
 		modbuchshow.setLayout(new BorderLayout(0, 0));

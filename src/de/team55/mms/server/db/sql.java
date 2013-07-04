@@ -826,8 +826,8 @@ public class sql {
 										+ ";");
 
 						while (res2.next()) {
-							felder.add(new Feld(res.getString("label"), res
-									.getString("text"), res
+							felder.add(new Feld(res2.getString("label"), res2
+									.getString("text"), res2
 									.getBoolean("dezernat2")));
 						}
 						res2.close();

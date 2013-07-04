@@ -139,7 +139,7 @@ public class mainscreen {
 	}
 	
 	private void addToTable(String modtyp) {
-		modbuchmodel.addRow(new Object[] { modtyp });
+		modtypmodel.addRow(new Object[] { modtyp });
 	}
 	
 	
@@ -1316,6 +1316,7 @@ public class mainscreen {
 
 	}
 
+	@SuppressWarnings("serial")
 	private void studiengangCard() {
 
 		JPanel studiengangshow = new JPanel();
@@ -1353,18 +1354,64 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int openrow = studtable.getSelectedRow();
 				String zwsstring = (String) studtable.getValueAt(openrow, 0);
-				modtypshowCard();
-				showCard("modtyp show");
+				modhandshowCard();
+				showCard("modbuch show");
 			}
 		});
 
 	}
 
+	@SuppressWarnings("serial")
 	private void modhandshowCard(){
+		JPanel modbuchshow = new JPanel();
+		cards.add(modbuchshow, "modbuch show");
+		modbuchshow.setLayout(new BorderLayout(0, 0));
+		JButton goforit = new JButton("oeffnen");
+		final JTable modbuchtable = new JTable();
+		JScrollPane modtypscp = new JScrollPane(modbuchtable);
+		modbuchtable.setBorder(new LineBorder(new Color(0, 0, 0)));
+		modbuchtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		modbuchshow.add(modtypscp);
+		modbuchshow.add(goforit, BorderLayout.SOUTH);
 		
+		modbuchmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modulhandbuch Jahrgang" }) {
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] { String.class };
+
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			@Override
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
+
+		modbuchtable.setModel(modtypmodel);
+		modbuchmodel.setRowCount(0);
+		for (int i = 0; i < typen.size(); i++) {
+			
+			addToTable(typen.get(i).getName());
+
+		}
+		goforit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int openrow = modbuchtable.getSelectedRow();
+				String zwsstring = (String) modbuchtable.getValueAt(openrow, 0);
+				modtypshowCard();
+				showCard("modtyp show");
+			}
+		});
 	}
 	
 	
+	@SuppressWarnings("serial")
 	private void modtypshowCard() {
 		JPanel modtypshow = new JPanel();
 		cards.add(modtypshow, "modtyp show");

@@ -1,5 +1,8 @@
 package de.team55.mms.server.db;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
@@ -27,25 +31,18 @@ public class sql {
 	private int FAILED = 0;
 	private int SUCCES = 1;
 
-	// Hostname
-	private static String dbHost = "db4free.net";
-
-	// Port -- Standard: 3306
-	private String dbPort = "3306";
-
-	// Datenbankname
-	private String database = "mms4sopra2";
-
-	// Datenbankuser
-	private String dbUser = "team5526";
-
-	// Datenbankpasswort
-	private String dbPassword = "qwert710";
-
 	public boolean connect() {
 		// TODO alle Tabellen am ende sobald da Prog fertig ist anpassen!!!!!
 		connected = false;
+		Properties prop = new Properties();
 		try {
+			prop.load(new FileInputStream("config.properties"));
+			String dbHost = prop.getProperty("dbHost");
+			String dbPort = prop.getProperty("dbPort");
+			String database = prop.getProperty("database");
+			String dbUser = prop.getProperty("dbuser");
+			String dbPassword = prop.getProperty("dbpassword");
+			
 			// connect to the server
 			Class.forName(url);
 			this.con = DriverManager.getConnection("jdbc:mysql://" + dbHost
@@ -128,6 +125,14 @@ public class sql {
 
 		} catch (ClassNotFoundException e) {
 			// TODO fehler fenster aufrufen
+			e.printStackTrace();
+			connected = false;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			connected = false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			connected = false;
 		}

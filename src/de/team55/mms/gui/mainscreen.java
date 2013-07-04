@@ -51,18 +51,21 @@ public class mainscreen {
 	public ServerConnection database = new ServerConnection();
 
 	// Variablen
-	private User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false,
-			false, false, false); // Gast 
-	
-	//Listen
+	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
+			false, false, false, false); // Gast
+
+	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
-	private ArrayList<Studiengang> studienlist = null; // Liste mit Studiengängen
+	private ArrayList<Studiengang> studienlist = null; // Liste mit
+														// Studiengängen
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
-	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map der Dynamischen Buttons
+	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
+																					// der
+																					// Dynamischen
+																					// Buttons
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
 
-	
-	//Modelle
+	// Modelle
 	private DefaultTableModel tmodel;
 	private DefaultTableModel studmodel;
 	private DefaultTableModel modbuchmodel;
@@ -73,17 +76,17 @@ public class mainscreen {
 	private DefaultListModel<Modul> lm_ack = new DefaultListModel<Modul>();
 
 	// Komponenten
-	private JPanel cards = new JPanel();
+	private static JPanel cards = new JPanel();
 	private JPanel mod = new JPanel();
 	private static JPanel modul_panel = new JPanel();
-	private JButton btnModulEinreichen = new JButton("Modul Einreichen");
-	private JButton btnModulVerwaltung = new JButton("Verwaltung");
-	private JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
-	private JButton btnMHB = new JButton("<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
-	private JButton btnUserVerwaltung = new JButton("User Verwaltung");
-	private JButton btnLogin = new JButton("Einloggen");
+	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
+	private static JButton btnModulVerwaltung = new JButton("Verwaltung");
+	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
+	private static JButton btnMHB = new JButton("<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
+	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
+	private static JButton btnLogin = new JButton("Einloggen");
 
-	//main Frame
+	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 480);
@@ -94,8 +97,8 @@ public class mainscreen {
 
 		frame.setVisible(true);
 	}
-	
-	//center Frame
+
+	// center Frame
 	private void centerscr() {
 
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
@@ -110,7 +113,7 @@ public class mainscreen {
 
 	}
 
-	//top frame part
+	// top frame part
 	private void topscr() {
 		JPanel top = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) top.getLayout();
@@ -124,7 +127,7 @@ public class mainscreen {
 		top.add(lblMMS);
 	}
 
-	//funktionen zum hinzufuegen von Element in die jeweiligen Tabellen
+	// funktionen zum hinzufuegen von Element in die jeweiligen Tabellen
 	private void addToTable(User usr) {
 		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(),
 				usr.getManageUsers(), usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
@@ -137,18 +140,15 @@ public class mainscreen {
 	private void addToTable(Modulhandbuch modbuch) {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
-	
+
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
 	}
-	
-	
-	
-	
+
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
 		final Dimension preferredSize = new Dimension(120, 20);
-		
-		if(!defaultlabels.contains(name)){
+
+		if (!defaultlabels.contains(name)) {
 			defaultlabels.add(name);
 		}
 		JPanel pnl = new JPanel();
@@ -263,8 +263,6 @@ public class mainscreen {
 						showCard("welcome page");
 					}
 				} else {
-					current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false,
-							false, false, false);
 					noConnection();
 				}
 			}
@@ -290,7 +288,7 @@ public class mainscreen {
 				} else {
 					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, database);
 					int response = dlg.showCustomDialog();
-					// Wenn ok ged\u00fcckt wird
+					// Wenn ok gedrückt wird
 					// neuen User abfragen
 					if (response == 1) {
 						User tmp = dlg.getUser();
@@ -334,8 +332,6 @@ public class mainscreen {
 
 					showCard("studiengang show");
 				} else {
-					current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false,
-							false, false, false);
 					noConnection();
 				}
 			}
@@ -346,8 +342,8 @@ public class mainscreen {
 	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 	private void newmodulecard() {
 		final JPanel pnl_newmod = new JPanel();
-		if(!buttonmap.isEmpty()){
-			for(int i=0;i<buttonmap.size();i++)
+		if (!buttonmap.isEmpty()) {
+			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
 		}
 		final ArrayList<String> labels = new ArrayList<String>();
@@ -365,7 +361,7 @@ public class mainscreen {
 				String text = "Name des Feldes";
 				String name = JOptionPane.showInputDialog(frame, text);
 				try {
-					while (name.isEmpty()||labels.contains(name)) {
+					while (name.isEmpty() || labels.contains(name)) {
 						Object[] params = { "Bitte geben Sie eine gültige Bezeichnung ein!", text };
 						name = JOptionPane.showInputDialog(frame, params);
 					}
@@ -394,10 +390,10 @@ public class mainscreen {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							int id = buttonmap.get(e.getSource());
-							//Bezeichnung aus Liste entfernen
+							// Bezeichnung aus Liste entfernen
 							String name = ((JLabel) ((JPanel) modul_panel.getComponent(id)).getComponent(0)).getText();
 							labels.remove(name);
-							
+
 							// Feld mit ID id von Panel entfernen
 							modul_panel.remove(id);
 							// Platzhalter entfernen
@@ -458,7 +454,7 @@ public class mainscreen {
 		JPanel pnl_MH = new JPanel();
 		pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
 		JLabel label_MH = new JLabel("Zuordnung");
-		
+
 		label_MH.setPreferredSize(preferredSize);
 		pnl_MH.add(label_MH);
 
@@ -590,10 +586,10 @@ public class mainscreen {
 		});
 		pnl_MH.add(nMH_btn);
 
-//		pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
+		// pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
 		modul_panel.add(pnl_MH);
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		
+
 		// Panel Jahrgang + Platzhalter
 		modul_panel.add(defaultmodulPanel("Jahrgang", "", false));
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -614,7 +610,7 @@ public class mainscreen {
 		// Panel LP + Platzhalter
 		modul_panel.add(defaultmodulPanel("Leistungspunkte", "", false));
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		
+
 		// Panel Dauer + Platzhalter
 		modul_panel.add(defaultmodulPanel("Dauer", "", false));
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -741,7 +737,7 @@ public class mainscreen {
 		tmodel.removeRow(rowid);
 	}
 
-	private void showCard(String card) {
+	private static void showCard(String card) {
 		((CardLayout) cards.getLayout()).show(cards, card);
 	}
 
@@ -1354,7 +1350,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int openrow = studtable.getSelectedRow();
 				String zwsstring = (String) studtable.getValueAt(openrow, 0);
-				modbuchshowCard();
+				modhandshowCard();
 				showCard("modbuch show");
 			}
 		});
@@ -1362,7 +1358,7 @@ public class mainscreen {
 	}
 
 	@SuppressWarnings("serial")
-	private void modbuchshowCard(){
+	private void modhandshowCard() {
 		JPanel modbuchshow = new JPanel();
 		cards.add(modbuchshow, "modbuch show");
 		modbuchshow.setLayout(new BorderLayout(0, 0));
@@ -1373,7 +1369,7 @@ public class mainscreen {
 		modbuchtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modbuchshow.add(modtypscp);
 		modbuchshow.add(goforit, BorderLayout.SOUTH);
-		
+
 		modbuchmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modulhandbuch Jahrgang" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1394,7 +1390,7 @@ public class mainscreen {
 		modbuchtable.setModel(modtypmodel);
 		modbuchmodel.setRowCount(0);
 		for (int i = 0; i < typen.size(); i++) {
-			
+
 			addToTable(typen.get(i).getName());
 
 		}
@@ -1409,8 +1405,7 @@ public class mainscreen {
 			}
 		});
 	}
-	
-	
+
 	@SuppressWarnings("serial")
 	private void modtypshowCard() {
 		JPanel modtypshow = new JPanel();
@@ -1471,7 +1466,15 @@ public class mainscreen {
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",
 				JOptionPane.ERROR_MESSAGE);
+		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false,
+				false, false);
+		btnModulEinreichen.setEnabled(false);
+		btnModulVerwaltung.setEnabled(false);
+		btnModulBearbeiten.setEnabled(false);
+		btnMHB.setEnabled(false);
+		btnUserVerwaltung.setEnabled(false);
+		btnLogin.setText("Einloggen");
+		showCard("welcome page");
 	}
-
 
 }

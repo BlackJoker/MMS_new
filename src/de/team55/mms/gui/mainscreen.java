@@ -83,6 +83,7 @@ public class mainscreen {
 	private JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private JButton btnLogin = new JButton("Einloggen");
 
+	//main Frame
 	public mainscreen() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 480);
@@ -93,7 +94,8 @@ public class mainscreen {
 
 		frame.setVisible(true);
 	}
-
+	
+	//center Frame
 	private void centerscr() {
 
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
@@ -105,10 +107,10 @@ public class mainscreen {
 		newmodulecard();
 		modulbearbeitenCard();
 		studiengangCard();
-		// modulhandbuchshowCard();
 
 	}
 
+	//top frame part
 	private void topscr() {
 		JPanel top = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) top.getLayout();
@@ -122,6 +124,7 @@ public class mainscreen {
 		top.add(lblMMS);
 	}
 
+	//funktionen zum hinzufuegen von Element in die jeweiligen Tabellen
 	private void addToTable(User usr) {
 		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(),
 				usr.getManageUsers(), usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
@@ -134,7 +137,14 @@ public class mainscreen {
 	private void addToTable(Modulhandbuch modbuch) {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
-
+	
+	private void addToTable(String modtyp) {
+		modbuchmodel.addRow(new Object[] { modtyp });
+	}
+	
+	
+	
+	
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
 		final Dimension preferredSize = new Dimension(120, 20);
 		
@@ -1350,6 +1360,11 @@ public class mainscreen {
 
 	}
 
+	private void modhandshowCard(){
+		
+	}
+	
+	
 	private void modtypshowCard() {
 		JPanel modtypshow = new JPanel();
 		cards.add(modtypshow, "modtyp show");
@@ -1411,8 +1426,5 @@ public class mainscreen {
 				JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void addToTable(String modtyp) {
-		modbuchmodel.addRow(new Object[] { modtyp });
-	}
 
 }

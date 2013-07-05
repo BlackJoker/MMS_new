@@ -31,12 +31,13 @@ public class ServerSettings extends JDialog {
 
 	/**
 	 * Create the dialog.
-	 * @param dbPass 
-	 * @param dbUser 
-	 * @param dbName 
-	 * @param dbPort 
-	 * @param dbHost 
-	 * @param serverPort 
+	 * 
+	 * @param dbPass
+	 * @param dbUser
+	 * @param dbName
+	 * @param dbPort
+	 * @param dbHost
+	 * @param serverPort
 	 */
 	public ServerSettings(String serverPort, String dbHost, String dbPort, String dbName, String dbUser, String dbPass) {
 		initGUI();
@@ -132,8 +133,26 @@ public class ServerSettings extends JDialog {
 					JOptionPane.showMessageDialog(null,"Bitte alle Felder ausfüllen!", "Eingabefehler",
 							JOptionPane.ERROR_MESSAGE);
 				} else{
-				response = 1;
-				setVisible(false);
+					boolean portsOK=true;
+					try{
+						int port = Integer.parseInt(txtServerPort.getText());
+						if((port<0)||(port>65535)){
+							portsOK=false;
+						}
+						port = Integer.parseInt(txtDbPort.getText());
+						if((port<0)||(port>65535)){
+							portsOK=false;
+						}
+					} catch (NumberFormatException nf){
+						portsOK=false;
+					}
+					if(portsOK){
+						response = 1;
+						setVisible(false);
+					} else{
+						JOptionPane.showMessageDialog(null,"Bitte geben Sie gültige Werte für die Ports ein!", "Eingabefehler",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});

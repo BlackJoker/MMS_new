@@ -84,6 +84,25 @@ public class ServerWindow extends JFrame {
 			dbName = prop.getProperty("database");
 			dbUser = prop.getProperty("dbuser");
 			dbPass = prop.getProperty("dbpassword");
+			
+			boolean portsOK=true;
+			try{
+				int port = Integer.parseInt(serverPort);
+				if((port<0)||(port>65535)){
+					portsOK=false;
+				}
+				port = Integer.parseInt(dbPort);
+				if((port<0)||(port>65535)){
+					portsOK=false;
+				}
+			} catch (NumberFormatException nf){
+				portsOK=false;
+			}
+			if(!portsOK){
+				JOptionPane.showMessageDialog(this, "Die Einstellungen sind ungültig, bitte überprüfen Sie diese", "Ladefehler",
+						JOptionPane.ERROR_MESSAGE);
+				btnServerStarten.setEnabled(false);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, "Keine Einstellungen gefunden, bitte neue Daten unter Einstellungen eingeben", "Ladefehler",
@@ -108,18 +127,20 @@ public class ServerWindow extends JFrame {
 		contentPane.add(pnl_south, BorderLayout.SOUTH);
 		btnServerStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				btnServerStarten.setEnabled(false);
-				btnServerBeenden.setEnabled(true);
-				btnEinstellungen.setEnabled(false);
 				server = new StartRestServer(serverPort);
 				try{
 					server.startServer();
+					lblOffline.setText("online");
+					lblOffline.setForeground(Color.GREEN);
+					btnServerStarten.setEnabled(false);
+					btnServerBeenden.setEnabled(true);
+					btnEinstellungen.setEnabled(false);
 				} catch (NullPointerException n){
-					JOptionPane.showMessageDialog(contentPane, "Der Server läuft bereits", "Fehler",
+					JOptionPane.showMessageDialog(contentPane, "Es läuft bereits eine Instanz des Servers.\nBitte beenden Sie diese oder wählen Sie einen anderen Port aus!", "Fehler",
 							JOptionPane.ERROR_MESSAGE);
+					server.stopServer();
 				}
-				lblOffline.setText("online");
-				lblOffline.setForeground(Color.GREEN);
+				
 
 			}
 		});
@@ -152,8 +173,7 @@ public class ServerWindow extends JFrame {
 					dbPass = dialog.getDbPasswort();
 					lblPort.setText(serverPort);
 					lblDbhost.setText(dbHost);
-					lblDbPort.setText(dbPort);
-					
+					lblDbPort.setText(dbPort);		
 					btnServerStarten.setEnabled(true);
 
 					try {

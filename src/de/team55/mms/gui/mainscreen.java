@@ -53,6 +53,9 @@ public class mainscreen {
 	// Variablen
 	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
 			false, false, false, false); // Gast
+	String studtransferstring = ""; //uebergabe String fuer Tabellen - studiengang
+	String modbuchtransferstring = ""; //uebergabe String fuer Tabellen - modulbuch
+	String modtyptransferstring = ""; //uebergabe String fuer Tabellen - modultyp
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
@@ -1348,13 +1351,13 @@ public class mainscreen {
 			}
 		};
 		studtable.setModel(studmodel);
-
+		studtransferstring = "";
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int openrow = studtable.getSelectedRow();
-				String zwsstring = (String) studtable.getValueAt(openrow, 0);
+				studtransferstring = (String) studtable.getValueAt(openrow, 0);
 				modhandshowCard();
 				showCard("modbuch show");
 			}
@@ -1394,18 +1397,19 @@ public class mainscreen {
 
 		modbuchtable.setModel(modbuchmodel);
 		modbuchmodel.setRowCount(0);
-		
-		for (int i = 0; i < typen.size(); i++) {
+		modulhandlist = database.getModulhandbuch(studtransferstring);
+		for (int i = 0; i < modulhandlist.size(); i++) {
 
-			addToTable(typen.get(i).getName());
+			addToTable(modulhandlist.get(i));
 
 		}
+		modbuchtransferstring = "";
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int openrow = modbuchtable.getSelectedRow();
-				String zwsstring = (String) modbuchtable.getValueAt(openrow, 0);
+				modbuchtransferstring = (String) modbuchtable.getValueAt(openrow, 0);
 				modtypshowCard();
 				showCard("modtyp show");
 			}
@@ -1448,12 +1452,13 @@ public class mainscreen {
 		for (int i = 0; i < modultyplist.size(); i++) {
 			addToTable(modultyplist.get(i));
 		}
+		modtyptransferstring = "";
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int openrow = modtyptable.getSelectedRow();
-				String zwsstring = (String) modtyptable.getValueAt(openrow, 0);
+				modtyptransferstring = (String) modtyptable.getValueAt(openrow, 0);
 				modshowCard();
 				showCard("mod show");
 			}
@@ -1463,7 +1468,9 @@ public class mainscreen {
 	private void modshowCard() {
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "mod show");
-
+		System.out.println(modtyptransferstring);
+		System.out.println(modbuchtransferstring);
+		System.out.println(studtransferstring);
 		// TODO rest der modelshowcard
 	}
 

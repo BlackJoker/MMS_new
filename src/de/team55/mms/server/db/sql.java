@@ -303,13 +303,12 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT m.jahrgang, m.sid FROM modulhandbuch AS m JOIN studiengang AS s on s.id = m.sid where studiengang.name = '"
-								+ studiengang + "';");
+						.executeQuery("SELECT m.jahrgang, m.sid FROM modulhandbuch AS m JOIN studiengang AS s on s.id = m.sid where s.name = '"
+								+ studiengang + "' and m.akzeptiert = 1;");
 
 				while (res.next()) {
 					String jg = res.getString("jahrgang");
 					int sid = res.getInt("sid");
-					boolean ack = res.getBoolean("akzeptiert");
 					modbuch.add(new Modulhandbuch(jg, sid));
 				}
 
@@ -1069,7 +1068,7 @@ public class sql {
 		if(connect() == true){
 			try {
 				state = this.con.createStatement();
-				res = state.executeQuery("SELECT * FROM Moduletyp");
+				res = state.executeQuery("SELECT name, id FROM moduletyp");
 				while(res.next()){
 					modtyplist.add(new Modultyp(res.getString("name"), res.getInt("id")));
 				}

@@ -21,6 +21,7 @@ import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
 import de.team55.mms.data.Zuordnung;
 import de.team55.mms.gui.mainscreen;
+import de.team55.mms.data.Modultyp;
 
 public class sql {
 
@@ -1059,6 +1060,27 @@ public class sql {
 			disconnect();
 		}
 		return stellv;
+	}
+
+	public ArrayList<Modultyp> getAllModultyps() {
+		ResultSet res = null;
+		Statement state = null;
+		ArrayList<Modultyp> modtyplist = new ArrayList<Modultyp>();
+		if(connect() == true){
+			try {
+				state = this.con.createStatement();
+				res = state.executeQuery("SELECT * FROM Moduletyp");
+				while(res.next()){
+					modtyplist.add(new Modultyp(res.getString("name"), res.getInt("id")));
+				}
+				res.close();
+				state.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return modtyplist;
 	}
 
 }

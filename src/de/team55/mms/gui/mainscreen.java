@@ -58,6 +58,8 @@ public class mainscreen {
 	private ArrayList<User> worklist = null; // Liste mit Usern
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
+	private ArrayList<Modultyp> modultyplist = null; // Liste mit Modultypen
+	private ArrayList<Modulhandbuch> modulhandlist = null; //Liste der Modulhandbuecher des ausgewaehlten Studiengangs
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
 																					// der
@@ -143,6 +145,9 @@ public class mainscreen {
 
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
+	}
+	private void addToTable(Modultyp modtyp) {
+		modtypmodel.addRow(new Object[] { modtyp.getName() });
 	}
 
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
@@ -1387,8 +1392,9 @@ public class mainscreen {
 			}
 		};
 
-		modbuchtable.setModel(modtypmodel);
+		modbuchtable.setModel(modbuchmodel);
 		modbuchmodel.setRowCount(0);
+		
 		for (int i = 0; i < typen.size(); i++) {
 
 			addToTable(typen.get(i).getName());
@@ -1418,7 +1424,7 @@ public class mainscreen {
 		modtyptable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modtypshow.add(modtypscp);
 		modtypshow.add(goforit, BorderLayout.SOUTH);
-
+		
 		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1438,11 +1444,9 @@ public class mainscreen {
 
 		modtyptable.setModel(modtypmodel);
 		modtypmodel.setRowCount(0);
-		System.out.println(typen.size());
-		for (int i = 0; i < typen.size(); i++) {
-			System.out.println(typen.get(i).getName());
-			addToTable(typen.get(i).getName());
-
+		modultyplist = database.getmodultyps();
+		for (int i = 0; i < modultyplist.size(); i++) {
+			addToTable(modultyplist.get(i));
 		}
 		goforit.addActionListener(new ActionListener() {
 

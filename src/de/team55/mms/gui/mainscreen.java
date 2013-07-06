@@ -56,12 +56,14 @@ public class mainscreen {
 	String studtransferstring = ""; //uebergabe String fuer Tabellen - studiengang
 	String modbuchtransferstring = ""; //uebergabe String fuer Tabellen - modulbuch
 	String modtyptransferstring = ""; //uebergabe String fuer Tabellen - modultyp
+	String modulselectionstring = ""; //ubergabe String des ausgewaehlten Moduls
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
 	private ArrayList<Modultyp> modultyplist = null; // Liste mit Modultypen
+	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im durchstoebern segment
 	private ArrayList<Modulhandbuch> modulhandlist = null; //Liste der Modulhandbuecher des ausgewaehlten Studiengangs
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
@@ -75,6 +77,7 @@ public class mainscreen {
 	private DefaultTableModel studmodel;
 	private DefaultTableModel modbuchmodel;
 	private DefaultTableModel modtypmodel;
+	private DefaultTableModel modshowmodel;
 	private DefaultComboBoxModel<Studiengang> cbmodel = new DefaultComboBoxModel<Studiengang>();
 	private DefaultComboBoxModel<Zuordnung> cbmodel_Z = new DefaultComboBoxModel<Zuordnung>();
 	private DefaultListModel<Modul> lm = new DefaultListModel<Modul>();
@@ -1465,13 +1468,60 @@ public class mainscreen {
 		});
 	}
 
+	@SuppressWarnings("serial")
 	private void modshowCard() {
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "mod show");
+		modshow.setLayout(new BorderLayout(0, 0));
+		JButton goforit = new JButton("oeffnen");
+		final JTable modshowtable = new JTable();
+		JScrollPane modtypscp = new JScrollPane(modshowtable);
+		modshowtable.setBorder(new LineBorder(new Color(0, 0, 0)));
+		modshowtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		modshow.add(modtypscp);
+		modshow.add(goforit, BorderLayout.SOUTH);
+		
+		
 		System.out.println(modtyptransferstring);
 		System.out.println(modbuchtransferstring);
 		System.out.println(studtransferstring);
-		// TODO rest der modelshowcard
+		
+		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] { String.class };
+
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			@Override
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
+		
+		modshowtable.setModel(modshowmodel);
+		modshowmodel.setRowCount(0);
+//		selectedmodullist = database.get();
+//		for (int i = 0; i < selectedmodullist.size(); i++) {
+//			addToTable(selectedmodullist.get(i));
+//		}
+		modtyptransferstring = "";
+		goforit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int openrow = modshowtable.getSelectedRow();
+				modtyptransferstring = (String) modshowtable.getValueAt(openrow, 0);
+				modshowCard();
+				showCard("mod show");
+			}
+		});
+		
+		
 	}
 
 	public static void noConnection() {

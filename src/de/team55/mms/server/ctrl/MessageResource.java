@@ -17,6 +17,7 @@ import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.StellvertreterList;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
+import de.team55.mms.data.UserRelation;
 import de.team55.mms.data.UserUpdateContainer;
 import de.team55.mms.data.Zuordnung;
 import de.team55.mms.server.db.sql;
@@ -54,6 +55,13 @@ public class MessageResource {
 			return Response.status(201).build();
 		else
 			return Response.status(500).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/user/getRelation/{user}")
+	public UserRelation userRelation(@PathParam("user") String eMail) {
+		return new UserRelation(new sql().getUserRelation(eMail));
 	}
 
 	/**

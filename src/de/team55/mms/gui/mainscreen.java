@@ -710,7 +710,6 @@ public class mainscreen {
 
 								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
 										.geteMail());
-								System.out.println(neu);
 								database.setModul(neu);
 								labels.removeAll(labels);
 								modul_panel.removeAll();
@@ -928,10 +927,22 @@ public class mainscreen {
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
+				boolean rights = false;
 				if(m.getUser().equals(current.geteMail())){
+					rights = true;
+				} else{
+					ArrayList<String> rel = database.getUserRelation(current.geteMail());
+					if(rel.contains(m.getUser())){
+						rights=true;
+					}
+				}
+				if(rights){
 					mod = modeditCard(m);
 					cards.add(mod, "modBearbeiten");
 					showCard("modBearbeiten");
+				} else{
+					JOptionPane.showMessageDialog(frame, "Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
 				}
 
 				

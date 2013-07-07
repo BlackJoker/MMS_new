@@ -1079,5 +1079,35 @@ public class sql {
 		}
 		return selmodul;
 	}
+	
+	public ArrayList<String> getUserRelation(String email){
+		ArrayList<String> rel = new ArrayList<String>();
+		ResultSet res = null;
+		PreparedStatement state = null;
+		
+		if(connect() == true){
+			try{
+				state = this.con.prepareStatement("SELECT * FROM user_relation WHERE main_email=? OR stellver_email=?;");
+				state.setString(1, email);
+				state.setString(2, email);
+				res = state.executeQuery();
+				while(res.next()){
+					String user="";
+					if(res.getString("main_email").equals(email)){
+						user = res.getString("stellver_email");
+					} else{
+						user = res.getString("main_email");
+					}
+					if(!rel.contains(user)){
+						rel.add(user);
+					}
+				}
+			}catch(SQLException e){
+				//TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+		}
+		return rel;
+	}
 
 }

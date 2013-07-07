@@ -265,6 +265,15 @@ public class ServerConnection {
 		}
 		return null;
 	}
+
+	public ArrayList<String> getUserRelation(String eMail) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("/user/getRelation/").path(eMail)
+					.accept(MediaType.APPLICATION_XML)
+					.get(UserRelation.class).getRelation();
+		} 
+		return null;
+	}
 	
 	
 	

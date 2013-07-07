@@ -926,31 +926,31 @@ public class sql {
 	// return rellist;
 	// }
 
-	public ArrayList<String> getallModultyp() {
-		ResultSet res = null;
-		Statement state = null;
-		ArrayList<String> retyp = new ArrayList<String>();
-		if (connect() == true) {
-			try {
-				state = this.con.createStatement();
-				res = state.executeQuery("select name from moduletyp;");
-
-				while (res.next()) {
-					String typ = res.getString("name");
-					retyp.add(typ);
-				}
-
-				res.close();
-				state.close();
-			} catch (SQLException e) {
-				// TODO fehler fenster aufrufen
-				e.printStackTrace();
-			}
-			disconnect();
-		}
-		return retyp;
-
-	}
+//	public ArrayList<String> getallModultyp() {
+//		ResultSet res = null;
+//		Statement state = null;
+//		ArrayList<String> retyp = new ArrayList<String>();
+//		if (connect() == true) {
+//			try {
+//				state = this.con.createStatement();
+//				res = state.executeQuery("select name from moduletyp;");
+//
+//				while (res.next()) {
+//					String typ = res.getString("name");
+//					retyp.add(typ);
+//				}
+//
+//				res.close();
+//				state.close();
+//			} catch (SQLException e) {
+//				// TODO fehler fenster aufrufen
+//				e.printStackTrace();
+//			}
+//			disconnect();
+//		}
+//		return retyp;
+//
+//	}
 
 	public ArrayList<Zuordnung> getZuordnungen() {
 		ResultSet res = null;
@@ -1060,6 +1060,24 @@ public class sql {
 		return stellv;
 	}
 
-	
+	public ArrayList<Modul> getselectedModul(String studiengang, String modultyp, String modulhandbuch){
+		ArrayList<Modul> selmodul = new ArrayList<Modul>();
+		ResultSet res = null;
+		Statement state = null;
+		
+		if(connect() == true){
+			try{
+				state = this.con.createStatement();
+				res = state.executeQuery("");
+				while(res.next()){
+					selmodul.add(new Modul());
+				}
+			}catch(SQLException e){
+				//TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+		}
+		return selmodul;
+	}
 
 }

@@ -1486,9 +1486,9 @@ public class mainscreen {
 		modshow.add(goforit, BorderLayout.SOUTH);
 		
 		
-//		System.out.println(modtyptransferstring);
-//		System.out.println(modbuchtransferstring);
-//		System.out.println(studtransferstring);
+		System.out.println(modtyptransferstring);
+		System.out.println(modbuchtransferstring);
+		System.out.println(studtransferstring);
 		
 		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
 			@SuppressWarnings("rawtypes")

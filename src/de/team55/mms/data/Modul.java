@@ -24,50 +24,6 @@ public class Modul {
 	private ArrayList<Zuordnung> zuordnungen = new ArrayList<Zuordnung>();
 	private ArrayList<Feld> felder = new ArrayList<Feld>();
 
-//	private ArrayList<String> labels = new ArrayList<String>();
-//	private ArrayList<String> values = new ArrayList<String>();
-//	private ArrayList<Studiengang> studiengang;
-//	private ArrayList<Boolean> dezernat = new ArrayList<Boolean>();
-//	private ArrayList<Modulhandbuch> modulhandbuch = new ArrayList<Modulhandbuch>();
-//	
-	public Modul() {
-
-	}
-	
-//	public Modul(String name, ArrayList<Studiengang> studiengang,
-//			String modulhandbuch, int jahrgang, ArrayList<String> labels,
-//			ArrayList<String> values, int version, ArrayList<Boolean> dez,
-//			String user) {
-//		this.name = name;
-//		this.studiengang = studiengang;
-//		this.jahrgang = jahrgang;
-//		this.labels = labels;
-//		this.values = values;
-//		this.version = version;
-//		this.datum = new Date();
-//		this.dezernat = dez;
-//		this.akzeptiert = false;
-//		this.inbearbeitung = false;
-//		this.user = user;
-//	}
-//
-//	public Modul(String name, ArrayList<Studiengang> studiengang2,
-//			String modulhandbuch, int version, Date datum,
-//			ArrayList<String> labels, ArrayList<String> values,
-//			ArrayList<Boolean> dez, boolean akzeptiert, boolean inbearbeitung,
-//			String user) {
-//		this.name = name;
-//		this.studiengang = studiengang2;
-//		this.version = version;
-//		this.datum = datum;
-//		this.labels = labels;
-//		this.values = values;
-//		this.dezernat = dez;
-//		this.akzeptiert = akzeptiert;
-//		this.inbearbeitung = inbearbeitung;
-//		this.user = user;
-//	}
-
 	public Modul(String name2, ArrayList<Zuordnung> zs, int jahrgang2,
 			ArrayList<Feld> felder, int version2, Date datum2,
 			boolean akzeptiert2, boolean inbearbeitung2, String user2) {
@@ -82,33 +38,8 @@ public class Modul {
 		this.user = user2;
 	}
 
-//	public Modul(String name, ArrayList<Zuordnung> zlist, int jahrgang,
-//			ArrayList<String> labels, ArrayList<String> values, int version,
-//			ArrayList<Boolean> dezernat, String user) {
-//		this.name = name;
-//		this.zuordnungen = zlist;
-//		this.jahrgang = jahrgang;
-//		this.labels = labels;
-//		this.values = values;
-//		this.dezernat = dezernat;
-//		this.version = version;
-//		this.datum = new Date();
-//		this.user = user;
-//	}
-
-//	public Modul(String name2, ArrayList<Zuordnung> zs, int jg,
-//			ArrayList<String> labels2, ArrayList<String> values2, int version2,
-//			ArrayList<Boolean> dezernat2, String user2, Date datum2) {
-//		this.name = name2;
-//		this.zuordnungen = zs;
-//		this.jahrgang = jg;
-//		this.labels = labels2;
-//		this.values = values2;
-//		this.version = version2;
-//		this.dezernat = dezernat2;
-//		this.user = user2;
-//		this.datum = datum2;
-//	}
+	public Modul() {
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -159,10 +90,6 @@ public class Modul {
 		return datum;
 	}
 
-//	public ArrayList<Boolean> getDezernat() {
-//		return dezernat;
-//	}
-
 	@XmlElementWrapper(name = "felder")
 	@XmlElement(name = "feld")
 	public ArrayList<Feld> getFelder() {
@@ -173,29 +100,13 @@ public class Modul {
 		return jahrgang;
 	}
 
-//	public ArrayList<String> getLabels() {
-//		return labels;
-//	}
-//
-//	public ArrayList<Modulhandbuch> getModulhandbuch() {
-//		return modulhandbuch;
-//	}
-
 	public String getName() {
 		return name;
 	}
 
-//	public ArrayList<Studiengang> getStudiengang() {
-//		return studiengang;
-//	}
-
 	public String getUser() {
 		return user;
 	}
-
-//	public ArrayList<String> getValues() {
-//		return values;
-//	}
 
 	public int getVersion() {
 		return version;
@@ -240,10 +151,6 @@ public class Modul {
 		this.datum = datum;
 	}
 
-//	public void setDezernat(ArrayList<Boolean> dezernat) {
-//		this.dezernat = dezernat;
-//	}
-
 	public void setFelder(ArrayList<Feld> felder) {
 		this.felder = felder;
 	}
@@ -256,29 +163,13 @@ public class Modul {
 		this.jahrgang = jahrgang;
 	}
 
-//	public void setLabels(ArrayList<String> labels) {
-//		this.labels = labels;
-//	}
-//
-//	public void setModulhandbuch(ArrayList<Modulhandbuch> modulhandbuch) {
-//		this.modulhandbuch = modulhandbuch;
-//	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
 
-//	public void setStudiengang(ArrayList<Studiengang> studiengang) {
-//		this.studiengang = studiengang;
-//	}
-
 	public void setUser(String user) {
 		this.user = user;
 	}
-
-//	public void setValues(ArrayList<String> values) {
-//		this.values = values;
-//	}
 
 	public void setVersion(int version) {
 		this.version = version;
@@ -290,15 +181,7 @@ public class Modul {
 
 	@Override
 	public String toString() {
-		return "Modul [name=" + name + ", jahrgang=" + jahrgang + ", version="
-				+ version + ", datum=" + datum + ", akzeptiert=" + akzeptiert
-				+ ", inbearbeitung=" + inbearbeitung + ", user=" + user
-				+ ", zuordnungen=" + zuordnungen + ", felder=" + felder + "]";
+		return name+", erstellt von: "+user;
 	}
-
-//	@Override
-//	public String toString() {
-//		return name;
-//	}
 
 }

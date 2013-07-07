@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
-import de.team55.mms.data.Modultyp;
 import de.team55.mms.data.StellvertreterList;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
@@ -203,12 +202,6 @@ public class MessageResource {
 			return Response.status(500).build();
 	}
 	
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	@Path("/modultyp/getall")
-	public ArrayList<Modultyp> getAllModultyps() {
-		return new sql().getAllModultyps();
-	}
 	
 	
 

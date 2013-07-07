@@ -266,16 +266,6 @@ public class ServerConnection {
 		return null;
 	}
 	
-	public ArrayList<Modultyp> getmodultyps() {
-		if (connect(email, password) == SUCCES) {
-			return webResource.path("modultyp/getall")
-					.accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<Modultyp>>() {
-					});
-		} else {
-			return null;
-		}
-	}
 	
 	
 

@@ -62,7 +62,6 @@ public class mainscreen {
 	private ArrayList<User> worklist = null; // Liste mit Usern
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
-	private ArrayList<Modultyp> modultyplist = null; // Liste mit Modultypen
 	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im durchstoebern segment
 	private ArrayList<Modulhandbuch> modulhandlist = null; //Liste der Modulhandbuecher des ausgewaehlten Studiengangs
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
@@ -151,9 +150,6 @@ public class mainscreen {
 
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
-	}
-	private void addToTable(Modultyp modtyp) {
-		modtypmodel.addRow(new Object[] { modtyp.getName() });
 	}
 
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
@@ -1325,7 +1321,7 @@ public class mainscreen {
 
 	@SuppressWarnings("serial")
 	private void studiengangCard() {
-
+		
 		JPanel studiengangshow = new JPanel();
 		cards.add(studiengangshow, "studiengang show");
 		studiengangshow.setLayout(new BorderLayout(0, 0));
@@ -1448,12 +1444,19 @@ public class mainscreen {
 				return false;
 			}
 		};
-
 		modtyptable.setModel(modtypmodel);
 		modtypmodel.setRowCount(0);
-		modultyplist = database.getmodultyps();
-		for (int i = 0; i < modultyplist.size(); i++) {
-			addToTable(modultyplist.get(i));
+		int test = 0; 
+		for(int i = 0; i < studienlist.size(); i++){
+			if(studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)){
+				test = studienlist.get(i).getId();
+				break;
+			}			
+		}
+		
+		for (int i = 0; i < typen.size(); i++) {
+			if(test == (typen.get(i).getSid()))
+			addToTable(typen.get(i).getName());
 		}
 		modtyptransferstring = "";
 		goforit.addActionListener(new ActionListener() {
@@ -1482,11 +1485,11 @@ public class mainscreen {
 		modshow.add(goforit, BorderLayout.SOUTH);
 		
 		
-		System.out.println(modtyptransferstring);
-		System.out.println(modbuchtransferstring);
-		System.out.println(studtransferstring);
+//		System.out.println(modtyptransferstring);
+//		System.out.println(modbuchtransferstring);
+//		System.out.println(studtransferstring);
 		
-		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
+		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
 

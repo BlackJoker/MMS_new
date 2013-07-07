@@ -931,13 +931,14 @@ public class mainscreen {
 		JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// System.out.print(list_notack.getSelectedValue());
 				Modul m = list_notack.getSelectedValue();
+				if(m.getUser().equals(current.geteMail())){
+					mod = modeditCard(m);
+					cards.add(mod, "modBearbeiten");
+					showCard("modBearbeiten");
+				}
 
-				// cards.remove(mod);
-				mod = modeditCard(m);
-				cards.add(mod, "modBearbeiten");
-				showCard("modBearbeiten");
+				
 			}
 		});
 		buttonpnl.add(btnModulBearbeiten);

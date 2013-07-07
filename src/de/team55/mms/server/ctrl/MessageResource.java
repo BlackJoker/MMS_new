@@ -37,30 +37,36 @@ public class MessageResource {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/login/{user}/{pass}")
-	public User userLogin(@PathParam("user") String user,
-			@PathParam("pass") String pass) {
+	public User userLogin(@PathParam("user") String user, @PathParam("pass") String pass) {
+		if(user.equals("gast@gast.gast")){
+			System.out.println("User " + user + " hat sich angemeldet");
+		} else{
+			System.out.println("Gast hat sich angemeldet");
+		}
 		User tmp = new sql().getUser(user, pass);
 		if (tmp == null)
 			return new User();
 		else
 			return tmp;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/get/{user}")
 	public Response userLogin(@PathParam("user") String mail) {
+		System.out.println("User " + mail + " abgefragt");
 		int status = new sql().getUser(mail);
 		if (status == 1)
 			return Response.status(201).build();
 		else
 			return Response.status(500).build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/getRelation/{user}")
 	public UserRelation userRelation(@PathParam("user") String eMail) {
+		System.out.println("Stellvertreter und Vorgesetzte von " + eMail + " abgefragt");
 		return new UserRelation(new sql().getUserRelation(eMail));
 	}
 
@@ -73,6 +79,7 @@ public class MessageResource {
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/getall")
 	public ArrayList<User> getAllUsers() {
+		System.out.println("Userliste abgefragt");
 		return new sql().userload();
 	}
 
@@ -81,10 +88,13 @@ public class MessageResource {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response userPost(User user) {
 		int status = new sql().usersave(user);
-		if (status == 1)
+		if (status == 1) {
+			System.out.println("Neuer User " + user.geteMail() + " hinzugefügt");
 			return Response.status(201).build();
-		else
+		} else {
+			System.out.println("Neuer User " + user.geteMail() + " wurde nicht hinzugefügt");
 			return Response.status(500).build();
+		}
 	}
 
 	@POST
@@ -92,59 +102,72 @@ public class MessageResource {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response userUpdate(UserUpdateContainer uuc) {
 		int status = new sql().userupdate(uuc.getUser(), uuc.getEmail());
-		if (status == 1)
+		if (status == 1) {
+			System.out.println("User " + uuc.getEmail() + " aktualisiert");
 			return Response.status(201).build();
-		else
+		} else {
+			System.out.println("User " + uuc.getEmail() + " wurde nicht aktualisiert");
 			return Response.status(500).build();
+		}
 	}
-	
+
 	@POST
 	@Path("/user/stellv/post/")
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response stellvPost(StellvertreterList sl) {
 		int status = new sql().setStellvertreter(sl);
-		if (status == 1)
+		if (status == 1) {
+			System.out.println("Stellvertreter für " + sl.geteMail() + " aktualisiert");
 			return Response.status(201).build();
-		else
+		} else {
+			System.out.println("Stellvertreter für " + sl.geteMail() + " wurde nicht aktualisiert");
 			return Response.status(500).build();
+		}
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/stellv/{user}")
 	public ArrayList<User> getStellv(@PathParam("user") String mail) {
+		System.out.println("Stellvertreter und Vorgesetzte von " + mail + " abgefragt");
 		return new sql().getStellv(mail);
 	}
-	
+
 	@DELETE
 	@Path("/user/delete/{mail}")
 	@Consumes(MediaType.APPLICATION_XML)
 	public void userDelete(@PathParam("mail") String mail) {
+		System.out.println("User " + mail + " wurde gelöscht");
 		new sql().deluser(mail);
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getVersion/{name}")
 	public String getModulVersion(@PathParam("name") String name) {
+		System.out.println("Version vom Modul " + name + " abgefragt");
 		return Integer.toString(new sql().getModulVersion(name));
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/get/{name}")
 	public Modul getModul(@PathParam("name") String name) {
+		System.out.println("Modul " + name + " abgefragt");
 		return new sql().getModul(name);
 	}
-	
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getList/{accepted}")
 	public ArrayList<Modul> getModulList(@PathParam("accepted") String a) {
 		boolean b = false;
-		if(a.equals("true"))
+		if (a.equals("true")) {
 			b = true;
+			System.out.println("Alle akzeptierten Module abfragen");
+		} else {
+			System.out.println("Alle nicht akzeptierten Module abfragen");
+		}
 		return new sql().getModule(b);
 	}
 
@@ -153,64 +176,73 @@ public class MessageResource {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response modulPost(Modul m) {
 		int status = new sql().setModul(m);
-		if (status == 1)
+		if (status == 1) {
+			System.out.println("Modul " + m.getName() + " hinzugefügt");
 			return Response.status(201).build();
-		else
+		} else {
+			System.out.println("Modul " + m.getName() + " wurde nicht hinzugefügt");
 			return Response.status(500).build();
+		}
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/zuordnung/getList/")
 	public ArrayList<Zuordnung> getZurdnungen() {
+		System.out.println("Alle Zuordnungen abfragen");
 		return new sql().getZuordnungen();
 	}
-	
+
 	@POST
 	@Path("/zuordnung/post/")
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response zuordnungPost(Zuordnung z) {
 		int status = new sql().setZuordnung(z);
-		if (status == 1)
+		if (status == 1) {
+			System.out.println("Zuordnung " + z.getName() + " hinzugefügt");
 			return Response.status(201).build();
-		else
+		} else {
+			System.out.println("Zuordnung " + z.getName() + " nicht hinzugefügt");
 			return Response.status(500).build();
+		}
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/studiengang/getID/{name}")
 	public String getStudiengangID(@PathParam("name") String name) {
+		System.out.println("Studiengang ID von " + name + " abgefragt");
 		return Integer.toString(new sql().getStudiengangID(name));
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modulhandbuch/getallat/{studiengang}")
 	public ArrayList<Modulhandbuch> getModulhandbuch(@PathParam("studiengang") String studiengang) {
+		System.out.println("Alle Modulhandbücher vom Studiengang " + studiengang + " abgefragt");
 		return new sql().getModulhandbuch(studiengang);
 	}
-	
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/studiengang/getall")
 	public ArrayList<Studiengang> getStudiengaenge() {
+		System.out.println("Alle Studiengänge abgefragt");
 		return new sql().getStudiengaenge();
 	}
-	
+
 	@POST
 	@Path("/studiengang/post/")
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response studiengangPost(String name) {
 		int status = new sql().setStudiengang(name);
-		if (status == 1)
+		if (status == 1) {
+			System.out.println("Studiengang " + name + " hinzugefügt");
 			return Response.status(201).build();
-		else
+		} else {
+			System.out.println("Studiengang " + name + " wurde nicht hinzugefügt");
 			return Response.status(500).build();
+		}
 	}
-	
-	
-	
 
 }

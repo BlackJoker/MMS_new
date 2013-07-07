@@ -53,17 +53,25 @@ public class mainscreen {
 	// Variablen
 	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
 			false, false, false, false); // Gast
-	String studtransferstring = ""; //uebergabe String fuer Tabellen - studiengang
-	String modbuchtransferstring = ""; //uebergabe String fuer Tabellen - modulbuch
-	String modtyptransferstring = ""; //uebergabe String fuer Tabellen - modultyp
-	String modulselectionstring = ""; //ubergabe String des ausgewaehlten Moduls
+	String studtransferstring = ""; // uebergabe String fuer Tabellen -
+									// studiengang
+	String modbuchtransferstring = ""; // uebergabe String fuer Tabellen -
+										// modulbuch
+	String modtyptransferstring = ""; // uebergabe String fuer Tabellen -
+										// modultyp
+	String modulselectionstring = ""; // ubergabe String des ausgewaehlten
+										// Moduls
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
-	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im durchstoebern segment
-	private ArrayList<Modulhandbuch> modulhandlist = null; //Liste der Modulhandbuecher des ausgewaehlten Studiengangs
+	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im
+														// durchstoebern segment
+	private ArrayList<Modulhandbuch> modulhandlist = null; // Liste der
+															// Modulhandbuecher
+															// des ausgewaehlten
+															// Studiengangs
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
 																					// der
@@ -927,25 +935,31 @@ public class mainscreen {
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
-				boolean rights = false;
-				if(m.getUser().equals(current.geteMail())){
-					rights = true;
-				} else{
-					ArrayList<String> rel = database.getUserRelation(current.geteMail());
-					if(rel.contains(m.getUser())){
-						rights=true;
+				if (!m.isInbearbeitung()) {
+					boolean rights = false;
+					if (m.getUser().equals(current.geteMail())) {
+						rights = true;
+					} else {
+						ArrayList<String> rel = database.getUserRelation(current.geteMail());
+						if (rel.contains(m.getUser())) {
+							rights = true;
+						}
 					}
-				}
-				if(rights){
-					mod = modeditCard(m);
-					cards.add(mod, "modBearbeiten");
-					showCard("modBearbeiten");
-				} else{
-					JOptionPane.showMessageDialog(frame, "Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+					if (rights) {
+						mod = modeditCard(m);
+						cards.add(mod, "modBearbeiten");
+						showCard("modBearbeiten");
+					} else {
+						JOptionPane.showMessageDialog(frame,
+								"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
 							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+
 				}
 
-				
 			}
 		});
 		buttonpnl.add(btnModulBearbeiten);
@@ -1333,7 +1347,7 @@ public class mainscreen {
 
 	@SuppressWarnings("serial")
 	private void studiengangCard() {
-		
+
 		JPanel studiengangshow = new JPanel();
 		cards.add(studiengangshow, "studiengang show");
 		studiengangshow.setLayout(new BorderLayout(0, 0));
@@ -1439,7 +1453,7 @@ public class mainscreen {
 		modtyptable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modtypshow.add(modtypscp);
 		modtypshow.add(goforit, BorderLayout.SOUTH);
-		
+
 		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1458,17 +1472,17 @@ public class mainscreen {
 		};
 		modtyptable.setModel(modtypmodel);
 		modtypmodel.setRowCount(0);
-		int test = 0; 
-		for(int i = 0; i < studienlist.size(); i++){
-			if(studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)){
+		int test = 0;
+		for (int i = 0; i < studienlist.size(); i++) {
+			if (studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)) {
 				test = studienlist.get(i).getId();
 				break;
-			}			
+			}
 		}
-		
+
 		for (int i = 0; i < typen.size(); i++) {
-			if(test == (typen.get(i).getSid()))
-			addToTable(typen.get(i).getName());
+			if (test == (typen.get(i).getSid()))
+				addToTable(typen.get(i).getName());
 		}
 		modtyptransferstring = "";
 		goforit.addActionListener(new ActionListener() {
@@ -1495,12 +1509,11 @@ public class mainscreen {
 		modshowtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modshow.add(modtypscp);
 		modshow.add(goforit, BorderLayout.SOUTH);
-		
-		
+
 		System.out.println(modtyptransferstring);
 		System.out.println(modbuchtransferstring);
 		System.out.println(studtransferstring);
-		
+
 		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1517,13 +1530,13 @@ public class mainscreen {
 				return false;
 			}
 		};
-		
+
 		modshowtable.setModel(modshowmodel);
 		modshowmodel.setRowCount(0);
-//		selectedmodullist = database.get();
-//		for (int i = 0; i < selectedmodullist.size(); i++) {
-//			addToTable(selectedmodullist.get(i));
-//		}
+		// selectedmodullist = database.get();
+		// for (int i = 0; i < selectedmodullist.size(); i++) {
+		// addToTable(selectedmodullist.get(i));
+		// }
 		modtyptransferstring = "";
 		goforit.addActionListener(new ActionListener() {
 
@@ -1535,8 +1548,7 @@ public class mainscreen {
 				showCard("mod show");
 			}
 		});
-		
-		
+
 	}
 
 	public static void noConnection() {

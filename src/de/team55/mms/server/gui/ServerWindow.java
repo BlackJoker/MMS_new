@@ -2,10 +2,16 @@ package de.team55.mms.server.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Rectangle;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -20,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
@@ -43,7 +51,7 @@ public class ServerWindow extends JFrame {
 	private Properties prop = new Properties();
 	private StartRestServer server;
 
-	private JPanel contentPane;
+	private static JPanel contentPane;
 	private final JPanel pnl_south = new JPanel();
 	private final JButton btnServerStarten = new JButton("Server starten");
 	private final JButton btnServerBeenden = new JButton("Server beenden");
@@ -61,6 +69,10 @@ public class ServerWindow extends JFrame {
 	private JLabel lblIp;
 	private JLabel lblPort;
 
+	private final JPanel pnl_bar = new JPanel();
+	private final static JTextArea txtrConsoleWindow = new JTextArea();
+	private final static JScrollPane scrollPane = new JScrollPane();
+
 	/**
 	 * Create the frame.
 	 */
@@ -73,6 +85,8 @@ public class ServerWindow extends JFrame {
 			e.printStackTrace();
 		}
 		initGUI();
+		redirectSystemStreams();
+
 	}
 
 	private void initGUI() {
@@ -118,7 +132,7 @@ public class ServerWindow extends JFrame {
 		setTitle("Server");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 387, 244);
+		setBounds(100, 100, 387, 344);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -144,7 +158,6 @@ public class ServerWindow extends JFrame {
 
 			}
 		});
-		pnl_south.add(btnServerStarten);
 		
 		btnServerBeenden.setEnabled(false);
 		btnServerBeenden.addActionListener(new ActionListener() {
@@ -158,7 +171,22 @@ public class ServerWindow extends JFrame {
 
 			}
 		});
-		pnl_south.add(btnServerBeenden);
+		
+		pnl_south.setLayout(new BoxLayout(pnl_south, BoxLayout.Y_AXIS));
+		
+		pnl_south.add(scrollPane);
+		scrollPane.setViewportView(txtrConsoleWindow);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		txtrConsoleWindow.setRows(10);
+		txtrConsoleWindow.setColumns(60);
+
+		txtrConsoleWindow.setEditable(false);
+		
+		pnl_south.add(pnl_bar);
+		pnl_bar.add(btnServerStarten);
+		pnl_bar.add(btnServerBeenden);
 		
 		btnEinstellungen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -198,7 +226,7 @@ public class ServerWindow extends JFrame {
 			}
 		});
 
-		pnl_south.add(btnEinstellungen);
+		pnl_bar.add(btnEinstellungen);
 
 		contentPane.add(pnl_north, BorderLayout.NORTH);
 
@@ -221,9 +249,42 @@ public class ServerWindow extends JFrame {
 		pnl_center.add(lblDbPort);
 
 		lblIp.setText(serverIP);
-		
-		pack();
 
+		pack();
 	}
+	
+	//The following codes set where the text get redirected. In this case, jTextArea1   
+	  private static void updateTextArea(final String text) {
+	    SwingUtilities.invokeLater(new Runnable() {
+	      public void run() {
+	        txtrConsoleWindow.append(text);
+	        Rectangle r = new Rectangle(0, scrollPane.getHeight(), 1, 1);
+	        scrollPane.scrollRectToVisible(r);
+	        }
+	    });
+	  }
+	 
+	//Followings are The Methods that do the Redirect, you can simply Ignore them.
+	  private static void redirectSystemStreams() {
+	    OutputStream out = new OutputStream() {
+	      @Override
+	      public void write(int b) throws IOException {
+	        updateTextArea(String.valueOf((char) b));
+	      }
+	 
+	      @Override
+	      public void write(byte[] b, int off, int len) throws IOException {
+	        updateTextArea(new String(b, off, len));
+	      }
+	 
+	      @Override
+	      public void write(byte[] b) throws IOException {
+	        write(b, 0, b.length);
+	      }
+	    };
+	 
+	    System.setOut(new PrintStream(out, true));
+	    System.setErr(new PrintStream(out, true));
+	  }
 
 }

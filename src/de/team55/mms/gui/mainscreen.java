@@ -94,13 +94,14 @@ public class mainscreen {
 	// Komponenten
 	private static JPanel cards = new JPanel();
 	private static JPanel modul_panel = new JPanel();
+	private static JPanel modul_panel_edit = new JPanel();
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
 	private static JButton btnModulVerwaltung = new JButton("Verwaltung");
 	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 	private static JButton btnMHB = new JButton("<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
 	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private static JButton btnLogin = new JButton("Einloggen");
-	private static JSplitPane mod = new JSplitPane();
+	private static JPanel mod = new JPanel();
 
 	// main Frame
 	public mainscreen() {
@@ -140,12 +141,13 @@ public class mainscreen {
 		defaultlabels.add("Pr\u00fcfungsform");
 		defaultlabels.add("Notenbildung");
 
+		mod.setLayout(new BorderLayout());
+		
 		homecard();
 		usermgtcard();
 		newmodulecard();
 		modulbearbeitenCard();
 		studiengangCard();
-		mod = new JSplitPane();
 		cards.add(mod, "modBearbeiten");
 	}
 
@@ -831,10 +833,8 @@ public class mainscreen {
 						}
 					}
 					if (rights) {
-						mod.setRightComponent(modeditCard(m));
-						m.setName("abac");
-						mod.setLeftComponent(modeditCard(m));
-
+						mod.removeAll();
+						mod.add(modeditCard(m), BorderLayout.CENTER);
 						showCard("modBearbeiten");
 					} else {
 						JOptionPane.showMessageDialog(frame,
@@ -889,9 +889,8 @@ public class mainscreen {
 						}
 					}
 					if (rights) {
-						mod.setRightComponent(modeditCard(m));
-						m.setName("abac");
-						mod.setLeftComponent(modeditCard(m));
+						mod.removeAll();
+						mod.add(modeditCard(m), BorderLayout.CENTER);
 						showCard("modBearbeiten");
 					} else {
 						JOptionPane.showMessageDialog(frame,
@@ -925,9 +924,91 @@ public class mainscreen {
 
 	}
 
-	private JPanel modeditCard(Modul m) {
+	private JPanel modeditCardPrev(Modul m) {
 		final JPanel pnl_editmod = new JPanel();
-		final JPanel modul_panel_edit = new JPanel();
+		final JPanel pnl_mod_prev = new JPanel();
+
+		final ArrayList<Feld> felder = m.getFelder();
+		final ArrayList<String> labels = new ArrayList<String>();
+		for (int i = 0; i < felder.size(); i++) {
+			labels.add(felder.get(i).getLabel());
+		}
+
+		final Dimension preferredSize = new Dimension(120, 20);
+		pnl_editmod.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane = new JScrollPane(pnl_mod_prev, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pnl_mod_prev.setLayout(new BoxLayout(pnl_mod_prev, BoxLayout.Y_AXIS));
+
+		// Panel Zuordnung + Platzhalter
+		JPanel pnl_Z = new JPanel();
+		pnl_Z.setLayout(new BoxLayout(pnl_Z, BoxLayout.X_AXIS));
+		JLabel label_MH = new JLabel("Zuordnung");
+
+		label_MH.setPreferredSize(preferredSize);
+		pnl_Z.add(label_MH);
+
+		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
+		typen = m.getZuordnungen();
+		for (int i = 0; i < typen.size(); i++) {
+			lm.addElement(typen.get(i));
+		}
+		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+
+		zlist.setCellRenderer(new DefaultListCellRenderer() {
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, false, false);
+
+				return this;
+			}
+		});
+		pnl_Z.add(zlist);
+
+		pnl_mod_prev.add(pnl_Z);
+		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
+
+		pnl_mod_prev.add(defaultmodulPanel("Jahrgang", m.getJahrgang() + "", false));
+		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
+
+		pnl_mod_prev.add(defaultmodulPanel("Name", m.getName(), false));
+		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
+
+		for (int i = 0; i < m.getFelder().size(); i++) {
+			Feld f = m.getFelder().get(i);
+
+			JPanel pnl = new JPanel();
+			// panel.add(pnl);
+			pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
+
+			JLabel label = new JLabel(f.getLabel());
+			label.setPreferredSize(preferredSize);
+			pnl.add(label);
+
+			JTextArea txt = new JTextArea(f.getValue());
+			txt.setLineWrap(true);
+			txt.setEditable(false);
+			pnl.add(txt);
+
+			JCheckBox dez = new JCheckBox("Dezernat 2", f.isDezernat());
+			dez.setEnabled(false);
+			pnl.add(dez);
+
+			pnl_mod_prev.add(pnl);
+			pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
+		}
+
+		pnl_editmod.add(scrollPane);
+
+		return pnl_editmod;
+
+	}
+
+	private JPanel modeditCard(final Modul m) {
+		final JPanel pnl_editmod = new JPanel();
+		modul_panel_edit.removeAll();
 		if (!buttonmap.isEmpty()) {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
@@ -943,6 +1024,15 @@ public class mainscreen {
 
 		JPanel pnl_bottom = new JPanel();
 		pnl_editmod.add(pnl_bottom, BorderLayout.SOUTH);
+
+		JButton alt = new JButton("Vorherige Version");
+		alt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				m.setName("abac");
+				JOptionPane.showMessageDialog(frame, modeditCardPrev(m), "Vorherige Version", 1);
+			}
+		});
+		pnl_bottom.add(alt);
 
 		JButton btnNeuesFeld = new JButton("Neues Feld");
 		btnNeuesFeld.addActionListener(new ActionListener() {
@@ -1097,8 +1187,7 @@ public class mainscreen {
 		for (int i = 0; i < m.getFelder().size(); i++) {
 			Feld f = m.getFelder().get(i);
 			JPanel feld = defaultmodulPanel(f.getLabel(), f.getValue(), f.isDezernat());
-			
-			if (!defaultlabels.contains(f.getLabel())) {
+
 			int numOfPanels = modul_panel_edit.getComponentCount();
 
 			JButton btn_tmp_entf = new JButton("Entfernen");
@@ -1134,11 +1223,14 @@ public class mainscreen {
 					modul_panel_edit.repaint();
 
 				}
-			});	
+			});
+			if (defaultlabels.contains(f.getLabel())) {
+				btn_tmp_entf.setEnabled(false);
+			}
 			feld.add(btn_tmp_entf);
 			// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
 			buttonmap.put(btn_tmp_entf, numOfPanels);
-		}
+
 			modul_panel_edit.add(feld);
 			modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 		}
@@ -1224,6 +1316,7 @@ public class mainscreen {
 		return pnl_editmod;
 
 	}
+
 
 	@SuppressWarnings("serial")
 	private void studiengangCard() {

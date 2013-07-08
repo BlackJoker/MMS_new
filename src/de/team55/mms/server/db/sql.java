@@ -549,7 +549,7 @@ public class sql {
 			try {
 				state = con.createStatement();
 				res = state
-						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage FROM user AS u JOIN rights AS r ON u.id=r.id;");
+						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email!='gast@gast.gast';");
 				while (res.next()) {
 					zws = new User(res.getString("vorname"),
 							res.getString("namen"), res.getString("titel"),

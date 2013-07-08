@@ -90,6 +90,8 @@ public class mainscreen {
 	private DefaultComboBoxModel<Zuordnung> cbmodel_Z = new DefaultComboBoxModel<Zuordnung>();
 	private DefaultListModel<Modul> lm = new DefaultListModel<Modul>();
 	private DefaultListModel<Modul> lm_ack = new DefaultListModel<Modul>();
+	private DefaultListModel<Studiengang> studimodel = new DefaultListModel<Studiengang>();
+	private DefaultListModel<Zuordnung> typenmodel = new DefaultListModel<Zuordnung>();
 
 	// Komponenten
 	private static JPanel cards = new JPanel();
@@ -148,7 +150,153 @@ public class mainscreen {
 		newmodulecard();
 		modulbearbeitenCard();
 		studiengangCard();
+		manage();
 		cards.add(mod, "modBearbeiten");
+	}
+
+	private void manage() {
+		JPanel pnl_manage = new JPanel();
+		cards.add(pnl_manage, "manage");
+		pnl_manage.setLayout(new BoxLayout(pnl_manage, BoxLayout.Y_AXIS));
+
+		JPanel pnl_studiengang = new JPanel();
+		pnl_manage.add(pnl_studiengang);
+		pnl_studiengang.setLayout(new BorderLayout(0, 0));
+
+		JList<Studiengang> list = new JList<Studiengang>(studimodel);
+		JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pnl_studiengang.add(scrollPane, BorderLayout.CENTER);
+
+		JPanel buttons = new JPanel();
+		pnl_studiengang.add(buttons, BorderLayout.SOUTH);
+
+		JButton btnNeuerStudiengang = new JButton("Neuer Studiengang");
+		btnNeuerStudiengang.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				try {
+					String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:",
+							"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
+
+					while (name.isEmpty()) {
+						name = JOptionPane.showInputDialog(frame,
+								"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:", "neuer Studiengang",
+								JOptionPane.PLAIN_MESSAGE);
+					}
+
+					studienlist = database.getStudiengaenge();
+					boolean neu = true;
+					for (int i = 0; i < studienlist.size(); i++) {
+						if (studienlist.get(i).equals(name)) {
+							neu = false;
+							break;
+						}
+					}
+					if (neu) {
+						database.setStudiengang(name);
+						studimodel.removeAllElements();
+						studienlist = database.getStudiengaenge();
+						for (int i = 0; i < studienlist.size(); i++) {
+							studimodel.addElement(studienlist.get(i));
+						}
+					} else {
+						JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				} catch (NullPointerException np) {
+
+				}
+			}
+		});
+		buttons.add(btnNeuerStudiengang);
+
+		JLabel lblStudiengnge = new JLabel("Studieng\u00E4nge");
+		pnl_studiengang.add(lblStudiengnge, BorderLayout.NORTH);
+
+		JPanel pnl_zuordnungen = new JPanel();
+		pnl_manage.add(pnl_zuordnungen);
+		pnl_zuordnungen.setLayout(new BorderLayout(0, 0));
+
+		JList<Zuordnung> list1 = new JList<Zuordnung>(typenmodel);
+
+		JPanel buttons1 = new JPanel();
+		pnl_zuordnungen.add(buttons1, BorderLayout.SOUTH);
+
+		JButton btnNeueZuordnung = new JButton("Neue Zuordnung");
+		btnNeueZuordnung.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+
+					JTextField neu_Name = new JTextField();
+					JTextField neu_Abschluss = new JTextField();
+					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
+
+					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:",
+							neu_sgbox };
+
+					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen",
+							JOptionPane.OK_CANCEL_OPTION);
+					if (option == JOptionPane.OK_OPTION) {
+
+						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
+								.getText().isEmpty()) && (option == JOptionPane.OK_OPTION)) {
+							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name,
+									"Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
+							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen",
+									JOptionPane.OK_CANCEL_OPTION);
+						}
+						if (option == JOptionPane.OK_OPTION) {
+							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
+							Zuordnung z = new Zuordnung(neu_Name.getText(), s.getName(), s.getId(), neu_Abschluss
+									.getText());
+
+							boolean neu = true;
+							for (int i = 0; i < typen.size(); i++) {
+								if (typen.get(i).equals(z)) {
+									neu = false;
+									break;
+								}
+							}
+							if (neu) {
+								database.setZuordnung(z);
+								typen = database.getZuordnungen();
+								typenmodel.removeAllElements();
+								for (int i = 0; i < typen.size(); i++) {
+									typenmodel.addElement(typen.get(i));
+								}
+							} else {
+								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler",
+										JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					}
+
+				} catch (NullPointerException np) {
+					np.printStackTrace();
+				}
+			}
+
+		});
+		buttons1.add(btnNeueZuordnung);
+
+		JButton btnZurck_1 = new JButton("Zur\u00FCck");
+		btnZurck_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showCard("welcome page");
+			}
+		});
+		buttons1.add(btnZurck_1);
+
+		JLabel lblZuordnungen = new JLabel("Zuordnungen");
+		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
+
+		JScrollPane scrollPane_1 = new JScrollPane(list1, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
+
 	}
 
 	// top frame part
@@ -362,6 +510,25 @@ public class mainscreen {
 		});
 		btnUserVerwaltung.setPreferredSize(btnSz);
 		btnUserVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnModulVerwaltung.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				studienlist = database.getStudiengaenge();
+				studimodel.removeAllElements();
+				for (int i = 0; i < studienlist.size(); i++) {
+					studimodel.addElement(studienlist.get(i));
+				}
+				cbmodel.removeAllElements();
+				for (int i = 0; i < studienlist.size(); i++) {
+					cbmodel.addElement(studienlist.get(i));
+				}
+				typen = database.getZuordnungen();
+				for (int i = 0; i < typen.size(); i++) {
+					typenmodel.addElement(typen.get(i));
+				}
+				showCard("manage");
+
+			}
+		});
 
 		left.add(btnModulVerwaltung);
 		btnModulVerwaltung.setEnabled(false);
@@ -516,21 +683,13 @@ public class mainscreen {
 		pnl_Z.add(label_MH);
 
 		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
-		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		zlist.setCellRenderer(new DefaultListCellRenderer() {
-			@Override
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false, false);
-
-				return this;
-			}
-		});
 		pnl_Z.add(zlist);
 
 		final JComboBox cb_Z = new JComboBox(cbmodel_Z);
-		cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width, 20));
+		cb_Z.setMaximumSize(new Dimension(400, 20));
 
 		pnl_Z.add(cb_Z);
 
@@ -545,6 +704,17 @@ public class mainscreen {
 		pnl_Z.add(z_btn);
 
 		modul_panel.add(pnl_Z);
+
+		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
+		btnZuordnungEntfernen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = zlist.getSelectedIndex();
+				if (i > -1) {
+					lm.remove(i);
+				}
+			}
+		});
+		pnl_Z.add(btnZuordnungEntfernen);
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		for (int i = 3; i < defaultlabels.size(); i++) {
@@ -791,14 +961,14 @@ public class mainscreen {
 		btnModulVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
 		btnUserVerwaltung.setEnabled(false);
-				
-		if (current.getCreateModule()){
+
+		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
-		}		
+		}
 		if (current.getAcceptModule()) {
 			btnModulBearbeiten.setEnabled(true);
-		} 
-		if(current.getReadModule()){
+		}
+		if (current.getReadModule()) {
 			btnModulVerwaltung.setEnabled(true);
 		}
 		if (current.getManageUsers()) {
@@ -971,16 +1141,6 @@ public class mainscreen {
 			lm.addElement(typen.get(i));
 		}
 		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
-
-		zlist.setCellRenderer(new DefaultListCellRenderer() {
-			@Override
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false, false);
-
-				return this;
-			}
-		});
 		pnl_Z.add(zlist);
 
 		pnl_mod_prev.add(pnl_Z);
@@ -1191,17 +1351,9 @@ public class mainscreen {
 		for (int i = 0; i < typen.size(); i++) {
 			lm.addElement(typen.get(i));
 		}
-		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		zlist.setCellRenderer(new DefaultListCellRenderer() {
-			@Override
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false, false);
-
-				return this;
-			}
-		});
 		pnl_Z.add(zlist);
 		typen = database.getZuordnungen();
 		cbmodel_Z.removeAllElements();
@@ -1222,6 +1374,17 @@ public class mainscreen {
 			}
 		});
 		pnl_Z.add(z_btn);
+
+		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
+		btnZuordnungEntfernen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = zlist.getSelectedIndex();
+				if (i > -1) {
+					lm.remove(i);
+				}
+			}
+		});
+		pnl_Z.add(btnZuordnungEntfernen);
 
 		modul_panel_edit.add(pnl_Z);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));

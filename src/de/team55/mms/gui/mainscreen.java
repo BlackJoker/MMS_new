@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -361,8 +362,8 @@ public class mainscreen {
 		final Dimension preferredSize = new Dimension(120, 20);
 
 		JPanel pnl = new JPanel();
-		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
-
+		pnl.setLayout(new GridLayout(1, 2, 0, 0));
+		pnl.setBorder(BorderFactory.createLineBorder(Color.black));
 		JLabel label = new JLabel(name);
 		label.setPreferredSize(preferredSize);
 		pnl.add(label);
@@ -1743,25 +1744,28 @@ public class mainscreen {
 
 	}
 
-	private void modCard() {
+	private void modCard(){
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "selmodshow");
+		modshow.setLayout(new BorderLayout(0, 0));
 		JPanel modpanel = new JPanel();
-		JScrollPane modscp = new JScrollPane(modpanel);
-		modshow.add(modscp);
+		JScrollPane modscp = new JScrollPane(modpanel,  ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		modshow.add(modscp, BorderLayout.CENTER);
 		Modul zws = null;
-		for (int i = 0; i < selectedmodullist.size(); i++) {
-			if (selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)) {
+		modpanel.setLayout(new BoxLayout(modpanel, BoxLayout.Y_AXIS));
+		for(int i = 0; i < selectedmodullist.size(); i++){
+			if(selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)){
 				zws = selectedmodullist.get(i);
 			}
 		}
-		System.out.println(zws.getName());
-		System.out.println(zws.getFelder().get(1).getLabel());
-		System.out.println(zws.getFelder().get(1).getValue());
-		for (int i = 0; i < zws.getFelder().size(); i++) {
+		modpanel.add(modulPanel("Name", zws.getName()));
+		modpanel.add(modulPanel("Jahrgang", modbuchtransferstring));
+		modpanel.add(modulPanel("Modultyp", modtyptransferstring));
+		for(int i = 0; i < zws.getFelder().size(); i++){
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
-
+		
 	}
 
 	public static void noConnection() {

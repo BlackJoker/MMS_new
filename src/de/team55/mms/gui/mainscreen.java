@@ -1217,10 +1217,12 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int openrow = studtable.getSelectedRow();
-				studtransferstring = (String) studtable.getValueAt(openrow, 0);
-				modhandshowCard();
-				showCard("modbuch show");
+				if(studtable.getSelectedRow() != -1){
+					int openrow = studtable.getSelectedRow();
+					studtransferstring = (String) studtable.getValueAt(openrow, 0);
+					modhandshowCard();
+					showCard("modbuch show");
+				}
 			}
 		});
 
@@ -1269,10 +1271,12 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int openrow = modbuchtable.getSelectedRow();
-				modbuchtransferstring = (String) modbuchtable.getValueAt(openrow, 0);
-				modtypshowCard();
-				showCard("modtyp show");
+				if(modbuchtable.getSelectedRow() != -1){
+					int openrow = modbuchtable.getSelectedRow();
+					modbuchtransferstring = (String) modbuchtable.getValueAt(openrow, 0);
+					modtypshowCard();
+					showCard("modtyp show");
+				}
 			}
 		});
 	}
@@ -1325,10 +1329,12 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int openrow = modtyptable.getSelectedRow();
-				modtyptransferstring = (String) modtyptable.getValueAt(openrow, 0);
-				modshowCard();
-				showCard("mod show");
+				if(modtyptable.getSelectedRow() != -1){
+					int openrow = modtyptable.getSelectedRow();
+					modtyptransferstring = (String) modtyptable.getValueAt(openrow, 0);
+					modshowCard();
+					showCard("mod show");
+				}
 			}
 		});
 	}
@@ -1378,15 +1384,18 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int openrow = modshowtable.getSelectedRow();
-				modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
-				// modCard();
-				showCard("sel mod show");
-				// test
+				if(modshowtable.getSelectedRow() != -1){
+					int openrow = modshowtable.getSelectedRow();
+					modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
+					// modCard();
+					showCard("sel mod show");
+				}
 			}
 		});
 
 	}
+	
+	
 
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",

@@ -41,6 +41,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import de.team55.mms.data.*;
 import de.team55.mms.function.ServerConnection;
+import javax.swing.JSplitPane;
 
 public class mainscreen {
 
@@ -92,15 +93,14 @@ public class mainscreen {
 
 	// Komponenten
 	private static JPanel cards = new JPanel();
-	private JPanel mod = new JPanel();
 	private static JPanel modul_panel = new JPanel();
-	private static JPanel modul_panel_edit = new JPanel();
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
 	private static JButton btnModulVerwaltung = new JButton("Verwaltung");
 	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 	private static JButton btnMHB = new JButton("<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
 	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private static JButton btnLogin = new JButton("Einloggen");
+	private static JSplitPane mod = new JSplitPane();
 
 	// main Frame
 	public mainscreen() {
@@ -145,7 +145,8 @@ public class mainscreen {
 		newmodulecard();
 		modulbearbeitenCard();
 		studiengangCard();
-
+		mod = new JSplitPane();
+		cards.add(mod, "modBearbeiten");
 	}
 
 	// top frame part
@@ -830,8 +831,10 @@ public class mainscreen {
 						}
 					}
 					if (rights) {
-						mod = modeditCard(m);
-						cards.add(mod, "modBearbeiten");
+						mod.setRightComponent(modeditCard(m));
+						m.setName("abac");
+						mod.setLeftComponent(modeditCard(m));
+
 						showCard("modBearbeiten");
 					} else {
 						JOptionPane.showMessageDialog(frame,
@@ -863,7 +866,7 @@ public class mainscreen {
 		tabs.setEnabledAt(1, true);
 		akzeptiert.setLayout(new BorderLayout(0, 0));
 
-		JList<Modul> list_ack = new JList<Modul>(lm_ack);
+		final JList<Modul> list_ack = new JList<Modul>(lm_ack);
 		list_ack.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list_ack.setLayoutOrientation(JList.VERTICAL_WRAP);
 		akzeptiert.add(list_ack);
@@ -873,7 +876,34 @@ public class mainscreen {
 
 		JButton btnModulBearbeiten2 = new JButton("Modul bearbeiten");
 		btnModulBearbeiten2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
+				Modul m = list_ack.getSelectedValue();
+				if (!m.isInbearbeitung()) {
+					boolean rights = false;
+					if (m.getUser().equals(current.geteMail())) {
+						rights = true;
+					} else {
+						ArrayList<String> rel = database.getUserRelation(current.geteMail());
+						if (rel.contains(m.getUser())) {
+							rights = true;
+						}
+					}
+					if (rights) {
+						mod.setRightComponent(modeditCard(m));
+						m.setName("abac");
+						mod.setLeftComponent(modeditCard(m));
+						showCard("modBearbeiten");
+					} else {
+						JOptionPane.showMessageDialog(frame,
+								"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
+							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+
+				}
+
 			}
 		});
 		buttonpnl2.add(btnModulBearbeiten2);
@@ -897,7 +927,7 @@ public class mainscreen {
 
 	private JPanel modeditCard(Modul m) {
 		final JPanel pnl_editmod = new JPanel();
-		modul_panel_edit.removeAll();
+		final JPanel modul_panel_edit = new JPanel();
 		if (!buttonmap.isEmpty()) {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
@@ -1057,7 +1087,6 @@ public class mainscreen {
 
 		modul_panel_edit.add(pnl_Z);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
-		
 
 		modul_panel_edit.add(defaultmodulPanel("Jahrgang", m.getJahrgang() + "", false));
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -1065,54 +1094,51 @@ public class mainscreen {
 		modul_panel_edit.add(defaultmodulPanel("Name", m.getName(), false));
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 
-
 		for (int i = 0; i < m.getFelder().size(); i++) {
 			Feld f = m.getFelder().get(i);
 			JPanel feld = defaultmodulPanel(f.getLabel(), f.getValue(), f.isDezernat());
-
-				int numOfPanels = modul_panel_edit.getComponentCount();
-				
-				JButton btn_tmp_entf = new JButton("Entfernen");
-				btn_tmp_entf.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						int id = buttonmap.get(e.getSource());
-						// Bezeichnung aus Liste entfernen
-						String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
-						labels.remove(name);
-						// Feld mit ID id von Panel entfernen
-						modul_panel_edit.remove(id);
-						// Platzhalter entfernen
-						modul_panel_edit.remove(id - 1);
-						// Aus ButtonMap entfernen
-						buttonmap.remove(e.getSource());
-
-						// ids der Buttons ändern, damit auch ein Feld aus
-						// der Mitte gelöscht werden kann
-						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-						Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
-						while (entries.hasNext()) {
-							Entry<JButton, Integer> thisEntry = entries.next();
-							JButton key = thisEntry.getKey();
-							int value = thisEntry.getValue();
-							if (value > id) {
-								value = value - 2;
-							}
-							tmpmap.put(key, value);
-						}
-						buttonmap = tmpmap;
-						modul_panel_edit.revalidate();
-						modul_panel_edit.repaint();
-
-					}
-				});
-				if (defaultlabels.contains(f.getLabel())) {
-					btn_tmp_entf.setEnabled(false);
-				} 
-				feld.add(btn_tmp_entf);
-				// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
-				buttonmap.put(btn_tmp_entf, numOfPanels );
 			
+			if (!defaultlabels.contains(f.getLabel())) {
+			int numOfPanels = modul_panel_edit.getComponentCount();
+
+			JButton btn_tmp_entf = new JButton("Entfernen");
+			btn_tmp_entf.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int id = buttonmap.get(e.getSource());
+					// Bezeichnung aus Liste entfernen
+					String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
+					labels.remove(name);
+					// Feld mit ID id von Panel entfernen
+					modul_panel_edit.remove(id);
+					// Platzhalter entfernen
+					modul_panel_edit.remove(id - 1);
+					// Aus ButtonMap entfernen
+					buttonmap.remove(e.getSource());
+
+					// ids der Buttons ändern, damit auch ein Feld aus
+					// der Mitte gelöscht werden kann
+					HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
+					Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
+					while (entries.hasNext()) {
+						Entry<JButton, Integer> thisEntry = entries.next();
+						JButton key = thisEntry.getKey();
+						int value = thisEntry.getValue();
+						if (value > id) {
+							value = value - 2;
+						}
+						tmpmap.put(key, value);
+					}
+					buttonmap = tmpmap;
+					modul_panel_edit.revalidate();
+					modul_panel_edit.repaint();
+
+				}
+			});	
+			feld.add(btn_tmp_entf);
+			// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
+			buttonmap.put(btn_tmp_entf, numOfPanels);
+		}
 			modul_panel_edit.add(feld);
 			modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 		}

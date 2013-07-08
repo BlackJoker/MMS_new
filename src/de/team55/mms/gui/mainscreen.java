@@ -377,6 +377,7 @@ public class mainscreen {
 
 	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 	private void newmodulecard() {
+		modul_panel.removeAll();
 		final JPanel pnl_newmod = new JPanel();
 		if (!buttonmap.isEmpty()) {
 			for (int i = 0; i < buttonmap.size(); i++)
@@ -1153,7 +1154,7 @@ public class mainscreen {
 								modul_panel_edit.removeAll();
 								modul_panel_edit.revalidate();
 								newmodulecard();
-								showCard("newmodule");
+								showCard("modulbearbeiten");
 							} else {
 								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
 										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);

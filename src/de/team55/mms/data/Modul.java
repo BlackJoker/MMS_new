@@ -65,11 +65,6 @@ public class Modul {
 		Modul other = (Modul) obj;
 		if (akzeptiert != other.akzeptiert)
 			return false;
-		if (datum == null) {
-			if (other.datum != null)
-				return false;
-		} else if (!datum.equals(other.datum))
-			return false;
 		if (felder == null) {
 			if (other.felder != null)
 				return false;
@@ -89,15 +84,13 @@ public class Modul {
 				return false;
 		} else if (!user.equals(other.user))
 			return false;
-		if (version != other.version)
-			return false;
 		if (zuordnungen == null) {
 			if (other.zuordnungen != null)
 				return false;
 		} else if (!zuordnungen.equals(other.zuordnungen))
 			return false;
 		return true;
-	}
+	} 
 
 	public Date getDatum() {
 		return datum;
@@ -136,15 +129,12 @@ public class Modul {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (akzeptiert ? 1231 : 1237);
-		result = prime * result + ((datum == null) ? 0 : datum.hashCode());
 		result = prime * result + ((felder == null) ? 0 : felder.hashCode());
 		result = prime * result + (inbearbeitung ? 1231 : 1237);
 		result = prime * result + jahrgang;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + version;
-		result = prime * result
-				+ ((zuordnungen == null) ? 0 : zuordnungen.hashCode());
+		result = prime * result + ((zuordnungen == null) ? 0 : zuordnungen.hashCode());
 		return result;
 	}
 

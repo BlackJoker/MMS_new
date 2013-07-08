@@ -124,10 +124,7 @@ public class ServerConnection {
 		return null;
 	}
 
-	public ArrayList<Modulhandbuch> getModulhandbuecher() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	public int getModulVersion(String name) {
 		if (connect(email, password) == SUCCES) {
@@ -283,6 +280,15 @@ public class ServerConnection {
 					});
 		}
 		return null;
+	}
+
+	public Modul getModul(String name, int v) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("modul/get").path(name).path(v+"")
+					.accept(MediaType.APPLICATION_XML).get(Modul.class);
+		} else {
+			return null;
+		}
 	}
 	
 	

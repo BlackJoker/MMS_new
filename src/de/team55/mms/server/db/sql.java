@@ -1119,4 +1119,67 @@ public class sql {
 		return rel;
 	}
 
+	public Modul getModul(String name, int version) {
+		ResultSet res = null;
+		Statement state = null;
+		int jahrgang = 0;
+		Date datum = new Date();
+		boolean akzeptiert = false;
+		boolean inbearbeitung = false;
+		ArrayList<Feld> felder = new ArrayList<Feld>();
+		ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
+		String user = "";
+		if (connect() == true) {
+			try {
+				state = this.con.createStatement();
+				if (version != 0) {
+					String sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+							+ name + "'AND version =" + version + ";";
+					res = state.executeQuery(sql);
+					if (res.first()) {
+						jahrgang = res.getInt("jahrgang");
+						datum = res.getDate("Datum");
+						akzeptiert = res.getBoolean("akzeptiert");
+						inbearbeitung = res.getBoolean("inbearbeitung");
+						int tid = res.getInt("typid");
+						String tname = res.getString("tname");
+						String sname = res.getString("sname");
+						int sid = res.getInt("sid");
+						String abschluss = res.getString("abschluss");
+						user = res.getString("user");
+						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
+					}
+					while (res.next()) {
+						int tid = res.getInt("typid");
+						String tname = res.getString("tname");
+						String sname = res.getString("sname");
+						int sid = res.getInt("sid");
+						String abschluss = res.getString("abschluss");
+						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
+					}
+					res = state
+							.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '"
+									+ name + "' AND version = " + version + ";");
+
+					while (res.next()) {
+						felder.add(new Feld(res.getString("label"), res
+								.getString("text"), res.getBoolean("dezernat2")));
+					}
+				}
+				res.close();
+				state.close();
+			} catch (SQLException e) {
+
+			}
+			disconnect();
+
+		}
+
+		if (version != 0) {
+			return new Modul(name, zs, jahrgang, felder, version, datum,
+					akzeptiert, inbearbeitung, user);
+		} else
+			return new Modul();
+	}
+
 }

@@ -156,6 +156,21 @@ public class MessageResource {
 		System.out.println("Modul " + name + " abgefragt");
 		return new sql().getModul(name);
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/modul/get/{name}/{version}")
+	public Modul getModul(@PathParam("name") String name, @PathParam("version") String version) {
+		int v = 0;
+		try{
+			v = Integer.parseInt(version);
+		} catch (NumberFormatException nf){
+			System.out.println("Modul " + name + " ,Version "+version+" nicht erfolgreich abgefragt");
+			return null;
+		}
+		System.out.println("Modul " + name + " ,Version "+version+" abgefragt");
+		return new sql().getModul(name,v);
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)

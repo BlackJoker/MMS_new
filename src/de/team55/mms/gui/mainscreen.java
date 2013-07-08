@@ -142,7 +142,7 @@ public class mainscreen {
 		defaultlabels.add("Notenbildung");
 
 		mod.setLayout(new BorderLayout());
-		
+
 		homecard();
 		usermgtcard();
 		newmodulecard();
@@ -191,7 +191,6 @@ public class mainscreen {
 		final Dimension preferredSize = new Dimension(120, 20);
 
 		JPanel pnl = new JPanel();
-		// panel.add(pnl);
 		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
 
 		JLabel label = new JLabel(name);
@@ -202,17 +201,18 @@ public class mainscreen {
 		txt.setLineWrap(true);
 		pnl.add(txt);
 
-		JCheckBox dez = new JCheckBox("Dezernat 2", b);
-		pnl.add(dez);
+		if (!name.equals("Jahrgang") && !name.equals("Name")) {
+			JCheckBox dez = new JCheckBox("Dezernat 2", b);
+			pnl.add(dez);
+		}
 
 		return pnl;
 	}
-	
+
 	private JPanel modulPanel(String name, String string) {
 		final Dimension preferredSize = new Dimension(120, 20);
 
 		JPanel pnl = new JPanel();
-		// panel.add(pnl);
 		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
 
 		JLabel label = new JLabel(name);
@@ -336,7 +336,7 @@ public class mainscreen {
 					// Tabelle leeren
 					tmodel.setRowCount(0);
 
-					// Tabelle mit neuen daten f\u00fcllen
+					// Tabelle mit neuen daten füllen
 					worklist = database.userload();
 					for (int i = 0; i < worklist.size(); i++) {
 						addToTable(worklist.get(i));
@@ -368,7 +368,6 @@ public class mainscreen {
 		btnModulVerwaltung.setPreferredSize(btnSz);
 		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// Jemand ne bessere idee f\u00fcr einen Button mit Zeilenumbruch?
 		left.add(btnMHB);
 		btnMHB.setEnabled(true);
 		btnMHB.setPreferredSize(btnSz);
@@ -460,7 +459,7 @@ public class mainscreen {
 							buttonmap.remove(e.getSource());
 
 							// ids der Buttons ändern, damit auch ein Feld aus
-							// der Mitte gelöscht werden kann
+							// der Mitte gelöcht werden kann
 							HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
 							Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
 							while (entries.hasNext()) {
@@ -604,12 +603,17 @@ public class mainscreen {
 
 								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
 										.geteMail());
-								database.setModul(neu);
-								labels.removeAll(labels);
-								modul_panel.removeAll();
-								modul_panel.revalidate();
-								newmodulecard();
-								showCard("newmodule");
+								int n = JOptionPane.showConfirmDialog(frame,
+										"Sind Sie sicher, dass Sie dieses Modul einreichen wollen?", "Bestätigung",
+										JOptionPane.YES_NO_OPTION);
+								if (n == 0) {
+									database.setModul(neu);
+									labels.removeAll(labels);
+									modul_panel.removeAll();
+									modul_panel.revalidate();
+									newmodulecard();
+									showCard("newmodule");
+								}
 							} else {
 								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
 										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
@@ -687,9 +691,8 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				userdialog dlg = new userdialog(frame, "User hinzuf\u00fcgen", database);
 				int response = dlg.showCustomDialog();
-				// Wenn ok ged\u00fcckt wird
+				// Wenn ok gedrückt wird
 				// neuen User abfragen
-				// save!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (response == 1) {
 					User tmp = dlg.getUser();
 					database.usersave(tmp);
@@ -748,12 +751,16 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int row = usrtbl.getSelectedRow();
 				if (row != -1) {
-					if (database.deluser((String) usrtbl.getValueAt(row, 3)).getStatus() != 201) {
-						removeFromTable(row);
-					} else
-						JOptionPane.showMessageDialog(frame, "L\u00f6schen Fehlgeschlagen", "Fehler beim L\u00f6schen",
-								JOptionPane.ERROR_MESSAGE);
-
+					int n = JOptionPane.showConfirmDialog(frame,
+							"Sind Sie sicher, dass Sie diesen Benutzer l\u00f6schen wollen?", "Bestätigung",
+							JOptionPane.YES_NO_OPTION);
+					if (n == 0) {
+						if (database.deluser((String) usrtbl.getValueAt(row, 3)).getStatus() != 201) {
+							removeFromTable(row);
+						} else
+							JOptionPane.showMessageDialog(frame, "L\u00f6schen Fehlgeschlagen",
+									"Fehler beim L\u00f6schen", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
@@ -779,21 +786,26 @@ public class mainscreen {
 	}
 
 	protected void checkRights() {
-		if (current.getCreateModule())
+		btnModulEinreichen.setEnabled(false);
+		btnModulBearbeiten.setEnabled(false);
+		btnModulVerwaltung.setEnabled(false);
+		btnModulBearbeiten.setEnabled(false);
+		btnUserVerwaltung.setEnabled(false);
+				
+		if (current.getCreateModule()){
 			btnModulEinreichen.setEnabled(true);
-		else
-			btnModulEinreichen.setEnabled(false);
+		}		
 		if (current.getAcceptModule()) {
-			btnModulVerwaltung.setEnabled(true);
 			btnModulBearbeiten.setEnabled(true);
-		} else {
-			btnModulVerwaltung.setEnabled(false);
-			btnModulBearbeiten.setEnabled(false);
+		} 
+		if(current.getReadModule()){
+			btnModulVerwaltung.setEnabled(true);
 		}
-		btnUserVerwaltung.setEnabled(true);
 		if (current.getManageUsers()) {
+			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("User Verwaltung");
 		} else {
+			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("Account bearbeiten");
 			showCard("welcome page");
 		}
@@ -822,29 +834,31 @@ public class mainscreen {
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
-				if (!m.isInbearbeitung()) {
-					boolean rights = false;
-					if (m.getUser().equals(current.geteMail())) {
-						rights = true;
-					} else {
-						ArrayList<String> rel = database.getUserRelation(current.geteMail());
-						if (rel.contains(m.getUser())) {
+				if (m != null) {
+					if (!m.isInbearbeitung()) {
+						boolean rights = false;
+						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
+						} else {
+							ArrayList<String> rel = database.getUserRelation(current.geteMail());
+							if (rel.contains(m.getUser())) {
+								rights = true;
+							}
 						}
-					}
-					if (rights) {
-						mod.removeAll();
-						mod.add(modeditCard(m), BorderLayout.CENTER);
-						showCard("modBearbeiten");
+						if (rights) {
+							mod.removeAll();
+							mod.add(modeditCard(m), BorderLayout.CENTER);
+							showCard("modBearbeiten");
+						} else {
+							JOptionPane.showMessageDialog(frame,
+									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!",
+									"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+						}
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
 								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
-					}
-				} else {
-					JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
-							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
 
+					}
 				}
 
 			}
@@ -878,29 +892,31 @@ public class mainscreen {
 		btnModulBearbeiten2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_ack.getSelectedValue();
-				if (!m.isInbearbeitung()) {
-					boolean rights = false;
-					if (m.getUser().equals(current.geteMail())) {
-						rights = true;
-					} else {
-						ArrayList<String> rel = database.getUserRelation(current.geteMail());
-						if (rel.contains(m.getUser())) {
+				if (m != null) {
+					if (!m.isInbearbeitung()) {
+						boolean rights = false;
+						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
+						} else {
+							ArrayList<String> rel = database.getUserRelation(current.geteMail());
+							if (rel.contains(m.getUser())) {
+								rights = true;
+							}
 						}
-					}
-					if (rights) {
-						mod.removeAll();
-						mod.add(modeditCard(m), BorderLayout.CENTER);
-						showCard("modBearbeiten");
+						if (rights) {
+							mod.removeAll();
+							mod.add(modeditCard(m), BorderLayout.CENTER);
+							showCard("modBearbeiten");
+						} else {
+							JOptionPane.showMessageDialog(frame,
+									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!",
+									"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+						}
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
 								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
-					}
-				} else {
-					JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
-							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
 
+					}
 				}
 
 			}
@@ -970,17 +986,40 @@ public class mainscreen {
 		pnl_mod_prev.add(pnl_Z);
 		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		pnl_mod_prev.add(defaultmodulPanel("Jahrgang", m.getJahrgang() + "", false));
+		JPanel jg = new JPanel();
+		jg.setLayout(new BoxLayout(jg, BoxLayout.X_AXIS));
+
+		JLabel lbl_jg = new JLabel("Jahrgang");
+		lbl_jg.setPreferredSize(preferredSize);
+		jg.add(lbl_jg);
+
+		JTextArea txt_jg = new JTextArea(m.getJahrgang() + "");
+		txt_jg.setLineWrap(true);
+		txt_jg.setEditable(false);
+		jg.add(txt_jg);
+
+		pnl_mod_prev.add(jg);
 		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		pnl_mod_prev.add(defaultmodulPanel("Name", m.getName(), false));
+		JPanel name = new JPanel();
+		name.setLayout(new BoxLayout(name, BoxLayout.X_AXIS));
+
+		JLabel lbl_n = new JLabel("Name");
+		lbl_n.setPreferredSize(preferredSize);
+		name.add(lbl_n);
+
+		JTextArea txt_n = new JTextArea(m.getName());
+		txt_n.setLineWrap(true);
+		txt_n.setEditable(false);
+		name.add(txt_n);
+
+		pnl_mod_prev.add(name);
 		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		for (int i = 0; i < m.getFelder().size(); i++) {
 			Feld f = m.getFelder().get(i);
 
 			JPanel pnl = new JPanel();
-			// panel.add(pnl);
 			pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
 
 			JLabel label = new JLabel(f.getLabel());
@@ -1028,8 +1067,16 @@ public class mainscreen {
 		JButton alt = new JButton("Vorherige Version");
 		alt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				m.setName("abac");
-				JOptionPane.showMessageDialog(frame, modeditCardPrev(m), "Vorherige Version", 1);
+				int v = m.getVersion() - 1;
+				if (v > 0) {
+					String name = m.getName();
+					Modul pre = database.getModul(name, v);
+					if (pre != null)
+						JOptionPane.showMessageDialog(frame, modeditCardPrev(pre), "Vorherige Version", 1);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Keine Vorherige Version vorhanden!", "Fehler",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		pnl_bottom.add(alt);
@@ -1121,6 +1168,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				modul_panel_edit.removeAll();
 				modul_panel_edit.revalidate();
+				modulbearbeitenCard();
 				showCard("modulbearbeiten");
 			}
 		});
@@ -1188,49 +1236,47 @@ public class mainscreen {
 			Feld f = m.getFelder().get(i);
 			JPanel feld = defaultmodulPanel(f.getLabel(), f.getValue(), f.isDezernat());
 
-			int numOfPanels = modul_panel_edit.getComponentCount();
+			if (!defaultlabels.contains(f.getLabel())) {
+				int numOfPanels = modul_panel_edit.getComponentCount();
 
-			JButton btn_tmp_entf = new JButton("Entfernen");
-			btn_tmp_entf.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int id = buttonmap.get(e.getSource());
-					// Bezeichnung aus Liste entfernen
-					String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
-					labels.remove(name);
-					// Feld mit ID id von Panel entfernen
-					modul_panel_edit.remove(id);
-					// Platzhalter entfernen
-					modul_panel_edit.remove(id - 1);
-					// Aus ButtonMap entfernen
-					buttonmap.remove(e.getSource());
+				JButton btn_tmp_entf = new JButton("Entfernen");
+				btn_tmp_entf.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int id = buttonmap.get(e.getSource());
+						// Bezeichnung aus Liste entfernen
+						String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
+						labels.remove(name);
+						// Feld mit ID id von Panel entfernen
+						modul_panel_edit.remove(id);
+						// Platzhalter entfernen
+						modul_panel_edit.remove(id - 1);
+						// Aus ButtonMap entfernen
+						buttonmap.remove(e.getSource());
 
-					// ids der Buttons ändern, damit auch ein Feld aus
-					// der Mitte gelöscht werden kann
-					HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-					Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
-					while (entries.hasNext()) {
-						Entry<JButton, Integer> thisEntry = entries.next();
-						JButton key = thisEntry.getKey();
-						int value = thisEntry.getValue();
-						if (value > id) {
-							value = value - 2;
+						// ids der Buttons ändern, damit auch ein Feld aus
+						// der Mitte gelöscht werden kann
+						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
+						Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
+						while (entries.hasNext()) {
+							Entry<JButton, Integer> thisEntry = entries.next();
+							JButton key = thisEntry.getKey();
+							int value = thisEntry.getValue();
+							if (value > id) {
+								value = value - 2;
+							}
+							tmpmap.put(key, value);
 						}
-						tmpmap.put(key, value);
+						buttonmap = tmpmap;
+						modul_panel_edit.revalidate();
+						modul_panel_edit.repaint();
+
 					}
-					buttonmap = tmpmap;
-					modul_panel_edit.revalidate();
-					modul_panel_edit.repaint();
-
-				}
-			});
-			if (defaultlabels.contains(f.getLabel())) {
-				btn_tmp_entf.setEnabled(false);
+				});
+				feld.add(btn_tmp_entf);
+				// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
+				buttonmap.put(btn_tmp_entf, numOfPanels);
 			}
-			feld.add(btn_tmp_entf);
-			// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
-			buttonmap.put(btn_tmp_entf, numOfPanels);
-
 			modul_panel_edit.add(feld);
 			modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 		}
@@ -1247,6 +1293,7 @@ public class mainscreen {
 				} catch (NumberFormatException nfe) {
 					jahrgang = 0;
 				}
+
 				for (int i = 0; i < lm.getSize(); i++) {
 					zlist.add(lm.getElementAt(i));
 				}
@@ -1281,21 +1328,27 @@ public class mainscreen {
 								felder.add(new Feld(label, value, dezernat2));
 							}
 							if (filled == true) {
+
 								int version = database.getModulVersion(Name) + 1;
 
 								Date d = new Date();
 
 								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
 										.geteMail());
-								database.setModul(neu);
-								labels.removeAll(labels);
-								modul_panel_edit.removeAll();
-								modul_panel_edit.revalidate();
-								newmodulecard();
-								showCard("modulbearbeiten");
+
+								int n = JOptionPane.showConfirmDialog(frame,
+										"Sind Sie sicher, dass Sie dieses Modul einreichen wollen?", "Bestätigung",
+										JOptionPane.YES_NO_OPTION);
+								if (n == 0) {
+									database.setModul(neu);
+									labels.removeAll(labels);
+									modul_panel_edit.removeAll();
+									modul_panel_edit.revalidate();
+									modulbearbeitenCard();
+									showCard("modulbearbeiten");
+								}
 							} else {
-								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
-										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
+
 							}
 						}
 					} else {
@@ -1316,7 +1369,6 @@ public class mainscreen {
 		return pnl_editmod;
 
 	}
-
 
 	@SuppressWarnings("serial")
 	private void studiengangCard() {
@@ -1354,7 +1406,7 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(studtable.getSelectedRow() != -1){
+				if (studtable.getSelectedRow() != -1) {
 					int openrow = studtable.getSelectedRow();
 					studtransferstring = (String) studtable.getValueAt(openrow, 0);
 					modhandshowCard();
@@ -1408,7 +1460,7 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(modbuchtable.getSelectedRow() != -1){
+				if (modbuchtable.getSelectedRow() != -1) {
 					int openrow = modbuchtable.getSelectedRow();
 					modbuchtransferstring = (String) modbuchtable.getValueAt(openrow, 0);
 					modtypshowCard();
@@ -1466,7 +1518,7 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(modtyptable.getSelectedRow() != -1){
+				if (modtyptable.getSelectedRow() != -1) {
 					int openrow = modtyptable.getSelectedRow();
 					modtyptransferstring = (String) modtyptable.getValueAt(openrow, 0);
 					modshowCard();
@@ -1517,7 +1569,7 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(modshowtable.getSelectedRow() != -1){
+				if (modshowtable.getSelectedRow() != -1) {
 					int openrow = modshowtable.getSelectedRow();
 					modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
 					modCard();
@@ -1527,26 +1579,26 @@ public class mainscreen {
 		});
 
 	}
-	
-	private void modCard(){
+
+	private void modCard() {
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "selmodshow");
 		JPanel modpanel = new JPanel();
 		JScrollPane modscp = new JScrollPane(modpanel);
 		modshow.add(modscp);
 		Modul zws = null;
-		for(int i = 0; i < selectedmodullist.size(); i++){
-			if(selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)){
+		for (int i = 0; i < selectedmodullist.size(); i++) {
+			if (selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)) {
 				zws = selectedmodullist.get(i);
 			}
 		}
 		System.out.println(zws.getName());
 		System.out.println(zws.getFelder().get(1).getLabel());
 		System.out.println(zws.getFelder().get(1).getValue());
-		for(int i = 0; i < zws.getFelder().size(); i++){
+		for (int i = 0; i < zws.getFelder().size(); i++) {
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
-		
+
 	}
 
 	public static void noConnection() {

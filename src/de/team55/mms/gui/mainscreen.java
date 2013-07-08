@@ -119,7 +119,7 @@ public class mainscreen {
 
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
 		cards.setLayout(new CardLayout(0, 0));
-		
+
 		defaultlabels.add("Zuordnung");
 		defaultlabels.add("Kürzel");
 		defaultlabels.add("Prüfungsform");
@@ -176,7 +176,6 @@ public class mainscreen {
 		modshowmodel.addRow(new Object[] { mod.getName() });
 	}
 
-	
 	private void addToTable(Modulhandbuch modbuch) {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
@@ -399,9 +398,7 @@ public class mainscreen {
 				String name = JOptionPane.showInputDialog(frame, text);
 				try {
 					while (name.isEmpty() || labels.contains(name)) {
-						Object[] params = {
-								"Bitte geben Sie eine gültige Bezeichnung ein!",
-								text };
+						Object[] params = { "Bitte geben Sie eine gültige Bezeichnung ein!", text };
 						name = JOptionPane.showInputDialog(frame, params);
 					}
 					labels.add(name);
@@ -430,9 +427,7 @@ public class mainscreen {
 						public void actionPerformed(ActionEvent e) {
 							int id = buttonmap.get(e.getSource());
 							// Bezeichnung aus Liste entfernen
-							String name = ((JLabel) ((JPanel) modul_panel
-									.getComponent(id)).getComponent(0))
-									.getText();
+							String name = ((JLabel) ((JPanel) modul_panel.getComponent(id)).getComponent(0)).getText();
 							labels.remove(name);
 
 							// Feld mit ID id von Panel entfernen
@@ -445,11 +440,9 @@ public class mainscreen {
 							// ids der Buttons ändern, damit auch ein Feld aus
 							// der Mitte gelöscht werden kann
 							HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-							Iterator<Entry<JButton, Integer>> entries = buttonmap
-									.entrySet().iterator();
+							Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
 							while (entries.hasNext()) {
-								Entry<JButton, Integer> thisEntry = entries
-										.next();
+								Entry<JButton, Integer> thisEntry = entries.next();
 								JButton key = thisEntry.getKey();
 								int value = thisEntry.getValue();
 								if (value > id) {
@@ -489,8 +482,7 @@ public class mainscreen {
 		});
 		pnl_bottom.add(btnHome);
 
-		JScrollPane scrollPane = new JScrollPane(modul_panel,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane = new JScrollPane(modul_panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		modul_panel.setLayout(new BoxLayout(modul_panel, BoxLayout.Y_AXIS));
 
@@ -507,11 +499,9 @@ public class mainscreen {
 
 		zlist.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false,
-						false);
+				super.getListCellRendererComponent(list, value, index, false, false);
 
 				return this;
 			}
@@ -532,11 +522,11 @@ public class mainscreen {
 			}
 		});
 		pnl_Z.add(z_btn);
-		
+
 		modul_panel.add(pnl_Z);
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		
-		for(int i = 3;i<defaultlabels.size();i++){
+
+		for (int i = 3; i < defaultlabels.size(); i++) {
 			modul_panel.add(defaultmodulPanel(defaultlabels.get(i), "", false));
 			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 		}
@@ -546,8 +536,7 @@ public class mainscreen {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2))
-						.getComponent(1)).getText();
+				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2)).getComponent(1)).getText();
 				int jahrgang;
 				try {
 					jahrgang = Integer.parseInt(jg);
@@ -562,30 +551,22 @@ public class mainscreen {
 
 					if (jahrgang != 0) {
 
-						String Name = ((JTextArea) ((JPanel) modul_panel
-								.getComponent(4)).getComponent(1)).getText();
+						String Name = ((JTextArea) ((JPanel) modul_panel.getComponent(4)).getComponent(1)).getText();
 
 						if (Name.isEmpty()) {
-							JOptionPane
-									.showMessageDialog(
-											frame,
-											"Bitte füllen Sie alle Felder aus!",
-											"Eingabe Fehler",
-											JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
+									JOptionPane.ERROR_MESSAGE);
 						} else {
 
 							boolean filled = true;
 							ArrayList<Feld> felder = new ArrayList<Feld>();
 							// Eintraege der Reihe nach auslesen
 							for (int i = 6; i < modul_panel.getComponentCount(); i = i + 2) {
-								JPanel tmp = (JPanel) modul_panel
-										.getComponent(i);
+								JPanel tmp = (JPanel) modul_panel.getComponent(i);
 								JLabel tmplbl = (JLabel) tmp.getComponent(0);
-								JTextArea tmptxt = (JTextArea) tmp
-										.getComponent(1);
+								JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
 
-								boolean dezernat2 = ((JCheckBox) tmp
-										.getComponent(2)).isSelected();
+								boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
 								String value = tmptxt.getText();
 								String label = tmplbl.getText();
 								if (label.isEmpty()) {
@@ -599,9 +580,8 @@ public class mainscreen {
 
 								Date d = new Date();
 
-								Modul neu = new Modul(Name, zlist, jahrgang,
-										felder, version, d, false, false,
-										current.geteMail());
+								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
+										.geteMail());
 								database.setModul(neu);
 								labels.removeAll(labels);
 								modul_panel.removeAll();
@@ -609,23 +589,17 @@ public class mainscreen {
 								newmodulecard();
 								showCard("newmodule");
 							} else {
-								JOptionPane.showMessageDialog(frame,
-										"Bitte füllen Sie alle Felder aus!",
-										"Eingabe Fehler",
-										JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
+										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					} else {
-						JOptionPane
-								.showMessageDialog(
-										frame,
-										"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!",
-										"Eingabe Fehler",
-										JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame,
+								"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame,
-							"Bitte wählen Sie min. einen Zuordnung aus!",
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!",
 							"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -636,6 +610,7 @@ public class mainscreen {
 		cards.add(pnl_newmod, "newmodule");
 
 	}
+
 	private void removeFromTable(int rowid) {
 		tmodel.removeRow(rowid);
 	}
@@ -810,8 +785,7 @@ public class mainscreen {
 		pnl_modedit.add(tabs);
 
 		JPanel nichtakzeptiert = new JPanel();
-		tabs.addTab("Noch nicht akzeptierte Module", null, nichtakzeptiert,
-				null);
+		tabs.addTab("Noch nicht akzeptierte Module", null, nichtakzeptiert, null);
 		nichtakzeptiert.setLayout(new BorderLayout(0, 0));
 		final JList<Modul> list_notack = new JList<Modul>(lm);
 		list_notack.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -831,8 +805,7 @@ public class mainscreen {
 					if (m.getUser().equals(current.geteMail())) {
 						rights = true;
 					} else {
-						ArrayList<String> rel = database
-								.getUserRelation(current.geteMail());
+						ArrayList<String> rel = database.getUserRelation(current.geteMail());
 						if (rel.contains(m.getUser())) {
 							rights = true;
 						}
@@ -842,20 +815,13 @@ public class mainscreen {
 						cards.add(mod, "modBearbeiten");
 						showCard("modBearbeiten");
 					} else {
-						JOptionPane
-								.showMessageDialog(
-										frame,
-										"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
-										"Zugriff verweigert",
-										JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame,
+								"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane
-							.showMessageDialog(
-									frame,
-									"Dieses Modul befindet sich gerade in bearbeitung!",
-									"Zugriff verweigert",
-									JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
+							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
 
 				}
 
@@ -916,7 +882,7 @@ public class mainscreen {
 		cards.add(pnl_modedit, "modulbearbeiten");
 
 	}
-	
+
 	private JPanel modeditCard(Modul m) {
 		final JPanel pnl_editmod = new JPanel();
 		modul_panel_edit.removeAll();
@@ -926,7 +892,7 @@ public class mainscreen {
 		}
 		final ArrayList<Feld> felder = m.getFelder();
 		final ArrayList<String> labels = new ArrayList<String>();
-		for(int i = 0;i<felder.size();i++){
+		for (int i = 0; i < felder.size(); i++) {
 			labels.add(felder.get(i).getLabel());
 		}
 
@@ -944,9 +910,7 @@ public class mainscreen {
 				String name = JOptionPane.showInputDialog(frame, text);
 				try {
 					while (name.isEmpty() || labels.contains(name)) {
-						Object[] params = {
-								"Bitte geben Sie eine gültige Bezeichnung ein!",
-								text };
+						Object[] params = { "Bitte geben Sie eine gültige Bezeichnung ein!", text };
 						name = JOptionPane.showInputDialog(frame, params);
 					}
 					labels.add(name);
@@ -975,8 +939,7 @@ public class mainscreen {
 						public void actionPerformed(ActionEvent e) {
 							int id = buttonmap.get(e.getSource());
 							// Bezeichnung aus Liste entfernen
-							String name = ((JLabel) ((JPanel) modul_panel_edit
-									.getComponent(id)).getComponent(0))
+							String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0))
 									.getText();
 							labels.remove(name);
 
@@ -990,11 +953,9 @@ public class mainscreen {
 							// ids der Buttons ändern, damit auch ein Feld aus
 							// der Mitte gelöscht werden kann
 							HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-							Iterator<Entry<JButton, Integer>> entries = buttonmap
-									.entrySet().iterator();
+							Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
 							while (entries.hasNext()) {
-								Entry<JButton, Integer> thisEntry = entries
-										.next();
+								Entry<JButton, Integer> thisEntry = entries.next();
 								JButton key = thisEntry.getKey();
 								int value = thisEntry.getValue();
 								if (value > id) {
@@ -1033,8 +994,7 @@ public class mainscreen {
 		});
 		pnl_bottom.add(btnHome);
 
-		JScrollPane scrollPane = new JScrollPane(modul_panel_edit,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane = new JScrollPane(modul_panel_edit, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		modul_panel_edit.setLayout(new BoxLayout(modul_panel_edit, BoxLayout.Y_AXIS));
 
@@ -1048,29 +1008,26 @@ public class mainscreen {
 
 		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
 		typen = m.getZuordnungen();
-		for(int i=0;i<typen.size();i++){
+		for (int i = 0; i < typen.size(); i++) {
 			lm.addElement(typen.get(i));
 		}
 		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
 
 		zlist.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
-			public Component getListCellRendererComponent(JList list,
-					Object value, int index, boolean isSelected,
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false,
-						false);
+				super.getListCellRendererComponent(list, value, index, false, false);
 
 				return this;
 			}
 		});
 		pnl_Z.add(zlist);
-		
-		typen=database.getZuordnungen();
+		typen = database.getZuordnungen();
 		cbmodel_Z.removeAllElements();
-for(int i=0;i<typen.size();i++){
-	cbmodel_Z.addElement(typen.get(i));
-}
+		for (int i = 0; i < typen.size(); i++) {
+			cbmodel_Z.addElement(typen.get(i));
+		}
 		final JComboBox cb_Z = new JComboBox(cbmodel_Z);
 		cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width, 20));
 
@@ -1085,64 +1042,62 @@ for(int i=0;i<typen.size();i++){
 			}
 		});
 		pnl_Z.add(z_btn);
-		
+
 		modul_panel_edit.add(pnl_Z);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 		
-		modul_panel_edit.add(defaultmodulPanel("Name",m.getName(),false));
+
+		modul_panel_edit.add(defaultmodulPanel("Jahrgang", m.getJahrgang() + "", false));
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
-		
-		modul_panel_edit.add(defaultmodulPanel("Jahrgang",m.getJahrgang()+"",false));
+
+		modul_panel_edit.add(defaultmodulPanel("Name", m.getName(), false));
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
-		
-		for(int i = 0;i<m.getFelder().size();i++){
+
+
+		for (int i = 0; i < m.getFelder().size(); i++) {
 			Feld f = m.getFelder().get(i);
 			JPanel feld = defaultmodulPanel(f.getLabel(), f.getValue(), f.isDezernat());
-			if(!defaultlabels.contains(f.getLabel())){
-			JButton btn_tmp_entf = new JButton("Entfernen");
-					btn_tmp_entf.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							int id = buttonmap.get(e.getSource());
-							// Bezeichnung aus Liste entfernen
-							String name = ((JLabel) ((JPanel) modul_panel_edit
-									.getComponent(id)).getComponent(0))
-									.getText();
-							labels.remove(name);
+			if (!defaultlabels.contains(f.getLabel())) {
+				JButton btn_tmp_entf = new JButton("Entfernen");
+				btn_tmp_entf.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int id = buttonmap.get(e.getSource());
+						// Bezeichnung aus Liste entfernen
+						String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
+						labels.remove(name);
 
-							// Feld mit ID id von Panel entfernen
-							modul_panel_edit.remove(id);
-							// Platzhalter entfernen
-							modul_panel_edit.remove(id - 1);
-							// Aus ButtonMap entfernen
-							buttonmap.remove(e.getSource());
+						// Feld mit ID id von Panel entfernen
+						modul_panel_edit.remove(id);
+						// Platzhalter entfernen
+						modul_panel_edit.remove(id - 1);
+						// Aus ButtonMap entfernen
+						buttonmap.remove(e.getSource());
 
-							// ids der Buttons ändern, damit auch ein Feld aus
-							// der Mitte gelöscht werden kann
-							HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-							Iterator<Entry<JButton, Integer>> entries = buttonmap
-									.entrySet().iterator();
-							while (entries.hasNext()) {
-								Entry<JButton, Integer> thisEntry = entries
-										.next();
-								JButton key = thisEntry.getKey();
-								int value = thisEntry.getValue();
-								if (value > id) {
-									value = value - 2;
-								}
-								tmpmap.put(key, value);
+						// ids der Buttons ändern, damit auch ein Feld aus
+						// der Mitte gelöscht werden kann
+						HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
+						Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
+						while (entries.hasNext()) {
+							Entry<JButton, Integer> thisEntry = entries.next();
+							JButton key = thisEntry.getKey();
+							int value = thisEntry.getValue();
+							if (value > id) {
+								value = value - 2;
 							}
-							buttonmap = tmpmap;
-							modul_panel_edit.revalidate();
-
+							tmpmap.put(key, value);
 						}
-					});
+						buttonmap = tmpmap;
+						modul_panel_edit.revalidate();
 
-					// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
-					int numOfPanels = modul_panel_edit.getComponentCount();
-					buttonmap.put(btn_tmp_entf, numOfPanels - 2);
+					}
+				});
 
-					feld.add(btn_tmp_entf);
+				// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
+				int numOfPanels = modul_panel_edit.getComponentCount();
+				buttonmap.put(btn_tmp_entf, numOfPanels - 2);
+
+				feld.add(btn_tmp_entf);
 			}
 			modul_panel_edit.add(feld);
 			modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -1153,8 +1108,7 @@ for(int i=0;i<typen.size();i++){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				String jg = ((JTextArea) ((JPanel) modul_panel_edit.getComponent(2))
-						.getComponent(1)).getText();
+				String jg = ((JTextArea) ((JPanel) modul_panel_edit.getComponent(2)).getComponent(1)).getText();
 				int jahrgang;
 				try {
 					jahrgang = Integer.parseInt(jg);
@@ -1169,30 +1123,23 @@ for(int i=0;i<typen.size();i++){
 
 					if (jahrgang != 0) {
 
-						String Name = ((JTextArea) ((JPanel) modul_panel_edit
-								.getComponent(4)).getComponent(1)).getText();
+						String Name = ((JTextArea) ((JPanel) modul_panel_edit.getComponent(4)).getComponent(1))
+								.getText();
 
 						if (Name.isEmpty()) {
-							JOptionPane
-									.showMessageDialog(
-											frame,
-											"Bitte füllen Sie alle Felder aus!",
-											"Eingabe Fehler",
-											JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
+									JOptionPane.ERROR_MESSAGE);
 						} else {
 
 							boolean filled = true;
 							ArrayList<Feld> felder = new ArrayList<Feld>();
 							// Eintraege der Reihe nach auslesen
 							for (int i = 6; i < modul_panel_edit.getComponentCount(); i = i + 2) {
-								JPanel tmp = (JPanel) modul_panel_edit
-										.getComponent(i);
+								JPanel tmp = (JPanel) modul_panel_edit.getComponent(i);
 								JLabel tmplbl = (JLabel) tmp.getComponent(0);
-								JTextArea tmptxt = (JTextArea) tmp
-										.getComponent(1);
+								JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
 
-								boolean dezernat2 = ((JCheckBox) tmp
-										.getComponent(2)).isSelected();
+								boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
 								String value = tmptxt.getText();
 								String label = tmplbl.getText();
 								if (label.isEmpty()) {
@@ -1206,9 +1153,8 @@ for(int i=0;i<typen.size();i++){
 
 								Date d = new Date();
 
-								Modul neu = new Modul(Name, zlist, jahrgang,
-										felder, version, d, false, false,
-										current.geteMail());
+								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
+										.geteMail());
 								database.setModul(neu);
 								labels.removeAll(labels);
 								modul_panel_edit.removeAll();
@@ -1216,23 +1162,17 @@ for(int i=0;i<typen.size();i++){
 								newmodulecard();
 								showCard("newmodule");
 							} else {
-								JOptionPane.showMessageDialog(frame,
-										"Bitte füllen Sie alle Felder aus!",
-										"Eingabe Fehler",
-										JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
+										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					} else {
-						JOptionPane
-								.showMessageDialog(
-										frame,
-										"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!",
-										"Eingabe Fehler",
-										JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame,
+								"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame,
-							"Bitte wählen Sie min. einen Zuordnung aus!",
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!",
 							"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -1240,7 +1180,7 @@ for(int i=0;i<typen.size();i++){
 		pnl_bottom.add(btnOk);
 
 		pnl_editmod.add(scrollPane);
-		
+
 		return pnl_editmod;
 
 	}
@@ -1433,26 +1373,24 @@ for(int i=0;i<typen.size();i++){
 
 		modshowtable.setModel(modshowmodel);
 		modshowmodel.setRowCount(0);
-		 selectedmodullist = database.getselectedModul(studtransferstring, modtyptransferstring, modbuchtransferstring);
-		 for (int i = 0; i < selectedmodullist.size(); i++) {
-			 addToTable(selectedmodullist.get(i));
-		 }
-		 modulselectionstring = "";
+		selectedmodullist = database.getselectedModul(studtransferstring, modtyptransferstring, modbuchtransferstring);
+		for (int i = 0; i < selectedmodullist.size(); i++) {
+			addToTable(selectedmodullist.get(i));
+		}
+		modulselectionstring = "";
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int openrow = modshowtable.getSelectedRow();
 				modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
-				//modCard();
+				// modCard();
 				showCard("sel mod show");
-			//test
+				// test
 			}
 		});
 
 	}
-	
-	
 
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",

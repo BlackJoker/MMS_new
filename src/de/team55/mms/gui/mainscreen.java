@@ -1051,7 +1051,9 @@ public class mainscreen {
 		for (int i = 0; i < m.getFelder().size(); i++) {
 			Feld f = m.getFelder().get(i);
 			JPanel feld = defaultmodulPanel(f.getLabel(), f.getValue(), f.isDezernat());
-			if (!defaultlabels.contains(f.getLabel())) {
+
+				int numOfPanels = modul_panel_edit.getComponentCount();
+				
 				JButton btn_tmp_entf = new JButton("Entfernen");
 				btn_tmp_entf.addActionListener(new ActionListener() {
 					@Override
@@ -1060,7 +1062,6 @@ public class mainscreen {
 						// Bezeichnung aus Liste entfernen
 						String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
 						labels.remove(name);
-
 						// Feld mit ID id von Panel entfernen
 						modul_panel_edit.remove(id);
 						// Platzhalter entfernen
@@ -1083,16 +1084,17 @@ public class mainscreen {
 						}
 						buttonmap = tmpmap;
 						modul_panel_edit.revalidate();
+						modul_panel_edit.repaint();
 
 					}
 				});
-
-				// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
-				int numOfPanels = modul_panel_edit.getComponentCount();
-				buttonmap.put(btn_tmp_entf, numOfPanels - 2);
-
+				if (defaultlabels.contains(f.getLabel())) {
+					btn_tmp_entf.setEnabled(false);
+				} 
 				feld.add(btn_tmp_entf);
-			}
+				// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
+				buttonmap.put(btn_tmp_entf, numOfPanels );
+			
 			modul_panel_edit.add(feld);
 			modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 		}

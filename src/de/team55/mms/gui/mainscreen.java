@@ -836,13 +836,6 @@ public class mainscreen {
 		});
 		buttonpnl.add(btnModulAkzeptieren);
 
-		JButton btnModulVerwerfen = new JButton("Modul verwerfen");
-		btnModulVerwerfen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		buttonpnl.add(btnModulVerwerfen);
-
 		JButton btnZurck = new JButton("Zur\u00FCck");
 		buttonpnl.add(btnZurck);
 

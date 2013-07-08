@@ -1419,10 +1419,11 @@ public class mainscreen {
 		for(int i = 0; i < selectedmodullist.size(); i++){
 			if(selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)){
 				zws = selectedmodullist.get(i);
-				break;
 			}
 		}
-		
+		System.out.println(zws.getName());
+		System.out.println(zws.getFelder().get(1).getLabel());
+		System.out.println(zws.getFelder().get(1).getValue());
 		for(int i = 0; i < zws.getFelder().size(); i++){
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}

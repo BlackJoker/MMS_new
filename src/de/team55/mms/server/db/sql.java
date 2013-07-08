@@ -1067,26 +1067,23 @@ public class sql {
 		ArrayList<String> zwsstring = new ArrayList<String>();
 		if(connect() == true){
 			try{
-				System.out.println(studiengang);
-				System.out.println(modultyp);
-				System.out.println(modulhandbuch);
 				state = this.con.createStatement();
 				res = state.executeQuery("Select modu.name as modname from module as modu join typ on modu.typid = typ.tid join studiengang as stud on typ.sid = stud.id " +
 						"where modu.akzeptiert = 1 and stud.name = '"+studiengang+"' and typ.tName = '"+modultyp+"' and modu.jahrgang = '"+modulhandbuch+"';");
 				while(res.next()){
 					zwsstring.add(res.getString("modname"));
 				}
-				System.out.println(zwsstring);
 				res.close();
 				state.close();
-				for(int i = 0; i < zwsstring.size(); i++ ){
-					selmodul.add(getModul(zwsstring.get(i)));
-					
-				}
-				System.out.println(selmodul);
+				
 			}catch(SQLException e){
 				//TODO fehler fenster aufrufen
 				e.printStackTrace();
+			}
+			disconnect();
+			for(int i = 0; i < zwsstring.size(); i++ ){
+				selmodul.add(getModul(zwsstring.get(i)));
+				
 			}
 		}
 		return selmodul;

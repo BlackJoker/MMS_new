@@ -1549,12 +1549,14 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int openrow = modshowtable.getSelectedRow();
 				modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
-				modshowCard();
-				showCard("mod show");
+				//modCard();
+				showCard("sel mod show");
 			}
 		});
 
 	}
+	
+	
 
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",

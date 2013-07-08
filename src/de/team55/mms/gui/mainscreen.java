@@ -152,6 +152,11 @@ public class mainscreen {
 		studmodel.addRow(new Object[] { stud.getName() });
 	}
 
+	private void addToTable(Modul mod) {
+		modshowmodel.addRow(new Object[] { mod.getName() });
+	}
+
+	
 	private void addToTable(Modulhandbuch modbuch) {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
@@ -1533,10 +1538,10 @@ public class mainscreen {
 
 		modshowtable.setModel(modshowmodel);
 		modshowmodel.setRowCount(0);
-		// selectedmodullist = database.get();
-		// for (int i = 0; i < selectedmodullist.size(); i++) {
-		// addToTable(selectedmodullist.get(i));
-		// }
+		 selectedmodullist = database.getselectedModul(studtransferstring, modtyptransferstring, modbuchtransferstring);
+		 for (int i = 0; i < selectedmodullist.size(); i++) {
+			 addToTable(selectedmodullist.get(i));
+		 }
 		modtyptransferstring = "";
 		goforit.addActionListener(new ActionListener() {
 

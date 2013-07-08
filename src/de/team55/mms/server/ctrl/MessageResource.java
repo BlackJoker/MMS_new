@@ -244,5 +244,13 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
+	
+	@POST
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/modul/getselectedModul/{studiengang}/{modultyp}/{modulhandbuch}")
+	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp, @PathParam("modulhandbuch") String modulhandbuch){
+		System.out.println("Ausgewählte Module abfragen");
+		return new sql().getselectedModul(modulhandbuch, modultyp, modulhandbuch);
+	}
 
 }

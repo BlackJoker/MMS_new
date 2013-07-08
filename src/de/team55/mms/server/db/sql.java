@@ -1068,9 +1068,10 @@ public class sql {
 		if(connect() == true){
 			try{
 				state = this.con.createStatement();
-				res = state.executeQuery("");
+				res = state.executeQuery("Select modu.name as modname from module as modu join typ on modu.typid = typ.tid join studiengang as stud on typ.sid = stud.id " +
+						"where modu.akzeptiert = 1 and stud.name = '"+studiengang+"' and typ.tName = '"+modultyp+"' and modu.jahrgang = '"+modulhandbuch+"';");
 				while(res.next()){
-					selmodul.add(new Modul());
+					selmodul.add(getModul(res.getString("modname")));
 				}
 			}catch(SQLException e){
 				//TODO fehler fenster aufrufen

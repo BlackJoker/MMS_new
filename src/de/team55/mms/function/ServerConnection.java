@@ -274,6 +274,16 @@ public class ServerConnection {
 		} 
 		return null;
 	}
+
+	public ArrayList<Modul> getselectedModul(String studiengang, String modultyp, String modulhandbuch) {
+		if(connect(email, password) == SUCCES){
+			return webResource.path("/modul/getselectedModul/").path(studiengang).path(modultyp).path(modulhandbuch)
+					.accept(MediaType.APPLICATION_XML)
+					.get(new GenericType<ArrayList<Modul>>(){
+					});
+		}
+		return null;
+	}
 	
 	
 	

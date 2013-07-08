@@ -37,7 +37,20 @@ public class Modul {
 		this.inbearbeitung = inbearbeitung2;
 		this.user = user2;
 	}
-
+	
+	public Modul(String name2, int jahrgang2,
+			ArrayList<Feld> felder, int version2, Date datum2,
+			boolean akzeptiert2, boolean inbearbeitung2, String user2) {
+		this.name = name2;
+		this.jahrgang = jahrgang2;
+		this.felder = felder;
+		this.version = version2;
+		this.datum = datum2;
+		this.akzeptiert = akzeptiert2;
+		this.inbearbeitung = inbearbeitung2;
+		this.user = user2;
+	}
+	
 	public Modul() {
 	}
 

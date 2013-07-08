@@ -118,7 +118,26 @@ public class mainscreen {
 
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
 		cards.setLayout(new CardLayout(0, 0));
+		
 		defaultlabels.add("Zuordnung");
+		defaultlabels.add("Kürzel");
+		defaultlabels.add("Prüfungsform");
+
+		defaultlabels.add("Jahrgang");
+		defaultlabels.add("Name");
+		defaultlabels.add("K\u00fcrzel");
+		defaultlabels.add("Titel");
+		defaultlabels.add("Leistungspunkte");
+		defaultlabels.add("Dauer");
+		defaultlabels.add("Turnus");
+		defaultlabels.add("Modulverantwortlicher");
+		defaultlabels.add("Dozenten");
+		defaultlabels.add("Inhalt");
+		defaultlabels.add("Lernziele");
+		defaultlabels.add("Literatur");
+		defaultlabels.add("Sprache");
+		defaultlabels.add("Pr\u00fcfungsform");
+		defaultlabels.add("Notenbildung");
 
 		homecard();
 		usermgtcard();
@@ -168,9 +187,6 @@ public class mainscreen {
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
 		final Dimension preferredSize = new Dimension(120, 20);
 
-		if (!defaultlabels.contains(name)) {
-			defaultlabels.add(name);
-		}
 		JPanel pnl = new JPanel();
 		// panel.add(pnl);
 		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
@@ -382,7 +398,9 @@ public class mainscreen {
 				String name = JOptionPane.showInputDialog(frame, text);
 				try {
 					while (name.isEmpty() || labels.contains(name)) {
-						Object[] params = { "Bitte geben Sie eine gültige Bezeichnung ein!", text };
+						Object[] params = {
+								"Bitte geben Sie eine gültige Bezeichnung ein!",
+								text };
 						name = JOptionPane.showInputDialog(frame, params);
 					}
 					labels.add(name);
@@ -411,7 +429,9 @@ public class mainscreen {
 						public void actionPerformed(ActionEvent e) {
 							int id = buttonmap.get(e.getSource());
 							// Bezeichnung aus Liste entfernen
-							String name = ((JLabel) ((JPanel) modul_panel.getComponent(id)).getComponent(0)).getText();
+							String name = ((JLabel) ((JPanel) modul_panel
+									.getComponent(id)).getComponent(0))
+									.getText();
 							labels.remove(name);
 
 							// Feld mit ID id von Panel entfernen
@@ -424,9 +444,11 @@ public class mainscreen {
 							// ids der Buttons ändern, damit auch ein Feld aus
 							// der Mitte gelöscht werden kann
 							HashMap<JButton, Integer> tmpmap = new HashMap<JButton, Integer>();
-							Iterator<Entry<JButton, Integer>> entries = buttonmap.entrySet().iterator();
+							Iterator<Entry<JButton, Integer>> entries = buttonmap
+									.entrySet().iterator();
 							while (entries.hasNext()) {
-								Entry<JButton, Integer> thisEntry = entries.next();
+								Entry<JButton, Integer> thisEntry = entries
+										.next();
 								JButton key = thisEntry.getKey();
 								int value = thisEntry.getValue();
 								if (value > id) {
@@ -466,7 +488,8 @@ public class mainscreen {
 		});
 		pnl_bottom.add(btnHome);
 
-		JScrollPane scrollPane = new JScrollPane(modul_panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane = new JScrollPane(modul_panel,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		modul_panel.setLayout(new BoxLayout(modul_panel, BoxLayout.Y_AXIS));
 
@@ -483,9 +506,11 @@ public class mainscreen {
 
 		zlist.setCellRenderer(new DefaultListCellRenderer() {
 			@Override
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-				super.getListCellRendererComponent(list, value, index, false, false);
+				super.getListCellRendererComponent(list, value, index, false,
+						false);
 
 				return this;
 			}
@@ -515,7 +540,8 @@ public class mainscreen {
 
 					JTextField neu_Name = new JTextField();
 					JTextField neu_Abschluss = new JTextField();
-					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
+					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(
+							cbmodel);
 					JPanel sp = new JPanel();
 					sp.add(neu_sgbox);
 
@@ -525,13 +551,18 @@ public class mainscreen {
 						public void actionPerformed(ActionEvent e) {
 
 							try {
-								String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:",
-										"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
+								String name = JOptionPane.showInputDialog(
+										frame, "Name des neuen Studiengangs:",
+										"neuer Studiengang",
+										JOptionPane.PLAIN_MESSAGE);
 
 								while (name.isEmpty()) {
-									name = JOptionPane.showInputDialog(frame,
-											"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
-											"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
+									name = JOptionPane
+											.showInputDialog(
+													frame,
+													"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
+													"neuer Studiengang",
+													JOptionPane.PLAIN_MESSAGE);
 								}
 
 								studienlist = database.getStudiengaenge();
@@ -549,8 +580,12 @@ public class mainscreen {
 									for (int i = 0; i < studienlist.size(); i++)
 										cbmodel.addElement(studienlist.get(i));
 								} else {
-									JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler",
-											JOptionPane.ERROR_MESSAGE);
+									JOptionPane
+											.showMessageDialog(
+													frame,
+													"Studiengang ist schon vorhanden",
+													"Fehler",
+													JOptionPane.ERROR_MESSAGE);
 								}
 							} catch (NullPointerException np) {
 
@@ -560,22 +595,30 @@ public class mainscreen {
 					});
 
 					sp.add(nsg);
-					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", sp };
+					Object[] message = { "Name des Types:", neu_Name,
+							"Abschluss:", neu_Abschluss, "Studiengang:", sp };
 
-					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen",
-							JOptionPane.OK_CANCEL_OPTION);
+					int option = JOptionPane.showConfirmDialog(frame, message,
+							"Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
 					if (option == JOptionPane.OK_OPTION) {
 
-						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
-								.getText().isEmpty()) && (option == JOptionPane.OK_OPTION)) {
-							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name,
-									"Abschluss:", neu_Abschluss, "Studiengang:", sp };
-							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen",
+						while ((neu_Name.getText().isEmpty()
+								|| (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
+								.getText().isEmpty())
+								&& (option == JOptionPane.OK_OPTION)) {
+							Object[] messageEmpty = {
+									"Bitte alle Felder ausf\u00fcllen!",
+									"Name des Types:", neu_Name, "Abschluss:",
+									neu_Abschluss, "Studiengang:", sp };
+							option = JOptionPane.showConfirmDialog(frame,
+									messageEmpty, "Neuen Typ anlegen",
 									JOptionPane.OK_CANCEL_OPTION);
 						}
 						if (option == JOptionPane.OK_OPTION) {
-							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
-							Zuordnung z = new Zuordnung(neu_Name.getText(), s.getName(), s.getId(), neu_Abschluss
+							Studiengang s = (Studiengang) neu_sgbox
+									.getSelectedItem();
+							Zuordnung z = new Zuordnung(neu_Name.getText(), s
+									.getName(), s.getId(), neu_Abschluss
 									.getText());
 
 							boolean neu = true;
@@ -592,8 +635,9 @@ public class mainscreen {
 								for (int i = 0; i < typen.size(); i++)
 									cbmodel_Z.addElement(typen.get(i));
 							} else {
-								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler",
-										JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame,
+										"Zuordnung ist schon vorhanden",
+										"Fehler", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
@@ -605,79 +649,21 @@ public class mainscreen {
 
 		});
 		pnl_MH.add(nMH_btn);
-
-		// pnl_MH.setLayout(new BoxLayout(pnl_MH, BoxLayout.X_AXIS));
 		modul_panel.add(pnl_MH);
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Jahrgang + Platzhalter
-		modul_panel.add(defaultmodulPanel("Jahrgang", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Name + Platzhalter
-		modul_panel.add(defaultmodulPanel("Name", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel K\u00fcrzel + Platzhalter
-		modul_panel.add(defaultmodulPanel("K\u00fcrzel", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		labels.add("Kürzel");
-
-		// Panel Titel + Platzhaler
-		modul_panel.add(defaultmodulPanel("Titel", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel LP + Platzhalter
-		modul_panel.add(defaultmodulPanel("Leistungspunkte", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Dauer + Platzhalter
-		modul_panel.add(defaultmodulPanel("Dauer", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Turnus + Platzhalter
-		modul_panel.add(defaultmodulPanel("Turnus", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Modulverantwortlicher + Platzhalter
-		modul_panel.add(defaultmodulPanel("Modulverantwortlicher", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Dozenten + Platzhalter
-		modul_panel.add(defaultmodulPanel("Dozenten", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Inhalt + Platzhalter
-		modul_panel.add(defaultmodulPanel("Inhalt", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Ziele + Platzhalter
-		modul_panel.add(defaultmodulPanel("Lernziele", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Literatur + Platzhalter
-		modul_panel.add(defaultmodulPanel("Literatur", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Sprache + Platzhalter
-		modul_panel.add(defaultmodulPanel("Sprache", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Panel Pr\u00fcfungsform + Platzhalter
-		modul_panel.add(defaultmodulPanel("Pr\u00fcfungsform", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		labels.add("Prüfungsform");
-
-		// Panel Notenbildung + Platzhalter
-		modul_panel.add(defaultmodulPanel("Notenbildung", "", false));
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		
+		for(int i = 3;i<defaultlabels.size();i++){
+			modul_panel.add(defaultmodulPanel(defaultlabels.get(i), "", false));
+			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		}
 
 		JButton btnOk = new JButton("Annehmen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2)).getComponent(1)).getText();
+				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2))
+						.getComponent(1)).getText();
 				int jahrgang;
 				try {
 					jahrgang = Integer.parseInt(jg);
@@ -692,22 +678,30 @@ public class mainscreen {
 
 					if (jahrgang != 0) {
 
-						String Name = ((JTextArea) ((JPanel) modul_panel.getComponent(4)).getComponent(1)).getText();
+						String Name = ((JTextArea) ((JPanel) modul_panel
+								.getComponent(4)).getComponent(1)).getText();
 
 						if (Name.isEmpty()) {
-							JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane
+									.showMessageDialog(
+											frame,
+											"Bitte füllen Sie alle Felder aus!",
+											"Eingabe Fehler",
+											JOptionPane.ERROR_MESSAGE);
 						} else {
 
 							boolean filled = true;
 							ArrayList<Feld> felder = new ArrayList<Feld>();
 							// Eintraege der Reihe nach auslesen
 							for (int i = 6; i < modul_panel.getComponentCount(); i = i + 2) {
-								JPanel tmp = (JPanel) modul_panel.getComponent(i);
+								JPanel tmp = (JPanel) modul_panel
+										.getComponent(i);
 								JLabel tmplbl = (JLabel) tmp.getComponent(0);
-								JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
+								JTextArea tmptxt = (JTextArea) tmp
+										.getComponent(1);
 
-								boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
+								boolean dezernat2 = ((JCheckBox) tmp
+										.getComponent(2)).isSelected();
 								String value = tmptxt.getText();
 								String label = tmplbl.getText();
 								if (label.isEmpty()) {
@@ -721,8 +715,9 @@ public class mainscreen {
 
 								Date d = new Date();
 
-								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
-										.geteMail());
+								Modul neu = new Modul(Name, zlist, jahrgang,
+										felder, version, d, false, false,
+										current.geteMail());
 								database.setModul(neu);
 								labels.removeAll(labels);
 								modul_panel.removeAll();
@@ -730,17 +725,23 @@ public class mainscreen {
 								newmodulecard();
 								showCard("newmodule");
 							} else {
-								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
-										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame,
+										"Bitte füllen Sie alle Felder aus!",
+										"Eingabe Fehler",
+										JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane
+								.showMessageDialog(
+										frame,
+										"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!",
+										"Eingabe Fehler",
+										JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!",
+					JOptionPane.showMessageDialog(frame,
+							"Bitte wählen Sie min. einen Zuordnung aus!",
 							"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -751,7 +752,6 @@ public class mainscreen {
 		cards.add(pnl_newmod, "newmodule");
 
 	}
-
 	private void removeFromTable(int rowid) {
 		tmodel.removeRow(rowid);
 	}
@@ -920,12 +920,14 @@ public class mainscreen {
 
 	public void modulbearbeitenCard() {
 
-		JPanel panel = new JPanel();
+		JPanel pnl_modedit = new JPanel();
+		pnl_modedit.setLayout(new BorderLayout(0, 0));
 		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-		panel.add(tabs, BorderLayout.CENTER);
+		pnl_modedit.add(tabs);
 
 		JPanel nichtakzeptiert = new JPanel();
-		tabs.addTab("Noch nicht akzeptierte Module", null, nichtakzeptiert, null);
+		tabs.addTab("Noch nicht akzeptierte Module", null, nichtakzeptiert,
+				null);
 		nichtakzeptiert.setLayout(new BorderLayout(0, 0));
 		final JList<Modul> list_notack = new JList<Modul>(lm);
 		list_notack.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -945,7 +947,8 @@ public class mainscreen {
 					if (m.getUser().equals(current.geteMail())) {
 						rights = true;
 					} else {
-						ArrayList<String> rel = database.getUserRelation(current.geteMail());
+						ArrayList<String> rel = database
+								.getUserRelation(current.geteMail());
 						if (rel.contains(m.getUser())) {
 							rights = true;
 						}
@@ -955,13 +958,20 @@ public class mainscreen {
 						cards.add(mod, "modBearbeiten");
 						showCard("modBearbeiten");
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
-								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+						JOptionPane
+								.showMessageDialog(
+										frame,
+										"Sie besitzen nicht die nötigen Rechte, um dieses Modul zu bearbeiten!",
+										"Zugriff verweigert",
+										JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
-							"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+					JOptionPane
+							.showMessageDialog(
+									frame,
+									"Dieses Modul befindet sich gerade in bearbeitung!",
+									"Zugriff verweigert",
+									JOptionPane.ERROR_MESSAGE);
 
 				}
 
@@ -1019,10 +1029,9 @@ public class mainscreen {
 			}
 		});
 		buttonpnl2.add(btnZurck2);
-		cards.add(panel, "modulbearbeiten");
+		cards.add(pnl_modedit, "modulbearbeiten");
 
 	}
-
 	private JPanel modeditCard(Modul m) {
 		final JPanel pnl_newmod = new JPanel();
 		modul_panel.removeAll();

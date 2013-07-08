@@ -1542,13 +1542,13 @@ public class mainscreen {
 		 for (int i = 0; i < selectedmodullist.size(); i++) {
 			 addToTable(selectedmodullist.get(i));
 		 }
-		modtyptransferstring = "";
+		 modulselectionstring = "";
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int openrow = modshowtable.getSelectedRow();
-				modtyptransferstring = (String) modshowtable.getValueAt(openrow, 0);
+				modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
 				modshowCard();
 				showCard("mod show");
 			}

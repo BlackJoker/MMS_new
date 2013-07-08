@@ -1073,6 +1073,8 @@ public class sql {
 				while(res.next()){
 					selmodul.add(getModul(res.getString("modname")));
 				}
+				res.close();
+				state.close();
 			}catch(SQLException e){
 				//TODO fehler fenster aufrufen
 				e.printStackTrace();

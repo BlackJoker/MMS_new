@@ -245,7 +245,7 @@ public class MessageResource {
 		}
 	}
 	
-	@POST
+	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getselectedModul/{studiengang}/{modultyp}/{modulhandbuch}")
 	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp, @PathParam("modulhandbuch") String modulhandbuch){

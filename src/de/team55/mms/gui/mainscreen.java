@@ -204,6 +204,24 @@ public class mainscreen {
 
 		return pnl;
 	}
+	
+	private JPanel modulPanel(String name, String string) {
+		final Dimension preferredSize = new Dimension(120, 20);
+
+		JPanel pnl = new JPanel();
+		// panel.add(pnl);
+		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
+
+		JLabel label = new JLabel(name);
+		label.setPreferredSize(preferredSize);
+		pnl.add(label);
+
+		JLabel txt = new JLabel(string);
+		txt.setPreferredSize(preferredSize);
+		pnl.add(txt);
+
+		return pnl;
+	}
 
 	private void homecard() {
 		JPanel welcome = new JPanel();
@@ -1352,10 +1370,6 @@ public class mainscreen {
 		modshow.add(modtypscp);
 		modshow.add(goforit, BorderLayout.SOUTH);
 
-		System.out.println(modtyptransferstring);
-		System.out.println(modbuchtransferstring);
-		System.out.println(studtransferstring);
-
 		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1387,15 +1401,33 @@ public class mainscreen {
 				if(modshowtable.getSelectedRow() != -1){
 					int openrow = modshowtable.getSelectedRow();
 					modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
-					// modCard();
-					showCard("sel mod show");
+					modCard();
+					showCard("selmodshow");
 				}
 			}
 		});
 
 	}
 	
-	
+	private void modCard(){
+		JPanel modshow = new JPanel();
+		cards.add(modshow, "selmodshow");
+		JPanel modpanel = new JPanel();
+		JScrollPane modscp = new JScrollPane(modpanel);
+		modshow.add(modscp);
+		Modul zws = null;
+		for(int i = 0; i < selectedmodullist.size(); i++){
+			if(selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)){
+				zws = selectedmodullist.get(i);
+				break;
+			}
+		}
+		
+		for(int i = 0; i < zws.getFelder().size(); i++){
+			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
+		}
+		
+	}
 
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",

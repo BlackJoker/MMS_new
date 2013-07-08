@@ -302,8 +302,8 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT m.jahrgang, m.sid FROM modulhandbuch AS m JOIN studiengang AS s on s.id = m.sid where s.name = '"
-								+ studiengang + "' and m.akzeptiert = 1;");
+						.executeQuery("select DISTINCT jahrgang, sid from module join typ on typid = tid join studiengang as stud on sid = stud.id where akzeptiert = 1 and stud.name = '"
+								+ studiengang + "';");
 
 				while (res.next()) {
 					String jg = res.getString("jahrgang");

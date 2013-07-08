@@ -39,9 +39,9 @@ public class MessageResource {
 	@Path("/login/{user}/{pass}")
 	public User userLogin(@PathParam("user") String user, @PathParam("pass") String pass) {
 		if(user.equals("gast@gast.gast")){
-			System.out.println("User " + user + " hat sich angemeldet");
-		} else{
 			System.out.println("Gast hat sich angemeldet");
+		} else{
+			System.out.println("User " + user + " hat sich angemeldet");
 		}
 		User tmp = new sql().getUser(user, pass);
 		if (tmp == null)

@@ -1560,6 +1560,7 @@ public class mainscreen {
 				modulselectionstring = (String) modshowtable.getValueAt(openrow, 0);
 				//modCard();
 				showCard("sel mod show");
+			//test
 			}
 		});
 

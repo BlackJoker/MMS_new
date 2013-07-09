@@ -104,7 +104,7 @@ public class mainscreen {
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
 	private static JButton btnModulVerwaltung = new JButton("Verwaltung");
 	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
-	private static JButton btnMHB = new JButton("<html>Modulhandb\u00fccher<br>Durchst\u00f6bern");
+	private static JButton btnMHB = new JButton("<html>Module<br>Durchst\u00f6bern");
 	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private static JButton btnLogin = new JButton("Einloggen");
 	private static JPanel mod = new JPanel();
@@ -356,6 +356,8 @@ public class mainscreen {
 		if (!name.equals("Jahrgang") && !name.equals("Name")) {
 			JCheckBox dez = new JCheckBox("Dezernat 2", b);
 			pnl.add(dez);
+		} else if(name.equals("Name")){
+			txt.setEditable(false);
 		}
 
 		return pnl;
@@ -1061,7 +1063,55 @@ public class mainscreen {
 		JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
 		btnModulAkzeptieren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				Modul m = list_notack.getSelectedValue();
+				if(m.getName().isEmpty()){
+					JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
+							"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
+				} else{
+					boolean hasDezernat = false;
+					boolean isCorrect = true;
+					ArrayList<Feld> felder = m.getFelder();
+					for(int i=0;i<felder.size();i++){
+						if(felder.get(i).getValue().isEmpty()){
+							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
+									"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
+							isCorrect = false;
+							break;
+						} 
+						if(felder.get(i).isDezernat()){
+							hasDezernat = true;
+						}
+					}
+					
+					if(isCorrect){
+						boolean checked = true;
+						if(hasDezernat){
+							int n = JOptionPane.showConfirmDialog(frame,
+									"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?", "Bestätigung",
+									JOptionPane.YES_NO_OPTION);
+							if (n == 0) {
+								checked=true;
+							} else{
+								checked = false;
+							}
+						}
+						if(checked){
+							database.acceptModul(m);
+							ArrayList<Modul> module = database.getModule(false);
+							lm.removeAllElements();
+							for (int i = 0; i < module.size(); i++) {
+								lm.addElement(module.get(i));
+							}
+
+							module = database.getModule(true);
+							lm_ack.removeAllElements();
+							for (int i = 0; i < module.size(); i++) {
+								lm_ack.addElement(module.get(i));
+							}
+							showCard("modulbearbeiten");
+						}
+					}
+				}
 			}
 		});
 		buttonpnl.add(btnModulAkzeptieren);
@@ -1116,13 +1166,6 @@ public class mainscreen {
 			}
 		});
 		buttonpnl2.add(btnModulBearbeiten2);
-
-		JButton btnModulAkzeptieren2 = new JButton("Modul akzeptieren");
-		btnModulAkzeptieren2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		buttonpnl2.add(btnModulAkzeptieren2);
 
 		JButton btnZurck2 = new JButton("Zur\u00FCck");
 		btnZurck2.addActionListener(new ActionListener() {
@@ -1370,12 +1413,12 @@ public class mainscreen {
 		label_MH.setPreferredSize(preferredSize);
 		pnl_Z.add(label_MH);
 
-		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
+		final DefaultListModel<Zuordnung> lm_Z = new DefaultListModel<Zuordnung>();
 		typen = m.getZuordnungen();
 		for (int i = 0; i < typen.size(); i++) {
-			lm.addElement(typen.get(i));
+			lm_Z.addElement(typen.get(i));
 		}
-		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm_Z);
 		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		pnl_Z.add(zlist);
@@ -1393,8 +1436,8 @@ public class mainscreen {
 		z_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!lm.contains((Zuordnung) cb_Z.getSelectedItem()))
-					lm.addElement((Zuordnung) cb_Z.getSelectedItem());
+				if (!lm_Z.contains((Zuordnung) cb_Z.getSelectedItem()))
+					lm_Z.addElement((Zuordnung) cb_Z.getSelectedItem());
 			}
 		});
 		pnl_Z.add(z_btn);
@@ -1404,7 +1447,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int i = zlist.getSelectedIndex();
 				if (i > -1) {
-					lm.remove(i);
+					lm_Z.remove(i);
 				}
 			}
 		});
@@ -1481,8 +1524,8 @@ public class mainscreen {
 					jahrgang = 0;
 				}
 
-				for (int i = 0; i < lm.getSize(); i++) {
-					zlist.add(lm.getElementAt(i));
+				for (int i = 0; i < lm_Z.getSize(); i++) {
+					zlist.add(lm_Z.getElementAt(i));
 				}
 
 				if (!zlist.isEmpty()) {
@@ -1531,7 +1574,18 @@ public class mainscreen {
 									labels.removeAll(labels);
 									modul_panel_edit.removeAll();
 									modul_panel_edit.revalidate();
-									modulbearbeitenCard();
+
+									ArrayList<Modul> module = database.getModule(false);
+									lm.removeAllElements();
+									for (int i = 0; i < module.size(); i++) {
+										lm.addElement(module.get(i));
+									}
+
+									module = database.getModule(true);
+									lm_ack.removeAllElements();
+									for (int i = 0; i < module.size(); i++) {
+										lm_ack.addElement(module.get(i));
+									}
 									showCard("modulbearbeiten");
 								}
 							} else {

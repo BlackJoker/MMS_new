@@ -290,6 +290,17 @@ public class ServerConnection {
 			return null;
 		}
 	}
+ 
+	public ClientResponse acceptModul(Modul m) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("modul/accept")
+					.type(MediaType.APPLICATION_XML)
+					.post(ClientResponse.class, m);
+		} else {
+			return null;
+		}
+		
+	}
 	
 	
 	

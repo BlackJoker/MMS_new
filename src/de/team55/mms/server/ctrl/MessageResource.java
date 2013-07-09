@@ -199,6 +199,20 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
+	
+	@POST
+	@Path("/modul/accept/")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response modulAccept(Modul m) {
+		int status = new sql().acceptModul(m.getName(),m.getVersion());
+		if (status == 1) {
+			System.out.println("Modul " + m.getName() + " akzeptiert");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Modul " + m.getName() + " wurde nicht akzeptiert");
+			return Response.status(500).build();
+		}
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)

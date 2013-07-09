@@ -381,14 +381,10 @@ public class sql {
 		PreparedStatement state = null;
 		if (connect() == true) {
 			ArrayList<Zuordnung> typen = neu.getZuordnungen();
-			// ArrayList<Modulhandbuch> mb = neu.getModulhandbuch();
 			String name = neu.getName();
 			int version = neu.getVersion();
 			ArrayList<Feld> felder = neu.getFelder();
 			String user = neu.getUser();
-			// ArrayList<String> labels = neu.getLabels();
-			// ArrayList<String> values = neu.getValues();
-			// ArrayList<Boolean> dezernat = neu.getDezernat();
 			try {
 				for (int i = 0; i < typen.size(); i++) {
 					state = con
@@ -401,13 +397,6 @@ public class sql {
 					state.setString(6, user);
 					state.executeUpdate();
 				}
-				/*
-				 * state = con .prepareStatement(
-				 * "INSERT INTO modulhandbuch (name, studiengang, jahrgang) VALUES(?,?,?)"
-				 * ); state.setString(1, neu.getModulhandbuch());
-				 * state.setString(2, neu.getStudiengang()); state.setString(3,
-				 * neu.getJahrgang()); state.executeUpdate();
-				 */
 				state = con
 						.prepareStatement("INSERT INTO text (name,version, label, text, dezernat2) VALUES(?,?,?,?,?)");
 				for (int i = 0; i < felder.size(); i++) {
@@ -1121,6 +1110,27 @@ public class sql {
 			return new Modul(name, zs, jahrgang, felder, version, datum, akzeptiert, inbearbeitung, user);
 		} else
 			return new Modul();
+	}
+
+	public int acceptModul(String name, int version) {
+		int ok = FAILED;
+		PreparedStatement state = null;
+		if (connect() == true) {
+			try {
+				state = con
+						.prepareStatement("UPDATE module SET akzeptiert=1 WHERE modulname=? AND version=?");
+				state.setString(1, name);
+				state.setInt(2, version);
+				state.executeUpdate();
+				state.close();
+				ok = SUCCES;
+			} catch (SQLException e) {
+				// TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return ok;
 	}
 
 }

@@ -1044,8 +1044,8 @@ public class mainscreen {
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
-				m.setInbearbeitung(database.getModulInEdit(m.getName()));
 				if (m != null) {
+					m.setInbearbeitung(database.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
 						boolean rights = false;
 						if (m.getUser().equals(current.geteMail())) {
@@ -1669,8 +1669,8 @@ public class mainscreen {
 		cards.add(studiengangshow, "studiengang show");
 		studiengangshow.setLayout(new BorderLayout(0, 0));
 		JPanel btnpan = new JPanel();
-		JButton goforit = new JButton("oeffnen");
-		JButton back = new JButton("zurueck");
+		JButton goforit = new JButton("\u00d6ffnen");
+		JButton back = new JButton("Zur\u00FCck");
 		btnpan.add(back);
 		btnpan.add(goforit);
 		final JTable studtable = new JTable();
@@ -1726,8 +1726,8 @@ public class mainscreen {
 		cards.add(modbuchshow, "modbuch show");
 		modbuchshow.setLayout(new BorderLayout(0, 0));
 		JPanel btnpan = new JPanel();
-		JButton goforit = new JButton("oeffnen");
-		JButton back = new JButton("zurueck");
+		JButton goforit = new JButton("\u00d6ffnen");
+		JButton back = new JButton("Zur\u00FCck");
 		btnpan.add(back);
 		btnpan.add(goforit);
 		final JTable modbuchtable = new JTable();
@@ -1791,8 +1791,8 @@ public class mainscreen {
 		cards.add(modtypshow, "modtyp show");
 		modtypshow.setLayout(new BorderLayout(0, 0));
 		JPanel btnpan = new JPanel();
-		JButton goforit = new JButton("oeffnen");
-		JButton back = new JButton("zurueck");
+		JButton goforit = new JButton("\u00d6ffnen");
+		JButton back = new JButton("Zur\u00FCck");
 		btnpan.add(back);
 		btnpan.add(goforit);
 		final JTable modtyptable = new JTable();
@@ -1861,8 +1861,8 @@ public class mainscreen {
 		cards.add(modshow, "mod show");
 		modshow.setLayout(new BorderLayout(0, 0));
 		JPanel btnpan = new JPanel();
-		JButton goforit = new JButton("oeffnen");
-		JButton back = new JButton("zurueck");
+		JButton goforit = new JButton("\u00d6ffnen");
+		JButton back = new JButton("Zur\u00FCck");
 		btnpan.add(back);
 		btnpan.add(goforit);
 		final JTable modshowtable = new JTable();
@@ -1925,7 +1925,7 @@ public class mainscreen {
 		modshow.setLayout(new BorderLayout(0, 0));
 		JPanel modpanel = new JPanel();
 		JButton pdfbtn = new JButton("Als PDF ausgeben");
-		JButton back = new JButton("zurueck");
+		JButton back = new JButton("Zur\u00FCck");
 		JPanel btnpan = new JPanel();
 		btnpan.add(back);
 		btnpan.add(pdfbtn);

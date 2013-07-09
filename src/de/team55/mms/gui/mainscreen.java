@@ -507,10 +507,12 @@ public class mainscreen {
 						if (response == 1) {
 							tmp.setFreigeschaltet(true);
 							if(SendMail.send(current.geteMail(),neueUser.get(i).geteMail(),"Sie wurden freigeschaltet!")==1){
-								addToTable(tmp);
-								neueUser.remove(i);
 								tmp.setFreigeschaltet(true);
-								database.usersave(tmp);
+								System.out.println(database.userupdate(tmp, tmp.geteMail()).getStatus());
+								if(database.userupdate(tmp, tmp.geteMail()).getStatus()==1){
+									addToTable(tmp);
+									neueUser.remove(i);
+								}
 							}
 						} else{
 							int n = JOptionPane.showConfirmDialog(frame,
@@ -865,7 +867,7 @@ public class mainscreen {
 		//
 		// Inhalt der Tabelle
 		//
-		tmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Titel", "Vorname", "Nachnahme", "e-Mail",
+		tmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Titel", "Vorname", "Nachname", "e-Mail",
 				"Benutzer verwalten", "Module einreichen", "Module Annehmen", "Verwaltung" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, boolean.class,

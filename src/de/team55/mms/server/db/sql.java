@@ -53,7 +53,7 @@ public class sql {
 			Statement stmt = this.con.createStatement();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` ("
-					+ "  `name` varchar(255) NOT NULL,"
+					+ "  `modulname` varchar(255) NOT NULL,"
 					+ "  `Modulhandbuchname` varchar(255) NOT NULL,"
 					+ "  `Version` int(11) NOT NULL,"
 					+ "  `Datum` date NOT NULL,"
@@ -244,7 +244,7 @@ public class sql {
 				}
 
 				if (version != 0) {
-					sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+					sql = "SELECT *,m.modulname AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
 							+ name + "'AND version =" + version + ";";
 					res = state.executeQuery(sql);
 					if (res.first()) {
@@ -423,7 +423,7 @@ public class sql {
 			try {
 				for (int i = 0; i < typen.size(); i++) {
 					state = con
-							.prepareStatement("INSERT INTO module (name, jahrgang, version, datum, typid, user) VALUES(?,?,?,?,?,?)");
+							.prepareStatement("INSERT INTO module (modulname, jahrgang, version, datum, typid, user) VALUES(?,?,?,?,?,?)");
 					state.setString(1, name);
 					state.setInt(2, neu.getJahrgang());
 					state.setInt(3, version);
@@ -775,11 +775,11 @@ public class sql {
 				state = this.con.createStatement();
 				state2 = this.con.createStatement();
 				res = state2
-						.executeQuery("SELECT DISTINCT name FROM module ORDER BY name ASC;");
+						.executeQuery("SELECT DISTINCT modulname FROM module ORDER BY modulname ASC;");
 
 				while (res.next()) {
 					String name = res.getString("name");
-					String q = "SELECT IFNULL(MAX(Version),0) AS Version FROM module WHERE name = '"
+					String q = "SELECT IFNULL(MAX(Version),0) AS Version FROM module WHERE modulname = '"
 							+ name + "';";
 					ResultSet res2 = state.executeQuery(q);
 					int version = 0;
@@ -788,7 +788,7 @@ public class sql {
 					}
 
 					ArrayList<Studiengang> sgs = new ArrayList<Studiengang>();
-					String sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+					String sql = "SELECT *,m.modulname AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.modulname = '"
 							+ name + "'AND version =" + version + ";";
 					res2 = state.executeQuery(sql);
 					int jahrgang = 0;
@@ -1068,7 +1068,7 @@ public class sql {
 		if(connect() == true){
 			try{
 				state = this.con.createStatement();
-				res = state.executeQuery("Select modu.name as modname from module as modu join typ on modu.typid = typ.tid join studiengang as stud on typ.sid = stud.id " +
+				res = state.executeQuery("Select modu.modulname as modname from module as modu join typ on modu.typid = typ.tid join studiengang as stud on typ.sid = stud.id " +
 						"where modu.akzeptiert = 1 and stud.name = '"+studiengang+"' and typ.tName = '"+modultyp+"' and modu.jahrgang = '"+modulhandbuch+"';");
 				while(res.next()){
 					zwsstring.add(res.getString("modname"));
@@ -1133,7 +1133,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				if (version != 0) {
-					String sql = "SELECT *,m.name AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+					String sql = "SELECT *,m.modulname AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.modulname = '"
 							+ name + "'AND version =" + version + ";";
 					res = state.executeQuery(sql);
 					if (res.first()) {

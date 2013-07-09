@@ -1061,6 +1061,7 @@ public class mainscreen {
 		JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
 		btnModulAkzeptieren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 			}
 		});
 		buttonpnl.add(btnModulAkzeptieren);

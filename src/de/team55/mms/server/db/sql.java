@@ -534,12 +534,13 @@ public class sql {
 			int id = -1;
 			try {
 				state = con
-						.prepareStatement("INSERT INTO user (email,vorname,namen,password, titel) VALUES (?,?,?,?,?)");
+						.prepareStatement("INSERT INTO user (email,vorname,namen,password, titel, frei) VALUES (?,?,?,?,?,?)");
 				state.setString(1, user.geteMail());
 				state.setString(2, user.getVorname());
 				state.setString(3, user.getNachname());
 				state.setString(4, user.getPassword());
 				state.setString(5, user.getTitel());
+				state.setBoolean(6, user.isFreigeschaltet());
 				state.executeUpdate();
 				con.commit();
 				state.close();
@@ -613,13 +614,14 @@ public class sql {
 					if (id != 0) {
 						if ((user.getPassword() != null) && !user.getPassword().equals("null")) {
 							state = con
-									.prepareStatement("UPDATE user SET titel = ?, vorname = ?, namen = ?, password = ?, email = ? WHERE id = ? ;");
+									.prepareStatement("UPDATE user SET titel = ?, vorname = ?, namen = ?, password = ?, email = ?, frei = ? WHERE id = ? ;");
 							state.setString(1, user.getTitel());
 							state.setString(2, user.getVorname());
 							state.setString(3, user.getNachname());
 							state.setString(4, user.getPassword());
 							state.setString(5, user.geteMail());
-							state.setInt(6, id);
+							state.setBoolean(6, user.isFreigeschaltet());
+							state.setInt(7, id);
 							state.executeUpdate();
 							state.close();
 						} else {

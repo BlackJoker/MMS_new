@@ -503,13 +503,21 @@ public class mainscreen {
 						int response = dlg.showCustomDialog();
 						// Wenn ok gedrückt wird
 						// neuen User abfragen
+						User tmp = dlg.getUser();
 						if (response == 1) {
-							User tmp = dlg.getUser();
 							tmp.setFreigeschaltet(true);
 							if(SendMail.send(current.geteMail(),neueUser.get(i).geteMail(),"Sie wurden freigeschaltet!")==1){
 								addToTable(tmp);
 								neueUser.remove(i);
+								tmp.setFreigeschaltet(true);
 								database.usersave(tmp);
+							}
+						} else{
+							int n = JOptionPane.showConfirmDialog(frame,
+									"Möchten Sie diesen Benutzer löschen", "Bestätigung",
+									JOptionPane.YES_NO_OPTION);
+							if (n == 0) {
+								database.deluser(tmp.geteMail());
 							}
 						}
 					}
@@ -888,6 +896,7 @@ public class mainscreen {
 				// neuen User abfragen
 				if (response == 1) {
 					User tmp = dlg.getUser();
+					tmp.setFreigeschaltet(true);
 					database.usersave(tmp);
 					addToTable(tmp);
 				}
@@ -919,6 +928,7 @@ public class mainscreen {
 					// neuen User abfragen
 					if (response == 1) {
 						User tmp = dlg.getUser();
+						tmp.setFreigeschaltet(true);
 						if (database.userupdate(tmp, em).getStatus() == 201) {
 							removeFromTable(row);
 							addToTable(tmp);
@@ -1129,6 +1139,11 @@ public class mainscreen {
 		buttonpnl.add(btnModulAkzeptieren);
 
 		JButton btnZurck = new JButton("Zur\u00FCck");
+		btnZurck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showCard("welcome page");
+			}
+		});
 		buttonpnl.add(btnZurck);
 
 		JPanel akzeptiert = new JPanel();
@@ -1183,6 +1198,7 @@ public class mainscreen {
 		JButton btnZurck2 = new JButton("Zur\u00FCck");
 		btnZurck2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				showCard("welcome page");
 			}
 		});
 		buttonpnl2.add(btnZurck2);

@@ -1942,7 +1942,6 @@ public class mainscreen {
 		}
 		modpanel.add(modulPanel("Name", zws.getName()));
 		modpanel.add(modulPanel("Jahrgang", modbuchtransferstring));
-		modpanel.add(modulPanel("Modultyp", modtyptransferstring));
 		for(int i = 0; i < zws.getZuordnungen().size(); i++){
 			modpanel.add(modulPanel("Zuordnung", zws.getZuordnungen().get(i).toString()));
 		}

@@ -40,6 +40,7 @@ public class userdialog extends JDialog {
 	public static final int CANCEL_OPTION = 0;
 	private int userResponse;
 	private ServerConnection database;
+	private boolean registration = false;
 
 	private JTextField textVorname;
 	private JTextField textNachname;
@@ -51,9 +52,12 @@ public class userdialog extends JDialog {
 	private JCheckBox cb_ModLes;
 	private JCheckBox cb_BV;
 
+	private DefaultListModel<User> lm = new DefaultListModel<User>();
+	
 	private boolean adminedit = true;
+
 	private User usr = new User("", "", "", "", null, false, false, false,
-			false);
+			false,false);
 
 	public userdialog(JFrame owner, String title, ServerConnection database) {
 		super(owner, title, true);
@@ -69,6 +73,18 @@ public class userdialog extends JDialog {
 		this.usr = usr;
 		this.adminedit = adminedit;
 		this.database = database;
+		createDialog();
+	}
+
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public userdialog(JFrame owner, String title, ServerConnection database,
+			boolean registration) {
+		super(owner, title, true);
+		this.setResizable(false);
+		this.database = database;
+		this.registration = registration;
 		createDialog();
 	}
 
@@ -206,58 +222,63 @@ public class userdialog extends JDialog {
 		JPanel south = new JPanel();
 		south.setLayout(new BorderLayout(0, 0));
 
-		JPanel pnl_user = new JPanel();
-		south.add(pnl_user, BorderLayout.CENTER);
+		if (registration) {
+			lblUserData.setText("Ihre Daten:");
+			lblUserrechte.setText("Ihre gewünschten Rechte:");
+		} else {
 
-		JPanel pnl_list = new JPanel();
+			JPanel pnl_user = new JPanel();
+			south.add(pnl_user, BorderLayout.CENTER);
 
-		final DefaultListModel<User> lm = new DefaultListModel<User>();
-		final JList<User> zlist = new JList<User>(lm);
-		ArrayList<User> stelv = database.getStellvertreter(usr.geteMail());
-		for (int i = 0; i < stelv.size(); i++) {
-			lm.addElement(stelv.get(i));
-		}
+			JPanel pnl_list = new JPanel();
 
-		pnl_list.add(zlist);
-
-		JButton remove = new JButton("Stellvertreter entfernen");
-		remove.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				lm.removeElement(zlist.getSelectedValue());
-				pack();
+			final JList<User> zlist = new JList<User>(lm);
+			ArrayList<User> stelv = database.getStellvertreter(usr.geteMail());
+			for (int i = 0; i < stelv.size(); i++) {
+				lm.addElement(stelv.get(i));
 			}
-		});
 
-		pnl_list.add(remove);
+			pnl_list.add(zlist);
 
-		south.add(pnl_list, BorderLayout.NORTH);
+			JButton remove = new JButton("Stellvertreter entfernen");
+			remove.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					lm.removeElement(zlist.getSelectedValue());
+					pack();
+				}
+			});
 
-		ArrayList<User> userlist = database.userload();
+			pnl_list.add(remove);
 
-		DefaultComboBoxModel<User> cbmodel = new DefaultComboBoxModel<User>();
-		for (int i = 0; i < userlist.size(); i++) {
-			User s = userlist.get(i);
-			if (!s.geteMail().equals(usr.geteMail()))
-				cbmodel.addElement(s);
-		}
+			south.add(pnl_list, BorderLayout.NORTH);
 
-		final JComboBox<User> cb_Z = new JComboBox<User>(cbmodel);
-		// cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width, 20));
+			ArrayList<User> userlist = database.userload();
 
-		pnl_user.add(cb_Z);
-
-		JButton z_btn = new JButton("Stellvertreter auswählen");
-		z_btn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!lm.contains((User) cb_Z.getSelectedItem()))
-					lm.addElement((User) cb_Z.getSelectedItem());
-				pack();
+			DefaultComboBoxModel<User> cbmodel = new DefaultComboBoxModel<User>();
+			for (int i = 0; i < userlist.size(); i++) {
+				User s = userlist.get(i);
+				if (!s.geteMail().equals(usr.geteMail()))
+					cbmodel.addElement(s);
 			}
-		});
-		pnl_user.add(z_btn);
 
+			final JComboBox<User> cb_Z = new JComboBox<User>(cbmodel);
+			// cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width,
+			// 20));
+
+			pnl_user.add(cb_Z);
+
+			JButton z_btn = new JButton("Stellvertreter auswählen");
+			z_btn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (!lm.contains((User) cb_Z.getSelectedItem()))
+						lm.addElement((User) cb_Z.getSelectedItem());
+					pack();
+				}
+			});
+			pnl_user.add(z_btn);
+		}
 		JPanel pnl_footer = new JPanel();
 		south.add(pnl_footer, BorderLayout.SOUTH);
 		JButton btnOk = new JButton("OK");
@@ -303,6 +324,7 @@ public class userdialog extends JDialog {
 		});
 		pnl_footer.add(btnAbbrechen);
 		pnl_Dialog.add(south, BorderLayout.SOUTH);
+
 		this.setContentPane(pnl_Dialog);
 		this.pack();
 	}

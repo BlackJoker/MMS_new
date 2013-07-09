@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlType;
 //
 @XmlRootElement(name = "User")
 @XmlType(propOrder = { "eMail", "titel", "vorname", "nachname", "password",
-		"manageUsers", "acceptModule", "createModule", "readModule" })
+		"manageUsers", "acceptModule", "createModule", "readModule" ,"freigeschaltet"})
 public class User {
 	private String Vorname;
 	private String Nachname;
@@ -16,6 +16,16 @@ public class User {
 	private boolean readModule;
 	private boolean createModule;
 	private boolean acceptModule;
+	private boolean freigeschaltet=false;
+	
+	
+	public boolean isFreigeschaltet() {
+		return freigeschaltet;
+	}
+
+	public void setFreigeschaltet(boolean freigeschaltet) {
+		this.freigeschaltet = freigeschaltet;
+	}
 
 	public User() {
 		this.Vorname = "null";
@@ -27,11 +37,12 @@ public class User {
 		this.readModule = false;
 		this.createModule = false;
 		this.acceptModule = false;
+		this.freigeschaltet=false;
 	}
 
 	public User(String Vorname, String Nachname, String Titel, String eMail,
 			String Password, boolean manageUsers, boolean createModule,
-			boolean acceptModule, boolean readModule) {
+			boolean acceptModule, boolean readModule, boolean freigeschaltet) {
 
 		this.Vorname = Vorname;
 		this.Nachname = Nachname;
@@ -42,6 +53,7 @@ public class User {
 		this.readModule = readModule;
 		this.createModule = createModule;
 		this.acceptModule = acceptModule;
+		this.freigeschaltet=freigeschaltet;
 
 	}
 

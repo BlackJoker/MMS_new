@@ -54,7 +54,7 @@ public class mainscreen {
 
 	// Variablen
 	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
-			false, false, false, false); // Gast
+			false, false, false, false,true); // Gast
 	String studtransferstring = ""; // uebergabe String fuer Tabellen -
 									// studiengang
 	String modbuchtransferstring = ""; // uebergabe String fuer Tabellen -
@@ -66,6 +66,8 @@ public class mainscreen {
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
+	private ArrayList<User> neueUser = new ArrayList<User>(); // Liste mit Usern
+
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
 	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im
@@ -83,6 +85,7 @@ public class mainscreen {
 
 	// Modelle
 	private DefaultTableModel tmodel;
+	private DefaultTableModel tmodelNeu;
 	private DefaultTableModel studmodel;
 	private DefaultTableModel modbuchmodel;
 	private DefaultTableModel modtypmodel;
@@ -459,7 +462,7 @@ public class mainscreen {
 						}
 					} else {
 						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
-								false, false, false, false);
+								false, false, false, false,true);
 						if (database.isConnected() == SUCCES) {
 							checkRights();
 						}
@@ -488,9 +491,26 @@ public class mainscreen {
 					// Tabelle mit neuen daten füllen
 					worklist = database.userload();
 					for (int i = 0; i < worklist.size(); i++) {
-						addToTable(worklist.get(i));
+						if(worklist.get(i).isFreigeschaltet())
+							addToTable(worklist.get(i));
+						else
+							neueUser.add(worklist.get(i));
 					}
 					showCard("user managment");
+					for(int i=0;i<neueUser.size();i++){
+			
+						userdialog dlg = new userdialog(frame, "User bestätigen",neueUser.get(i),true, database);
+						int response = dlg.showCustomDialog();
+						// Wenn ok gedrückt wird
+						// neuen User abfragen
+						if (response == 1) {
+							User tmp = dlg.getUser();
+							tmp.setFreigeschaltet(false);
+							database.usersave(tmp);
+							addToTable(tmp);
+							neueUser.remove(i);
+						}
+					}
 				} else {
 					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, database);
 					int response = dlg.showCustomDialog();
@@ -889,7 +909,7 @@ public class mainscreen {
 					boolean r2 = (boolean) usrtbl.getValueAt(row, 5);
 					boolean r3 = (boolean) usrtbl.getValueAt(row, 6);
 					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
-					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4);
+					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4,true);
 
 					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, database);
 					int response = dlg.showCustomDialog();
@@ -953,6 +973,8 @@ public class mainscreen {
 		usrcenter.add(ussrscp);
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
+		
+		
 
 	}
 
@@ -1772,11 +1794,11 @@ public class mainscreen {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",
 				JOptionPane.ERROR_MESSAGE);
 		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false,
-				false, false);
+				false, false,true);
 		btnModulEinreichen.setEnabled(false);
 		btnModulVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
-		btnMHB.setEnabled(false);
+		btnMHB.setEnabled(true);
 		btnUserVerwaltung.setEnabled(false);
 		btnLogin.setText("Einloggen");
 		showCard("welcome page");

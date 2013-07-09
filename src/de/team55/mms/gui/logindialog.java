@@ -79,29 +79,45 @@ public class logindialog extends JDialog {
 		lblText.setHorizontalAlignment(SwingConstants.CENTER);
 
 		JPanel pbl_Daten = new JPanel();
-		pnl_Dialog.add(pbl_Daten, BorderLayout.EAST);
+		pnl_Dialog.add(pbl_Daten, BorderLayout.CENTER);
 		pbl_Daten.setLayout(new GridLayout(0, 1, 0, 0));
 
 		JPanel pnl_Mail = new JPanel();
 		pbl_Daten.add(pnl_Mail);
-		pnl_Mail.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
-
-		JLabel lblEmail = new JLabel("e-Mail");
-		pnl_Mail.add(lblEmail);
+		pnl_Mail.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		JPanel panel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+		flowLayout.setAlignment(FlowLayout.TRAILING);
+		pnl_Mail.add(panel);
+		
+				JLabel lblEmail = new JLabel("e-Mail");
+				panel.add(lblEmail);
+		
+		JPanel panel_1 = new JPanel();
+		pnl_Mail.add(panel_1);
 
 		textMail = new JTextField();
-		pnl_Mail.add(textMail);
+		panel_1.add(textMail);
 		textMail.setColumns(10);
 
 		JPanel pnl_Pass = new JPanel();
 		pbl_Daten.add(pnl_Pass);
-		pnl_Pass.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
-
-		JLabel lblPassword = new JLabel("Password");
-		pnl_Pass.add(lblPassword);
+		pnl_Pass.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		JPanel panel_2 = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel_2.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.TRAILING);
+		pnl_Pass.add(panel_2);
+		
+				JLabel lblPassword = new JLabel("Password");
+				panel_2.add(lblPassword);
+		
+		JPanel panel_3 = new JPanel();
+		pnl_Pass.add(panel_3);
 
 		textPass = new JPasswordField();
-		pnl_Pass.add(textPass);
+		panel_3.add(textPass);
 		textPass.setColumns(10);
 
 		JPanel pnl_footer = new JPanel();
@@ -151,6 +167,27 @@ public class logindialog extends JDialog {
 				hide();
 			}
 		});
+		
+		JButton btnRegestrierung = new JButton("Regestrierung");
+		btnRegestrierung.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				userdialog dlg = new userdialog(null, "Regestrierung",
+						database,true);
+				int response = dlg.showCustomDialog();
+				// Wenn ok gedrückt wird
+				// neuen User abfragen
+				if (response == 1) {
+					User tmp = dlg.getUser();
+					database.usersave(tmp);
+					JOptionPane.showConfirmDialog(owner,
+							"Ihre Anmeldung wird von eimem Administrator geprüft. Sie werden per e-Mail benachricht, sobald Sie freigeschaltet werden.",
+							"Bestätigung", JOptionPane.YES_OPTION);
+					userResponse = CANCEL_OPTION;
+					hide();
+				}
+			}
+		});
+		pnl_footer.add(btnRegestrierung);
 		pnl_footer.add(btnAbbrechen);
 		this.setContentPane(pnl_Dialog);
 		this.pack();

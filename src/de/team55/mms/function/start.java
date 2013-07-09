@@ -12,40 +12,6 @@ public class start {
 	 */
 	public static void main(String[] args) {
 		
-		/**
-		 * Bugs
-		 */
-		
-		
-		
-		/**
-		 * Aufgaben
-		 */
-		//User, der Modul geändert hat, anzeigen/eintragen
-		//done: User Relationstabelle
-		
-		//beim wechsel der cards auf verbindung zum server prüfen
-		
-		//Studiengang - Jahr - Modulhandbuch - Anwendungsfach/Vertiefungsfach  - Fach
-		
-		//Anwendungsfächer
-
-		//registrierung?
-		
-		//statistiken
-		
-		//User kann seine stellvertreter auswählen
-		//Autoren durfen nur ihre zugeordneten Module bearbeiten/löschen/erstellen
-		
-		//PDF Ausgabe
-		//Module bearbeiten, anzeigen
-		
-		//Server - Client - Schnittstelle
-		
-		//Tests
-		
-		//Review kritischer Prozeduren
-		
 		try {			
 			// Set System L&F
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

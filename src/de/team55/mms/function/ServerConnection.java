@@ -378,9 +378,8 @@ public class ServerConnection {
 	TransformerConfigurationException, FileNotFoundException {
 	
 		getModulXMLFile(name);
-		
+	
 		String pdfname=(name+getPDFname()+".pdf");
-		
 		
 		
 		TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -390,43 +389,35 @@ public class ServerConnection {
 	        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	     	
-	        System.out.println("1");
 		// eigentliche umwandlung
 		transformer.transform(new StreamSource("modul.xml"), new StreamResult(
 				new OutputStreamWriter(new FileOutputStream("modul.html"), "UTF-8")));
-		System.out.println("2");
-		umlreplacer();
-		System.out.println("3");
-		String File_To_Convert = "modul.html";
 		
+		umlreplacer();
+
+		String File_To_Convert = "modul.html";
 		String url = new File(File_To_Convert).toURI().toURL().toString();
 	
 		//System.out.println("" + url);  //gibt pfad der html datei aus
 		String HTML_TO_PDF = pdfname;	
 		
 		FileOutputStream os = new FileOutputStream(HTML_TO_PDF);
-		System.out.println("t6");
 		ITextRenderer renderer = new ITextRenderer();
-		System.out.println("t7");
 		renderer.setDocument(url);
-		System.out.println("t8");
 		renderer.layout();
-		System.out.println("t9");
 		renderer.createPDF(os);
 	
 		os.close();
 		
 		Desktop.getDesktop().open(new File(pdfname));
-		
 		dclean(); //räumt die Daten welche nicht mehr benötigt werden auf...
 	}
 	
 	public String getPDFname() {
 	
-        SimpleDateFormat date=new SimpleDateFormat(
-                "HHmmss");
-                String date1=date.format(new Date());
-        return date1;
+        SimpleDateFormat date=new SimpleDateFormat("HHmmss");
+        String date1=date.format(new Date());
+    return date1;
 		
 	}
 	

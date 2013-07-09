@@ -168,10 +168,10 @@ public class logindialog extends JDialog {
 			}
 		});
 		
-		JButton btnRegestrierung = new JButton("Regestrierung");
-		btnRegestrierung.addActionListener(new ActionListener() {
+		JButton btnRegistrierung = new JButton("Registrierung");
+		btnRegistrierung.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(owner,"Regestrierung",
+				userdialog dlg = new userdialog(owner,"Registrierung",
 						database,true);
 				int response = dlg.showCustomDialog();
 				// Wenn ok gedrückt wird
@@ -186,7 +186,7 @@ public class logindialog extends JDialog {
 				}
 			}
 		});
-		pnl_footer.add(btnRegestrierung);
+		pnl_footer.add(btnRegistrierung);
 		pnl_footer.add(btnAbbrechen);
 		this.setContentPane(pnl_Dialog);
 		this.pack();

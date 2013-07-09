@@ -106,6 +106,7 @@ public class Modul {
 		return jahrgang;
 	}
 
+	@XmlElement(name = "modulname")
 	public String getName() {
 		return name;
 	}

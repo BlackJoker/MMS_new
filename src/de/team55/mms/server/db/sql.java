@@ -236,7 +236,7 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE name = '"
+				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE Modulname = '"
 						+ name + "';";
 				res = state.executeQuery(sql);
 				if (res.first()) {
@@ -244,7 +244,7 @@ public class sql {
 				}
 
 				if (version != 0) {
-					sql = "SELECT *,m.modulname AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.name = '"
+					sql = "SELECT *,m.modulname AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.modulname = '"
 							+ name + "'AND version =" + version + ";";
 					res = state.executeQuery(sql);
 					if (res.first()) {
@@ -330,7 +330,7 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				String q = "SELECT IFNULL(MAX(Version),0) AS Version FROM module WHERE name = '"
+				String q = "SELECT IFNULL(MAX(Version),0) AS Version FROM module WHERE modulname = '"
 						+ name + "';";
 				res = state.executeQuery(q);
 				if (res.first()) {

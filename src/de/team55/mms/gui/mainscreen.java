@@ -111,7 +111,7 @@ public class mainscreen {
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
 	private static JButton btnModulVerwaltung = new JButton("Verwaltung");
 	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
-	private static JButton btnMHB = new JButton("<html>Module<br>Durchst\u00f6bern");
+	private static JButton btnModulArchiv = new JButton("<html>Module<br>Durchst\u00f6bern");
 	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private static JButton btnLogin = new JButton("Einloggen");
 	private static JPanel mod = new JPanel();
@@ -139,7 +139,6 @@ public class mainscreen {
 	 * 
 	 */
 	private void centerscr() {
-
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
 		cards.setLayout(new CardLayout(0, 0));
 
@@ -183,6 +182,7 @@ public class mainscreen {
 		pnl_manage.add(pnl_studiengang);
 		pnl_studiengang.setLayout(new BorderLayout(0, 0));
 
+		// Liste mit Studiengängen in ScrollPane
 		JList<Studiengang> list = new JList<Studiengang>(studimodel);
 		JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -191,12 +191,15 @@ public class mainscreen {
 		JPanel buttons = new JPanel();
 		pnl_studiengang.add(buttons, BorderLayout.SOUTH);
 
+		// Anlegen eines neuen Studienganges
 		JButton btnNeuerStudiengang = new JButton("Neuer Studiengang");
 		btnNeuerStudiengang.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
 				try {
+
+					// Dialog anzeigen, in dem Daten eingetragen werden
 					String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:",
 							"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
 
@@ -206,7 +209,11 @@ public class mainscreen {
 								JOptionPane.PLAIN_MESSAGE);
 					}
 
+					// Vorhanden Studiengänge aus der Datenbank abfragen
 					studienlist = database.getStudiengaenge();
+
+					// Prüfe, ob schon ein Studiengang mit dem selben Namen
+					// existiert
 					boolean neu = true;
 					for (int i = 0; i < studienlist.size(); i++) {
 						if (studienlist.get(i).equals(name)) {
@@ -214,19 +221,26 @@ public class mainscreen {
 							break;
 						}
 					}
+					// Wenn keiner Vorhanden ist, anlegen und in Datenbank
+					// eintragen
+					// Anschließend Liste und Modelle aktualisieren
 					if (neu) {
 						database.setStudiengang(name);
 						studimodel.removeAllElements();
+						cbmodel.removeAllElements();
 						studienlist = database.getStudiengaenge();
 						for (int i = 0; i < studienlist.size(); i++) {
 							studimodel.addElement(studienlist.get(i));
+							cbmodel.addElement(studienlist.get(i));
 						}
+
+						// Ansonsten Fehler ausgeben
 					} else {
 						JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (NullPointerException np) {
-
+					// Bei abbruch nichts tuen
 				}
 			}
 		});
@@ -239,11 +253,13 @@ public class mainscreen {
 		pnl_manage.add(pnl_zuordnungen);
 		pnl_zuordnungen.setLayout(new BorderLayout(0, 0));
 
+		// Liste mit Zuordnungen (Modultypen)
 		JList<Zuordnung> list1 = new JList<Zuordnung>(typenmodel);
 
 		JPanel buttons1 = new JPanel();
 		pnl_zuordnungen.add(buttons1, BorderLayout.SOUTH);
 
+		// Anlegen einer neuen Zuordnung
 		JButton btnNeueZuordnung = new JButton("Neue Zuordnung");
 		btnNeueZuordnung.addActionListener(new ActionListener() {
 			@Override
@@ -257,10 +273,12 @@ public class mainscreen {
 					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:",
 							neu_sgbox };
 
+					// Dialog anzeigen, in dem Daten eingetragen werden
 					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen",
 							JOptionPane.OK_CANCEL_OPTION);
 					if (option == JOptionPane.OK_OPTION) {
 
+						// Teste, ob alle Felder ausgefüllt werden
 						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
 								.getText().isEmpty()) && (option == JOptionPane.OK_OPTION)) {
 							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name,
@@ -268,11 +286,13 @@ public class mainscreen {
 							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen",
 									JOptionPane.OK_CANCEL_OPTION);
 						}
+						// Wenn ok gedrückt wird
 						if (option == JOptionPane.OK_OPTION) {
 							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
 							Zuordnung z = new Zuordnung(neu_Name.getText(), s.getName(), s.getId(), neu_Abschluss
 									.getText());
 
+							// Teste, ob Zuordnung schon vorhanden
 							boolean neu = true;
 							for (int i = 0; i < typen.size(); i++) {
 								if (typen.get(i).equals(z)) {
@@ -280,6 +300,9 @@ public class mainscreen {
 									break;
 								}
 							}
+
+							// Falls neu, in Datenbank eintragen und Liste und
+							// Model aktualisieren
 							if (neu) {
 								database.setZuordnung(z);
 								typen = database.getZuordnungen();
@@ -287,7 +310,9 @@ public class mainscreen {
 								for (int i = 0; i < typen.size(); i++) {
 									typenmodel.addElement(typen.get(i));
 								}
-							} else {
+							}
+							// Ansonsten Fehler ausgeben
+							else {
 								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler",
 										JOptionPane.ERROR_MESSAGE);
 							}
@@ -295,7 +320,7 @@ public class mainscreen {
 					}
 
 				} catch (NullPointerException np) {
-					np.printStackTrace();
+					// Bei abbruch nichts tuen
 				}
 			}
 
@@ -306,6 +331,7 @@ public class mainscreen {
 		btnZurck_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Zurück zur Start Card
 				showCard("welcome page");
 			}
 		});
@@ -321,8 +347,7 @@ public class mainscreen {
 	}
 
 	/**
-	 * Erstellt den oberen Teil der GUI
-	 * 
+	 * Erstellt den oberen Teil der GUI 
 	 */
 	private void topscr() {
 		JPanel top = new JPanel();
@@ -337,28 +362,52 @@ public class mainscreen {
 		top.add(lblMMS);
 	}
 
-	// funktionen zum hinzufuegen von Element in die jeweiligen Tabellen
+	/**
+	 * Hinzufügen eines Users in die Usertabelle
+	 * @param usr Zu hinzufügender User
+	 */
 	private void addToTable(User usr) {
 		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(),
 				usr.getManageUsers(), usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
 	}
-
+	
+	/**
+	 * Hinzufügen eines Studienganges zur  Studiengangtabelle
+	 * @param stud Zu hinzufügender Studiengang
+	 */
 	private void addToTable(Studiengang stud) {
 		studmodel.addRow(new Object[] { stud.getName() });
 	}
-
+	/**
+	 * Hinzufügen eines Modules zur  Modultabelle
+	 * @param mod Zu hinzufügendes Modul
+	 */
 	private void addToTable(Modul mod) {
 		modshowmodel.addRow(new Object[] { mod.getName() });
 	}
-
+	/**
+	 * Hinzufügen eines Modulhandbuches zur Modulhandbuchtabelle
+	 * @param modbuch Zu hinzufügendes Modulhandbuch
+	 */
 	private void addToTable(Modulhandbuch modbuch) {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
-
+	
+	/**
+	 * Hinzufügen einer Zuordnung zur  Zuordnungstabelle
+	 * @param modtyp Name der zu hinzufügenden Zuordnung
+	 */
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
 	}
-
+	
+	/**
+	 * Liefert ein Feld mit Label, TextArea und Checkbox
+	 * @return	JPanel	ausgefülltes Panel
+	 * @param name Beschriftung des Labels
+	 * @param string Inhalt der TextArea
+	 * @param b	Gibt an, ob die Checkbox ausgewählt ist
+	 */
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
 		final Dimension preferredSize = new Dimension(120, 20);
 
@@ -380,6 +429,12 @@ public class mainscreen {
 		return pnl;
 	}
 
+	/**
+	 * Liefert ein Feld mit Label und TextArea
+	 * @return	JPanel	ausgefülltes Panel
+	 * @param name Beschriftung des Labels
+	 * @param string Inhalt der TextArea
+	 */
 	private JPanel modulPanel(String name, String string) {
 		final Dimension preferredSize = new Dimension(120, 20);
 
@@ -424,6 +479,7 @@ public class mainscreen {
 		leftpan.add(left);
 		left.setLayout(new GridLayout(0, 1, 5, 20));
 
+		//Button zum Einreichen eines Modules
 		left.add(btnModulEinreichen);
 		btnModulEinreichen.setEnabled(false);
 		btnModulEinreichen.setPreferredSize(btnSz);
@@ -595,11 +651,11 @@ public class mainscreen {
 		btnModulVerwaltung.setPreferredSize(btnSz);
 		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		left.add(btnMHB);
-		btnMHB.setEnabled(true);
-		btnMHB.setPreferredSize(btnSz);
-		btnMHB.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnMHB.addActionListener(new ActionListener() {
+		left.add(btnModulArchiv);
+		btnModulArchiv.setEnabled(true);
+		btnModulArchiv.setPreferredSize(btnSz);
+		btnModulArchiv.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnModulArchiv.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -2068,7 +2124,7 @@ public class mainscreen {
 		btnModulEinreichen.setEnabled(false);
 		btnModulVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
-		btnMHB.setEnabled(true);
+		btnModulArchiv.setEnabled(true);
 		btnUserVerwaltung.setEnabled(false);
 		btnLogin.setText("Einloggen");
 		showCard("welcome page");

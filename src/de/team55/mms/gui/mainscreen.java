@@ -54,7 +54,7 @@ public class mainscreen {
 
 	// Variablen
 	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
-			false, false, false, false,true); // Gast
+			false, false, false, false, true); // Gast
 	String studtransferstring = ""; // uebergabe String fuer Tabellen -
 									// studiengang
 	String modbuchtransferstring = ""; // uebergabe String fuer Tabellen -
@@ -356,7 +356,7 @@ public class mainscreen {
 		if (!name.equals("Jahrgang") && !name.equals("Name")) {
 			JCheckBox dez = new JCheckBox("Dezernat 2", b);
 			pnl.add(dez);
-		} else if(name.equals("Name")){
+		} else if (name.equals("Name")) {
 			txt.setEditable(false);
 		}
 
@@ -464,7 +464,7 @@ public class mainscreen {
 						}
 					} else {
 						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
-								false, false, false, false,true);
+								false, false, false, false, true);
 						if (database.isConnected() == SUCCES) {
 							checkRights();
 						}
@@ -493,15 +493,15 @@ public class mainscreen {
 					// Tabelle mit neuen daten füllen
 					worklist = database.userload();
 					for (int i = 0; i < worklist.size(); i++) {
-						if(worklist.get(i).isFreigeschaltet())
+						if (worklist.get(i).isFreigeschaltet())
 							addToTable(worklist.get(i));
 						else
 							neueUser.add(worklist.get(i));
 					}
 					showCard("user managment");
-					for(int i=0;i<neueUser.size();i++){
-			
-						userdialog dlg = new userdialog(frame, "User bestätigen",neueUser.get(i),true, database);
+					for (int i = 0; i < neueUser.size(); i++) {
+
+						userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, database);
 						int response = dlg.showCustomDialog();
 						// Wenn ok gedrückt wird
 						// neuen User abfragen
@@ -911,7 +911,7 @@ public class mainscreen {
 					boolean r2 = (boolean) usrtbl.getValueAt(row, 5);
 					boolean r3 = (boolean) usrtbl.getValueAt(row, 6);
 					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
-					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4,true);
+					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4, true);
 
 					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, database);
 					int response = dlg.showCustomDialog();
@@ -975,8 +975,6 @@ public class mainscreen {
 		usrcenter.add(ussrscp);
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
-		
-		
 
 	}
 
@@ -1029,6 +1027,7 @@ public class mainscreen {
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
+				m.setInbearbeitung(database.getModulInEdit(m.getName()));
 				if (m != null) {
 					if (!m.isInbearbeitung()) {
 						boolean rights = false;
@@ -1043,6 +1042,8 @@ public class mainscreen {
 						if (rights) {
 							mod.removeAll();
 							mod.add(modeditCard(m), BorderLayout.CENTER);
+							m.setInbearbeitung(true);
+							database.setModulInEdit(m);
 							showCard("modBearbeiten");
 						} else {
 							JOptionPane.showMessageDialog(frame,
@@ -1064,52 +1065,63 @@ public class mainscreen {
 		btnModulAkzeptieren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Modul m = list_notack.getSelectedValue();
-				if(m.getName().isEmpty()){
-					JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
-							"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
-				} else{
-					boolean hasDezernat = false;
-					boolean isCorrect = true;
-					ArrayList<Feld> felder = m.getFelder();
-					for(int i=0;i<felder.size();i++){
-						if(felder.get(i).getValue().isEmpty()){
+				if (m != null) {
+					m.setInbearbeitung(database.getModulInEdit(m.getName()));
+					if (!m.isInbearbeitung()) {
+						if (m.getName().isEmpty()) {
 							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
 									"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
-							isCorrect = false;
-							break;
-						} 
-						if(felder.get(i).isDezernat()){
-							hasDezernat = true;
-						}
-					}
-					
-					if(isCorrect){
-						boolean checked = true;
-						if(hasDezernat){
-							int n = JOptionPane.showConfirmDialog(frame,
-									"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?", "Bestätigung",
-									JOptionPane.YES_NO_OPTION);
-							if (n == 0) {
-								checked=true;
-							} else{
-								checked = false;
-							}
-						}
-						if(checked){
-							database.acceptModul(m);
-							ArrayList<Modul> module = database.getModule(false);
-							lm.removeAllElements();
-							for (int i = 0; i < module.size(); i++) {
-								lm.addElement(module.get(i));
+						} else {
+							boolean hasDezernat = false;
+							boolean isCorrect = true;
+							ArrayList<Feld> felder = m.getFelder();
+							for (int i = 0; i < felder.size(); i++) {
+								if (felder.get(i).getValue().isEmpty()) {
+									JOptionPane.showMessageDialog(frame,
+											"Bei diesem Modul sind nicht alle Felder ausgefüllt!", "Fehler im Modul",
+											JOptionPane.ERROR_MESSAGE);
+									isCorrect = false;
+									break;
+								}
+								if (felder.get(i).isDezernat()) {
+									hasDezernat = true;
+								}
 							}
 
-							module = database.getModule(true);
-							lm_ack.removeAllElements();
-							for (int i = 0; i < module.size(); i++) {
-								lm_ack.addElement(module.get(i));
+							if (isCorrect) {
+								boolean checked = true;
+								if (hasDezernat) {
+									int n = JOptionPane
+											.showConfirmDialog(
+													frame,
+													"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?",
+													"Bestätigung", JOptionPane.YES_NO_OPTION);
+									if (n == 0) {
+										checked = true;
+									} else {
+										checked = false;
+									}
+								}
+								if (checked) {
+									database.acceptModul(m);
+									ArrayList<Modul> module = database.getModule(false);
+									lm.removeAllElements();
+									for (int i = 0; i < module.size(); i++) {
+										lm.addElement(module.get(i));
+									}
+
+									module = database.getModule(true);
+									lm_ack.removeAllElements();
+									for (int i = 0; i < module.size(); i++) {
+										lm_ack.addElement(module.get(i));
+									}
+									showCard("modulbearbeiten");
+								}
 							}
-							showCard("modulbearbeiten");
 						}
+					} else {
+						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
+								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -1137,6 +1149,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_ack.getSelectedValue();
 				if (m != null) {
+					m.setInbearbeitung(database.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
 						boolean rights = false;
 						if (m.getUser().equals(current.geteMail())) {
@@ -1395,6 +1408,8 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				modul_panel_edit.removeAll();
 				modul_panel_edit.revalidate();
+				m.setInbearbeitung(false);
+				database.setModulInEdit(m);
 				modulbearbeitenCard();
 				showCard("modulbearbeiten");
 			}
@@ -1570,6 +1585,7 @@ public class mainscreen {
 										"Sind Sie sicher, dass Sie dieses Modul einreichen wollen?", "Bestätigung",
 										JOptionPane.YES_NO_OPTION);
 								if (n == 0) {
+									m.setInbearbeitung(false);
 									database.setModul(neu);
 									labels.removeAll(labels);
 									modul_panel_edit.removeAll();
@@ -1725,11 +1741,11 @@ public class mainscreen {
 			}
 		});
 		back.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("studiengang show");
-				
+
 			}
 		});
 	}
@@ -1750,7 +1766,6 @@ public class mainscreen {
 		modtyptable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modtypshow.add(modtypscp);
 		modtypshow.add(btnpan, BorderLayout.SOUTH);
-		
 
 		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
 			@SuppressWarnings("rawtypes")
@@ -1796,11 +1811,11 @@ public class mainscreen {
 			}
 		});
 		back.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("modbuch show");
-				
+
 			}
 		});
 	}
@@ -1859,17 +1874,17 @@ public class mainscreen {
 			}
 		});
 		back.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("modtyp show");
-				
+
 			}
 		});
 
 	}
 
-	private void modCard(){
+	private void modCard() {
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "selmodshow");
 		modshow.setLayout(new BorderLayout(0, 0));
@@ -1880,47 +1895,47 @@ public class mainscreen {
 		btnpan.add(back);
 		btnpan.add(pdfbtn);
 		modshow.add(btnpan, BorderLayout.SOUTH);
-		JScrollPane modscp = new JScrollPane(modpanel,  ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane modscp = new JScrollPane(modpanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		modshow.add(modscp, BorderLayout.CENTER);
 		Modul zws = null;
 		modpanel.setLayout(new BoxLayout(modpanel, BoxLayout.Y_AXIS));
-		for(int i = 0; i < selectedmodullist.size(); i++){
-			if(selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)){
+		for (int i = 0; i < selectedmodullist.size(); i++) {
+			if (selectedmodullist.get(i).getName().equalsIgnoreCase(modulselectionstring)) {
 				zws = selectedmodullist.get(i);
 			}
 		}
 		modpanel.add(modulPanel("Name", zws.getName()));
 		modpanel.add(modulPanel("Jahrgang", modbuchtransferstring));
 		modpanel.add(modulPanel("Modultyp", modtyptransferstring));
-		for(int i = 0; i < zws.getFelder().size(); i++){
+		for (int i = 0; i < zws.getFelder().size(); i++) {
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
-		
+
 		pdfbtn.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		back.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("mod show");
-				
+
 			}
 		});
-		
+
 	}
 
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",
 				JOptionPane.ERROR_MESSAGE);
 		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false,
-				false, false,true);
+				false, false, true);
 		btnModulEinreichen.setEnabled(false);
 		btnModulVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);

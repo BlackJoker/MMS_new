@@ -213,6 +213,20 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
+	
+	@POST
+	@Path("/modul/setInEdit/")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response modulSetInEdit(Modul m) {
+		int status = new sql().setInEdit(m);
+		if (status == 1) {
+			System.out.println("Modul " + m.getName() + " Bearbeitungsstatus geändert");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Modul " + m.getName() + " Bearbeitungsstatus wurde nicht geändert");
+			return Response.status(500).build();
+		}
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
@@ -280,6 +294,19 @@ public class MessageResource {
 	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp, @PathParam("modulhandbuch") String modulhandbuch){
 		System.out.println("Ausgewählte Module abfragen");
 		return new sql().getselectedModul(studiengang, modultyp, modulhandbuch);
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/modul/getInEdit/{name}")
+	public String getModulInEdit(@PathParam("name") String name) {
+		System.out.println("Abfrage, ob " + name + " in Bearbeitung ist");
+		boolean b=new sql().getModulInEdit(name);
+		if(b){
+			return "true";
+		} else {
+			return "false";
+		}
 	}
 
 }

@@ -1,13 +1,36 @@
 package de.team55.mms.function;
 
+import java.awt.Desktop;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import com.lowagie.text.DocumentException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
@@ -302,7 +325,145 @@ public class ServerConnection {
 		
 	}
 	
+	public void umlreplacer (){  	//HTML to HTML (UTF-8)
+	    String content = "";
+	    try {						//html-file to html-string
+	    	 BufferedReader in = new BufferedReader(new FileReader("modul.html"));
+	    	 String str;
+	         while ((str = in.readLine()) != null) {
+
+	             content +=str;
+	         }
+	        content=content.replaceAll("&uuml;","ü");
+	     	content=content.replaceAll("&auml;","ä");
+	     	content=content.replaceAll("&ouml;","ö");
+	     	content=content.replaceAll("&Uuml;","Ü");
+	     	content=content.replaceAll("&Auml;","Ä");
+	     	content=content.replaceAll("&Ouml;","Ö");
+	     	content=content.replaceAll("<META","");
+	 	//System.out.println(content); //gibt den bearbeiteten HTML-String aus
+	 	in.close();
+	    } catch (IOException e) {
+	    }
+    
+    PrintWriter out = null;			//takes html-string and creates html-file
+	try {
+		out = new PrintWriter(new File("modul.html"), "UTF-8");
+	} catch (FileNotFoundException | UnsupportedEncodingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	    out.print(content);
+	    out.close();
 	
+	}
+	
+	 public void getModulXMLFile (String name)	// xmlstring to xml file
+	    {
+	    	
+	    	PrintWriter out = null;
+			try {
+				out = new PrintWriter(new File("modul.xml"), "UTF-8");
+			} catch (FileNotFoundException | UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			    out.print(getModulXML(name));
+			    out.close();
+	    }
+	
+	
+	public void toPdf(String name) throws IOException, DocumentException, TransformerException,
+
+	TransformerConfigurationException, FileNotFoundException {
+	
+		getModulXMLFile(name);
+		
+		String pdfname=(name+getPDFname()+".pdf");
+		
+		
+		
+		TransformerFactory tFactory = TransformerFactory.newInstance();
+		
+		Transformer transformer = tFactory.newTransformer(new StreamSource("style.xsl"));
+	
+	        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	     	
+	        System.out.println("1");
+		// eigentliche umwandlung
+		transformer.transform(new StreamSource("modul.xml"), new StreamResult(
+				new OutputStreamWriter(new FileOutputStream("modul.html"), "UTF-8")));
+		System.out.println("2");
+		umlreplacer();
+		System.out.println("3");
+		String File_To_Convert = "modul.html";
+		
+		String url = new File(File_To_Convert).toURI().toURL().toString();
+	
+		//System.out.println("" + url);  //gibt pfad der html datei aus
+		String HTML_TO_PDF = pdfname;	
+		
+		FileOutputStream os = new FileOutputStream(HTML_TO_PDF);
+		System.out.println("t6");
+		ITextRenderer renderer = new ITextRenderer();
+		System.out.println("t7");
+		renderer.setDocument(url);
+		System.out.println("t8");
+		renderer.layout();
+		System.out.println("t9");
+		renderer.createPDF(os);
+	
+		os.close();
+		
+		Desktop.getDesktop().open(new File(pdfname));
+		
+		dclean(); //räumt die Daten welche nicht mehr benötigt werden auf...
+	}
+	
+	public String getPDFname() {
+	
+        SimpleDateFormat date=new SimpleDateFormat(
+                "HHmmss");
+                String date1=date.format(new Date());
+        return date1;
+		
+	}
+	
+	
+	public void dclean(){
+		File file1 = new File("modul.xml");
+		File file2 = new File("modul.html");
+		
+		file1.delete();
+		file2.delete();
+	}
+	
+	public void dclean(String f){	//sollte was bestimmtes gelöscht werden :U
+		File f0 = new File(f);
+		f0.delete();
+	}
+
+	public boolean getModulInEdit(String name) {
+		if (connect(email, password) == SUCCES) {
+			String b = webResource.path("modul/getInEdit").path(name)
+					.accept(MediaType.APPLICATION_XML).get(String.class);
+			if(b.equals("true")){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public ClientResponse setModulInEdit(Modul m) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("modul/setInEdit")
+					.type(MediaType.APPLICATION_XML)
+					.post(ClientResponse.class, m);
+		} else {
+			return null;
+		}
+	}
 	
 
 }

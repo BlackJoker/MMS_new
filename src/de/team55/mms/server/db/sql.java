@@ -975,7 +975,8 @@ public class sql {
 				while (res.next()) {
 					stellv.add(new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res
 							.getString("email"), res.getString("password"), res.getBoolean("userchange"), res
-							.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res.getBoolean("frei")));
+							.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res
+							.getBoolean("frei")));
 				}
 				res.close();
 				state.close();
@@ -1117,8 +1118,7 @@ public class sql {
 		PreparedStatement state = null;
 		if (connect() == true) {
 			try {
-				state = con
-						.prepareStatement("UPDATE module SET akzeptiert=1 WHERE modulname=? AND version=?");
+				state = con.prepareStatement("UPDATE module SET akzeptiert=1 WHERE modulname=? AND version=?");
 				state.setString(1, name);
 				state.setInt(2, version);
 				state.executeUpdate();
@@ -1133,4 +1133,55 @@ public class sql {
 		return ok;
 	}
 
+	public boolean getModulInEdit(String name) {
+		ResultSet res = null;
+		Statement state = null;
+		int version = 0;
+		boolean inbearbeitung = false;
+		if (connect() == true) {
+			try {
+				state = this.con.createStatement();
+				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE Modulname = '" + name + "';";
+				res = state.executeQuery(sql);
+				if (res.first()) {
+					version = res.getInt("version");
+				}
+				if (version != 0) {
+					sql = "SELECT inbearbeitung FROM module WHERE Modulname ='" + name + "'AND version =" + version
+							+ ";";
+					res = state.executeQuery(sql);
+					if (res.first()) {
+						inbearbeitung = res.getBoolean("inbearbeitung");
+					}
+				}
+				res.close();
+				state.close();
+			} catch (SQLException e) {
+				inbearbeitung = false;
+			}
+			disconnect();
+		}
+		return inbearbeitung;
+	}
+
+	public int setInEdit(Modul m) {
+		int ok = FAILED;
+		PreparedStatement state = null;
+		if (connect() == true) {
+			try {
+				state = con.prepareStatement("UPDATE module SET inbearbeitung=? WHERE modulname=? AND version=?");
+				state.setBoolean(1, m.isInbearbeitung());
+				state.setString(2, m.getName());
+				state.setInt(3, m.getVersion());
+				state.executeUpdate();
+				state.close();
+				ok = SUCCES;
+			} catch (SQLException e) {
+				// TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return ok;
+	}
 }

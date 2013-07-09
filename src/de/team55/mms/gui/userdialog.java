@@ -1,8 +1,6 @@
 package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -12,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -27,11 +24,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import de.team55.mms.function.Hash;
-import de.team55.mms.function.ServerConnection;
 import de.team55.mms.data.StellvertreterList;
 import de.team55.mms.data.User;
-import de.team55.mms.data.Zuordnung;
+import de.team55.mms.function.Hash;
+import de.team55.mms.function.ServerConnection;
 
 public class userdialog extends JDialog {
 	private JFrame owner;
@@ -272,7 +268,7 @@ public class userdialog extends JDialog {
 			z_btn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (!lm.contains((User) cb_Z.getSelectedItem()))
+					if (!lm.contains(cb_Z.getSelectedItem()))
 						lm.addElement((User) cb_Z.getSelectedItem());
 					pack();
 				}

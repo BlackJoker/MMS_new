@@ -19,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -37,7 +36,14 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
-import de.team55.mms.data.*;
+import de.team55.mms.data.Modul;
+import de.team55.mms.data.Modulhandbuch;
+import de.team55.mms.data.StellvertreterList;
+import de.team55.mms.data.Studiengang;
+import de.team55.mms.data.User;
+import de.team55.mms.data.UserRelation;
+import de.team55.mms.data.UserUpdateContainer;
+import de.team55.mms.data.Zuordnung;
 
 public class ServerConnection {
 

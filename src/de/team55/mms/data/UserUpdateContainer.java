@@ -2,7 +2,6 @@ package de.team55.mms.data;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import de.team55.mms.data.*;
 
 
 @XmlRootElement(name = "UserUpdateContainer") 

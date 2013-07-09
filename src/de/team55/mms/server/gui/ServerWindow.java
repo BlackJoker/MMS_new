@@ -1,29 +1,12 @@
 package de.team55.mms.server.gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.Rectangle;
-
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-
-import de.team55.mms.server.ctrl.StartRestServer;
-
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.ActionListener;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +14,20 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import de.team55.mms.server.ctrl.StartRestServer;
 
 public class ServerWindow extends JFrame {
 
@@ -140,6 +137,7 @@ public class ServerWindow extends JFrame {
 
 		contentPane.add(pnl_south, BorderLayout.SOUTH);
 		btnServerStarten.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				server = new StartRestServer(serverPort);
 				try{
@@ -161,6 +159,7 @@ public class ServerWindow extends JFrame {
 		
 		btnServerBeenden.setEnabled(false);
 		btnServerBeenden.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				btnServerStarten.setEnabled(true);
 				btnServerBeenden.setEnabled(false);
@@ -189,6 +188,7 @@ public class ServerWindow extends JFrame {
 		pnl_bar.add(btnServerBeenden);
 		
 		btnEinstellungen.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				ServerSettings dialog = new ServerSettings(serverPort,dbHost,dbPort,dbName,dbUser,dbPass);
 				int a = dialog.showDialog();
@@ -256,7 +256,8 @@ public class ServerWindow extends JFrame {
 	//The following codes set where the text get redirected. In this case, jTextArea1   
 	  private static void updateTextArea(final String text) {
 	    SwingUtilities.invokeLater(new Runnable() {
-	      public void run() {
+	      @Override
+		public void run() {
 	        txtrConsoleWindow.append(text);
 	        Rectangle r = new Rectangle(0, scrollPane.getHeight(), 1, 1);
 	        scrollPane.scrollRectToVisible(r);

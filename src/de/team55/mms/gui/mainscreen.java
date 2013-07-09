@@ -22,7 +22,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -42,14 +41,19 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import de.team55.mms.data.*;
-import de.team55.mms.function.SendMail;
-import de.team55.mms.function.ServerConnection;
-import javax.swing.JSplitPane;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import com.lowagie.text.DocumentException;
+
+import de.team55.mms.data.Feld;
+import de.team55.mms.data.Modul;
+import de.team55.mms.data.Modulhandbuch;
+import de.team55.mms.data.Studiengang;
+import de.team55.mms.data.User;
+import de.team55.mms.data.Zuordnung;
+import de.team55.mms.function.SendMail;
+import de.team55.mms.function.ServerConnection;
 
 public class mainscreen {
 
@@ -78,16 +82,12 @@ public class mainscreen {
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
 	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im
-														// durchstoebern segment
-	private ArrayList<Modulhandbuch> modulhandlist = null; // Liste der
-															// Modulhandbuecher
-															// des ausgewaehlten
-															// Studiengangs
+														// durchstöbern segment
+	// Liste der Modulhandbuecher des ausgewählten Studiengangs
+	private ArrayList<Modulhandbuch> modulhandlist = null;
 	private ArrayList<Zuordnung> typen = null; // Liste mit Zuordnungen
-	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>(); // Map
-																					// der
-																					// Dynamischen
-																					// Buttons
+	// Map der Dynamischen Buttons
+	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
 
 	// Modelle
@@ -121,23 +121,32 @@ public class mainscreen {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Mitte erzeugen
 		centerscr();
+
+		// Obere Leiste erzeugen
 		topscr();
+
+		// Linke Seite erzeugen
 		leftscr();
 
 		frame.setVisible(true);
 	}
 
-	// center Frame
+	/**
+	 * Erstellt den mittleren Teil der GUI
+	 * 
+	 */
 	private void centerscr() {
 
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
 		cards.setLayout(new CardLayout(0, 0));
 
+		// Standartfelder Hinzufügen
 		defaultlabels.add("Zuordnung");
 		defaultlabels.add("Kürzel");
 		defaultlabels.add("Prüfungsform");
-
 		defaultlabels.add("Jahrgang");
 		defaultlabels.add("Name");
 		defaultlabels.add("K\u00fcrzel");
@@ -295,6 +304,7 @@ public class mainscreen {
 
 		JButton btnZurck_1 = new JButton("Zur\u00FCck");
 		btnZurck_1.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("welcome page");
 			}
@@ -310,7 +320,10 @@ public class mainscreen {
 
 	}
 
-	// top frame part
+	/**
+	 * Erstellt den oberen Teil der GUI
+	 * 
+	 */
 	private void topscr() {
 		JPanel top = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) top.getLayout();
@@ -363,7 +376,7 @@ public class mainscreen {
 		if (!name.equals("Jahrgang")) {
 			JCheckBox dez = new JCheckBox("Dezernat 2", b);
 			pnl.add(dez);
-		} 
+		}
 		return pnl;
 	}
 
@@ -384,6 +397,10 @@ public class mainscreen {
 		return pnl;
 	}
 
+	/**
+	 * Erstellt den Startbildschirm der GUI
+	 * 
+	 */
 	private void homecard() {
 		JPanel welcome = new JPanel();
 		FlowLayout flowLayout_2 = (FlowLayout) welcome.getLayout();
@@ -395,6 +412,10 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Erstellt den linke Teil der GUI
+	 * 
+	 */
 	private void leftscr() {
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
@@ -512,17 +533,17 @@ public class mainscreen {
 						User tmp = dlg.getUser();
 						if (response == 1) {
 							tmp.setFreigeschaltet(true);
-							if(SendMail.send(current.geteMail(),neueUser.get(i).geteMail(),"Sie wurden freigeschaltet!")==1){
+							if (SendMail.send(current.geteMail(), neueUser.get(i).geteMail(),
+									"Sie wurden freigeschaltet!") == 1) {
 								tmp.setFreigeschaltet(true);
-								if(database.userupdate(tmp, tmp.geteMail()).getStatus()==201){
+								if (database.userupdate(tmp, tmp.geteMail()).getStatus() == 201) {
 									addToTable(tmp);
 									neueUser.remove(i);
 								}
 							}
-						} else{
-							int n = JOptionPane.showConfirmDialog(frame,
-									"Möchten Sie diesen Benutzer löschen", "Bestätigung",
-									JOptionPane.YES_NO_OPTION);
+						} else {
+							int n = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen",
+									"Bestätigung", JOptionPane.YES_NO_OPTION);
 							if (n == 0) {
 								database.deluser(tmp.geteMail());
 							}
@@ -549,6 +570,7 @@ public class mainscreen {
 		btnUserVerwaltung.setPreferredSize(btnSz);
 		btnUserVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnModulVerwaltung.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				studienlist = database.getStudiengaenge();
 				studimodel.removeAllElements();
@@ -600,6 +622,10 @@ public class mainscreen {
 		});
 	}
 
+	/**
+	 * Erstellt eine Card, um ein neues Modul anzulegen
+	 * 
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 	private void newmodulecard() {
 		modul_panel.removeAll();
@@ -735,7 +761,7 @@ public class mainscreen {
 		z_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!lm.contains((Zuordnung) cb_Z.getSelectedItem()))
+				if (!lm.contains(cb_Z.getSelectedItem()))
 					lm.addElement((Zuordnung) cb_Z.getSelectedItem());
 			}
 		});
@@ -745,6 +771,7 @@ public class mainscreen {
 
 		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
 		btnZuordnungEntfernen.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = zlist.getSelectedIndex();
 				if (i > -1) {
@@ -853,6 +880,10 @@ public class mainscreen {
 		((CardLayout) cards.getLayout()).show(cards, card);
 	}
 
+	/**
+	 * Erstellt eine Card zur Verwaltung von Benutzern
+	 * 
+	 */
 	@SuppressWarnings("serial")
 	private void usermgtcard() {
 		JPanel usrmg = new JPanel();
@@ -1021,11 +1052,15 @@ public class mainscreen {
 		}
 	}
 
+	/**
+	 * Erstellt eine Card zur Bearbeitung von Modulen
+	 * 
+	 */
 	public void modulbearbeitenCard() {
 
 		JPanel pnl_modedit = new JPanel();
 		pnl_modedit.setLayout(new BorderLayout(0, 0));
-		JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
+		JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP);
 		pnl_modedit.add(tabs);
 
 		JPanel nichtakzeptiert = new JPanel();
@@ -1042,6 +1077,7 @@ public class mainscreen {
 
 		JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 		btnModulBearbeiten.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
 				if (m != null) {
@@ -1080,6 +1116,7 @@ public class mainscreen {
 
 		JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
 		btnModulAkzeptieren.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				Modul m = list_notack.getSelectedValue();
 				if (m != null) {
@@ -1147,6 +1184,7 @@ public class mainscreen {
 
 		JButton btnZurck = new JButton("Zur\u00FCck");
 		btnZurck.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("welcome page");
 			}
@@ -1168,6 +1206,7 @@ public class mainscreen {
 
 		JButton btnModulBearbeiten2 = new JButton("Modul bearbeiten");
 		btnModulBearbeiten2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_ack.getSelectedValue();
 				if (m != null) {
@@ -1204,6 +1243,7 @@ public class mainscreen {
 
 		JButton btnZurck2 = new JButton("Zur\u00FCck");
 		btnZurck2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("welcome page");
 			}
@@ -1213,6 +1253,14 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Liefert ein Panel, dass mit den Daten von Modul m ausgefüllt ist Die
+	 * Felder sind dabei nicht mehr bearbeitbar
+	 * 
+	 * @return JPanel mit Daten ausgefülltes Panel
+	 * @param m
+	 *            Zu bearbeitendes Modul
+	 */
 	private JPanel modeditCardPrev(Modul m) {
 		final JPanel pnl_editmod = new JPanel();
 		final JPanel pnl_mod_prev = new JPanel();
@@ -1308,6 +1356,13 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Liefert ein Panel, dass mit den Daten von Modul m ausgefüllt ist
+	 * 
+	 * @return JPanel mit Daten ausgefülltes Panel
+	 * @param m
+	 *            Zu bearbeitendes Modul
+	 */
 	private JPanel modeditCard(final Modul m) {
 		final JPanel pnl_editmod = new JPanel();
 		modul_panel_edit.removeAll();
@@ -1329,6 +1384,7 @@ public class mainscreen {
 
 		JButton alt = new JButton("Vorherige Version");
 		alt.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int v = m.getVersion() - 1;
 				if (v > 0) {
@@ -1474,7 +1530,7 @@ public class mainscreen {
 		z_btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!lm_Z.contains((Zuordnung) cb_Z.getSelectedItem()))
+				if (!lm_Z.contains(cb_Z.getSelectedItem()))
 					lm_Z.addElement((Zuordnung) cb_Z.getSelectedItem());
 			}
 		});
@@ -1482,6 +1538,7 @@ public class mainscreen {
 
 		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
 		btnZuordnungEntfernen.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = zlist.getSelectedIndex();
 				if (i > -1) {
@@ -1508,7 +1565,7 @@ public class mainscreen {
 		txt.setLineWrap(true);
 		pnl.add(txt);
 		txt.setEditable(false);
-		
+
 		modul_panel_edit.add(pnl);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 
@@ -1662,6 +1719,9 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Erstellt eine Card zur Auswahl des Studienganges
+	 */
 	@SuppressWarnings("serial")
 	private void studiengangCard() {
 
@@ -1720,6 +1780,9 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Erstellt eine Card zur Auswahl des Jahrgangs
+	 */
 	@SuppressWarnings("serial")
 	private void modhandshowCard() {
 		JPanel modbuchshow = new JPanel();
@@ -1785,6 +1848,9 @@ public class mainscreen {
 		});
 	}
 
+	/**
+	 * Erstellt eine Card zur Auswahl des Modultypes
+	 */
 	@SuppressWarnings("serial")
 	private void modtypshowCard() {
 		JPanel modtypshow = new JPanel();
@@ -1855,6 +1921,9 @@ public class mainscreen {
 		});
 	}
 
+	/**
+	 * Erstellt eine Card zur Auswahl eines Modules
+	 */
 	@SuppressWarnings("serial")
 	private void modshowCard() {
 		JPanel modshow = new JPanel();
@@ -1884,7 +1953,6 @@ public class mainscreen {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// all cells false
 				return false;
 			}
 		};
@@ -1919,6 +1987,9 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Erstellt eine Card zur Anzeige eines Modules
+	 */
 	private void modCard() {
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "selmodshow");
@@ -1942,7 +2013,7 @@ public class mainscreen {
 		}
 		modpanel.add(modulPanel("Name", zws.getName()));
 		modpanel.add(modulPanel("Jahrgang", modbuchtransferstring));
-		for(int i = 0; i < zws.getZuordnungen().size(); i++){
+		for (int i = 0; i < zws.getZuordnungen().size(); i++) {
 			modpanel.add(modulPanel("Zuordnung", zws.getZuordnungen().get(i).toString()));
 		}
 		for (int i = 0; i < zws.getFelder().size(); i++) {
@@ -1985,6 +2056,10 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Wird aufgerufen, wenn keine Verbindung zum Server besteht Dabei wird der
+	 * Benutzer auf den Standart User zurückgesetzt
+	 */
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",
 				JOptionPane.ERROR_MESSAGE);

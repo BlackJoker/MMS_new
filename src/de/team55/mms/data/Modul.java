@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import de.team55.mms.data.Zuordnung;
 
 @XmlRootElement(name = "Modul")
 @XmlType(propOrder = { "name", "version", "jahrgang", "user","inbearbeitung","akzeptiert", "datum","zuordnungen","felder" })

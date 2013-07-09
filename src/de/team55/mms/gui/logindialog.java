@@ -18,9 +18,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import de.team55.mms.data.User;
 import de.team55.mms.function.Hash;
 import de.team55.mms.function.ServerConnection;
-import de.team55.mms.data.User;;
 
 public class logindialog extends JDialog {
 	private JFrame owner;
@@ -170,6 +170,7 @@ public class logindialog extends JDialog {
 		
 		JButton btnRegistrierung = new JButton("Registrierung");
 		btnRegistrierung.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				userdialog dlg = new userdialog(owner,"Registrierung",
 						database,true);

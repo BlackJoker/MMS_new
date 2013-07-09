@@ -171,7 +171,7 @@ public class logindialog extends JDialog {
 		JButton btnRegestrierung = new JButton("Regestrierung");
 		btnRegestrierung.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(null, "Regestrierung",
+				userdialog dlg = new userdialog(owner,"Regestrierung",
 						database,true);
 				int response = dlg.showCustomDialog();
 				// Wenn ok gedrückt wird
@@ -179,9 +179,8 @@ public class logindialog extends JDialog {
 				if (response == 1) {
 					User tmp = dlg.getUser();
 					database.usersave(tmp);
-					JOptionPane.showConfirmDialog(owner,
-							"Ihre Anmeldung wird von eimem Administrator geprüft. Sie werden per e-Mail benachricht, sobald Sie freigeschaltet werden.",
-							"Bestätigung", JOptionPane.YES_OPTION);
+					JOptionPane.showMessageDialog(owner,
+							"Ihre Anmeldung wird von eimem Administrator geprüft. Sie werden per e-Mail benachricht, sobald Sie freigeschaltet werden.");
 					userResponse = CANCEL_OPTION;
 					hide();
 				}

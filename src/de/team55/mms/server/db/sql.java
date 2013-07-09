@@ -353,7 +353,7 @@ public class sql {
 				state = this.con.createStatement();
 				res = state
 						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,frei FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email='"
-								+ email + "' and password='" + pass + "';");
+								+ email + "' and password='" + pass + "' AND freigeschaltet=1;");
 				if (res.first()) {
 					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"),
 							res.getString("email"), res.getString("password"), res.getBoolean("userchange"),

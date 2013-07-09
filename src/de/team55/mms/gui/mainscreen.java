@@ -1587,11 +1587,13 @@ public class mainscreen {
 		cards.add(modbuchshow, "modbuch show");
 		modbuchshow.setLayout(new BorderLayout(0, 0));
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
 		final JTable modbuchtable = new JTable();
 		JScrollPane modtypscp = new JScrollPane(modbuchtable);
 		modbuchtable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		modbuchtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modbuchshow.add(modtypscp);
+		modbuchshow.add(back, BorderLayout.SOUTH);
 		modbuchshow.add(goforit, BorderLayout.SOUTH);
 
 		modbuchmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modulhandbuch Jahrgang" }) {
@@ -1632,6 +1634,14 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("studiengang show");
+				
+			}
+		});
 	}
 
 	@SuppressWarnings("serial")
@@ -1640,11 +1650,13 @@ public class mainscreen {
 		cards.add(modtypshow, "modtyp show");
 		modtypshow.setLayout(new BorderLayout(0, 0));
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
 		final JTable modtyptable = new JTable();
 		JScrollPane modtypscp = new JScrollPane(modtyptable);
 		modtyptable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		modtyptable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modtypshow.add(modtypscp);
+		modtypshow.add(back, BorderLayout.SOUTH);
 		modtypshow.add(goforit, BorderLayout.SOUTH);
 
 		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
@@ -1690,6 +1702,14 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("modbuch show");
+				
+			}
+		});
 	}
 
 	@SuppressWarnings("serial")
@@ -1698,11 +1718,13 @@ public class mainscreen {
 		cards.add(modshow, "mod show");
 		modshow.setLayout(new BorderLayout(0, 0));
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
 		final JTable modshowtable = new JTable();
 		JScrollPane modtypscp = new JScrollPane(modshowtable);
 		modshowtable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		modshowtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modshow.add(modtypscp);
+		modshow.add(back, BorderLayout.SOUTH);
 		modshow.add(goforit, BorderLayout.SOUTH);
 
 		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
@@ -1741,6 +1763,14 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("modtyp show");
+				
+			}
+		});
 
 	}
 
@@ -1749,6 +1779,10 @@ public class mainscreen {
 		cards.add(modshow, "selmodshow");
 		modshow.setLayout(new BorderLayout(0, 0));
 		JPanel modpanel = new JPanel();
+		JButton pdfbtn = new JButton("Als PDF ausgeben");
+		JButton back = new JButton("zurueck");
+		modshow.add(back, BorderLayout.SOUTH);
+		modshow.add(pdfbtn, BorderLayout.SOUTH);
 		JScrollPane modscp = new JScrollPane(modpanel,  ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		modshow.add(modscp, BorderLayout.CENTER);
@@ -1765,6 +1799,23 @@ public class mainscreen {
 		for(int i = 0; i < zws.getFelder().size(); i++){
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
+		
+		pdfbtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("mod show");
+				
+			}
+		});
 		
 	}
 

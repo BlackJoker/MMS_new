@@ -778,7 +778,7 @@ public class sql {
 						.executeQuery("SELECT DISTINCT modulname FROM module ORDER BY modulname ASC;");
 
 				while (res.next()) {
-					String name = res.getString("name");
+					String name = res.getString("modulname");
 					String q = "SELECT IFNULL(MAX(Version),0) AS Version FROM module WHERE modulname = '"
 							+ name + "';";
 					ResultSet res2 = state.executeQuery(q);

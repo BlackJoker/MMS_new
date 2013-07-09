@@ -1,0 +1,35 @@
+package de.team55.mms.function;
+
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+
+public class SendMail {
+
+	public static int send(String from, String to, String mes) {
+		// Mail Server speichern
+		String host = "mail.uni-ulm.de";
+		Properties properties = System.getProperties();
+		properties.setProperty("mail.smtp.host", host);
+
+		// Session anlegen
+		Session session = Session.getDefaultInstance(properties);
+
+		try {
+			// Nachricht erstellen
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(from));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+			message.setSubject("Freischaltung beim MMS");
+
+			message.setText(mes);
+
+			// Sende Nachricht
+			Transport.send(message);
+			return 1;
+		} catch (MessagingException e) {
+			return 0;
+		}
+	}
+}

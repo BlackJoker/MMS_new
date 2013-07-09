@@ -41,6 +41,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import de.team55.mms.data.*;
+import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
 import javax.swing.JSplitPane;
 
@@ -353,13 +354,10 @@ public class mainscreen {
 		txt.setLineWrap(true);
 		pnl.add(txt);
 
-		if (!name.equals("Jahrgang") && !name.equals("Name")) {
+		if (!name.equals("Jahrgang")) {
 			JCheckBox dez = new JCheckBox("Dezernat 2", b);
 			pnl.add(dez);
-		} else if (name.equals("Name")) {
-			txt.setEditable(false);
-		}
-
+		} 
 		return pnl;
 	}
 
@@ -507,10 +505,12 @@ public class mainscreen {
 						// neuen User abfragen
 						if (response == 1) {
 							User tmp = dlg.getUser();
-							tmp.setFreigeschaltet(false);
-							database.usersave(tmp);
-							addToTable(tmp);
-							neueUser.remove(i);
+							tmp.setFreigeschaltet(true);
+							if(SendMail.send(current.geteMail(),neueUser.get(i).geteMail(),"Sie wurden freigeschaltet!")==1){
+								addToTable(tmp);
+								neueUser.remove(i);
+								database.usersave(tmp);
+							}
 						}
 					}
 				} else {
@@ -1474,7 +1474,19 @@ public class mainscreen {
 		modul_panel_edit.add(defaultmodulPanel("Jahrgang", m.getJahrgang() + "", false));
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		modul_panel_edit.add(defaultmodulPanel("Name", m.getName(), false));
+		JPanel pnl = new JPanel();
+		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
+
+		JLabel label = new JLabel("Name");
+		label.setPreferredSize(preferredSize);
+		pnl.add(label);
+
+		JTextArea txt = new JTextArea(m.getName());
+		txt.setLineWrap(true);
+		pnl.add(txt);
+		txt.setEditable(false);
+		
+		modul_panel_edit.add(pnl);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		for (int i = 0; i < m.getFelder().size(); i++) {

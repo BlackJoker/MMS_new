@@ -508,8 +508,7 @@ public class mainscreen {
 							tmp.setFreigeschaltet(true);
 							if(SendMail.send(current.geteMail(),neueUser.get(i).geteMail(),"Sie wurden freigeschaltet!")==1){
 								tmp.setFreigeschaltet(true);
-								System.out.println(database.userupdate(tmp, tmp.geteMail()).getStatus());
-								if(database.userupdate(tmp, tmp.geteMail()).getStatus()==1){
+								if(database.userupdate(tmp, tmp.geteMail()).getStatus()==201){
 									addToTable(tmp);
 									neueUser.remove(i);
 								}

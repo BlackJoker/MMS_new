@@ -1562,13 +1562,17 @@ public class mainscreen {
 		JPanel studiengangshow = new JPanel();
 		cards.add(studiengangshow, "studiengang show");
 		studiengangshow.setLayout(new BorderLayout(0, 0));
+		JPanel btnpan = new JPanel();
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
+		btnpan.add(back);
+		btnpan.add(goforit);
 		final JTable studtable = new JTable();
 		JScrollPane studscp = new JScrollPane(studtable);
 		studtable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		studtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studiengangshow.add(studscp);
-		studiengangshow.add(goforit, BorderLayout.SOUTH);
+		studiengangshow.add(btnpan, BorderLayout.SOUTH);
 
 		studmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Studiengang" }) {
 			@SuppressWarnings("rawtypes")
@@ -1600,6 +1604,13 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("welcome page");
+			}
+		});
 
 	}
 
@@ -1608,13 +1619,17 @@ public class mainscreen {
 		JPanel modbuchshow = new JPanel();
 		cards.add(modbuchshow, "modbuch show");
 		modbuchshow.setLayout(new BorderLayout(0, 0));
+		JPanel btnpan = new JPanel();
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
+		btnpan.add(back);
+		btnpan.add(goforit);
 		final JTable modbuchtable = new JTable();
 		JScrollPane modtypscp = new JScrollPane(modbuchtable);
 		modbuchtable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		modbuchtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modbuchshow.add(modtypscp);
-		modbuchshow.add(goforit, BorderLayout.SOUTH);
+		modbuchshow.add(btnpan, BorderLayout.SOUTH);
 
 		modbuchmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modulhandbuch Jahrgang" }) {
 			@SuppressWarnings("rawtypes")
@@ -1654,6 +1669,14 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("studiengang show");
+				
+			}
+		});
 	}
 
 	@SuppressWarnings("serial")
@@ -1661,13 +1684,18 @@ public class mainscreen {
 		JPanel modtypshow = new JPanel();
 		cards.add(modtypshow, "modtyp show");
 		modtypshow.setLayout(new BorderLayout(0, 0));
+		JPanel btnpan = new JPanel();
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
+		btnpan.add(back);
+		btnpan.add(goforit);
 		final JTable modtyptable = new JTable();
 		JScrollPane modtypscp = new JScrollPane(modtyptable);
 		modtyptable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		modtyptable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modtypshow.add(modtypscp);
-		modtypshow.add(goforit, BorderLayout.SOUTH);
+		modtypshow.add(btnpan, BorderLayout.SOUTH);
+		
 
 		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
 			@SuppressWarnings("rawtypes")
@@ -1712,6 +1740,14 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("modbuch show");
+				
+			}
+		});
 	}
 
 	@SuppressWarnings("serial")
@@ -1719,13 +1755,17 @@ public class mainscreen {
 		JPanel modshow = new JPanel();
 		cards.add(modshow, "mod show");
 		modshow.setLayout(new BorderLayout(0, 0));
+		JPanel btnpan = new JPanel();
 		JButton goforit = new JButton("oeffnen");
+		JButton back = new JButton("zurueck");
+		btnpan.add(back);
+		btnpan.add(goforit);
 		final JTable modshowtable = new JTable();
 		JScrollPane modtypscp = new JScrollPane(modshowtable);
 		modshowtable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		modshowtable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modshow.add(modtypscp);
-		modshow.add(goforit, BorderLayout.SOUTH);
+		modshow.add(btnpan, BorderLayout.SOUTH);
 
 		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
 			@SuppressWarnings("rawtypes")
@@ -1763,6 +1803,14 @@ public class mainscreen {
 				}
 			}
 		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("modtyp show");
+				
+			}
+		});
 
 	}
 
@@ -1771,6 +1819,12 @@ public class mainscreen {
 		cards.add(modshow, "selmodshow");
 		modshow.setLayout(new BorderLayout(0, 0));
 		JPanel modpanel = new JPanel();
+		JButton pdfbtn = new JButton("Als PDF ausgeben");
+		JButton back = new JButton("zurueck");
+		JPanel btnpan = new JPanel();
+		btnpan.add(back);
+		btnpan.add(pdfbtn);
+		modshow.add(btnpan, BorderLayout.SOUTH);
 		JScrollPane modscp = new JScrollPane(modpanel,  ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		modshow.add(modscp, BorderLayout.CENTER);
@@ -1787,6 +1841,23 @@ public class mainscreen {
 		for(int i = 0; i < zws.getFelder().size(); i++){
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
+		
+		pdfbtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		back.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showCard("mod show");
+				
+			}
+		});
 		
 	}
 

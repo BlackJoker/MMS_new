@@ -11,6 +11,17 @@ import javax.mail.internet.MimeMessage;
 
 public class SendMail {
 
+	/**
+	 * Sendet eine e-Mail
+	 * 
+	 * @param from
+	 *            Absender
+	 * @param to
+	 *            Empfänger
+	 * @param mes
+	 *            Nachricht
+	 * @return status, ob erfolgreich oder nicht
+	 */
 	public static int send(String from, String to, String mes) {
 		// Mail Server speichern
 		String host = "mail.uni-ulm.de";

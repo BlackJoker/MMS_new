@@ -35,7 +35,7 @@ public class userdialog extends JDialog {
 	public static final int OK_OPTION = 1;
 	public static final int CANCEL_OPTION = 0;
 	private int userResponse;
-	private ServerConnection database;
+	private ServerConnection serverConnection;
 	private boolean registration = false;
 
 	private JTextField textVorname;
@@ -49,47 +49,81 @@ public class userdialog extends JDialog {
 	private JCheckBox cb_BV;
 
 	private DefaultListModel<User> lm = new DefaultListModel<User>();
-	
+
 	private boolean adminedit = true;
 
-	private User usr = new User("", "", "", "", null, false, false, false,
-			false,false);
+	private User usr = new User("", "", "", "", null, false, false, false, false, false);
 
-	public userdialog(JFrame owner, String title, ServerConnection database) {
+	/**
+	 * erzeugen des Dialoges
+	 * 
+	 * @param owner
+	 *            Parent Object
+	 * @param title
+	 *            Titel des Dialoges
+	 * @param serverConnection
+	 *            Serververbindung
+	 */
+	public userdialog(JFrame owner, String title, ServerConnection serverConnection) {
 		super(owner, title, true);
 		this.setResizable(false);
-		this.database = database;
-		createDialog();
-	}
-
-	public userdialog(JFrame owner, String title, User usr, boolean adminedit,
-			ServerConnection database) {
-		super(owner, title, true);
-		this.setResizable(false);
-		this.usr = usr;
-		this.adminedit = adminedit;
-		this.database = database;
+		this.serverConnection = serverConnection;
 		createDialog();
 	}
 
 	/**
-	 * @wbp.parser.constructor
+	 * erzeugen des Dialoges
+	 * 
+	 * @param owner
+	 *            Parent Object
+	 * @param title
+	 *            Titel des Dialoges
+	 * @param usr
+	 *            Der zu bearbeitende User
+	 * @param adminedit
+	 *            Gibt an, ob der Admin den User bearbeitet
+	 * @param serverConnection
+	 *            Serververbindung
 	 */
-	public userdialog(JFrame owner, String title, ServerConnection database,
-			boolean registration) {
+	public userdialog(JFrame owner, String title, User usr, boolean adminedit, ServerConnection serverConnection) {
 		super(owner, title, true);
 		this.setResizable(false);
-		this.database = database;
+		this.usr = usr;
+		this.adminedit = adminedit;
+		this.serverConnection = serverConnection;
+		createDialog();
+	}
+
+	/**
+	 * erzeugen des Dialoges
+	 * 
+	 * @param owner
+	 *            Parent Object
+	 * @param title
+	 *            Titel des Dialoges
+	 * @param serverConnection
+	 *            Serververbindung
+	 * @param registration
+	 *            gibt an, ob es sich um eine Regestrierung handelt
+	 */
+	public userdialog(JFrame owner, String title, ServerConnection serverConnection, boolean registration) {
+		super(owner, title, true);
+		this.setResizable(false);
+		this.serverConnection = serverConnection;
 		this.registration = registration;
 		createDialog();
 	}
 
+	/**
+	 * Gibt den eingegeben User zurück
+	 * 
+	 * @return User eingegebener Benutzer
+	 */
 	public User getUser() {
 		usr.setTitel(textTitel.getText());
 		usr.setVorname(textVorname.getText());
 		usr.setNachname(textNachname.getText());
-		if (!textPass.getText().isEmpty()
-				&& !textPass.getText().equals(usr.getPassword()))
+		if (!textPass.getText().isEmpty() && !textPass.getText().equals(usr.getPassword()))
 			usr.setPassword(Hash.getMD5(textPass.getText()));
 		usr.seteMail(textMail.getText());
 		usr.setReadModule(cb_ModLes.isSelected());
@@ -99,12 +133,20 @@ public class userdialog extends JDialog {
 		return usr;
 	}
 
+	/**
+	 * zeigt Dialog an
+	 * 
+	 * @return int status des gedrückten Buttons
+	 */
 	public int showCustomDialog() {
 		this.show();
 		return userResponse;
 
 	}
 
+	/**
+	 * erzeugt den Dialog
+	 */
 	private void createDialog() {
 
 		JPanel pnl_Dialog = new JPanel();
@@ -208,6 +250,8 @@ public class userdialog extends JDialog {
 		cb_ModLes = new JCheckBox("Module lesen", usr.getReadModule());
 		pnl_checkboxes.add(cb_ModLes);
 
+		// Wenn der Benutzer nicht vom Admin bearbeitet wird
+		// können keine Rechte geändert werden
 		if (!adminedit) {
 			cb_BV.setEnabled(false);
 			cb_ModErst.setEnabled(false);
@@ -218,24 +262,26 @@ public class userdialog extends JDialog {
 		JPanel south = new JPanel();
 		south.setLayout(new BorderLayout(0, 0));
 
+		// Text bei Registration ändern
 		if (registration) {
 			lblUserData.setText("Ihre Daten:");
 			lblUserrechte.setText("Ihre gewünschten Rechte:");
 		} else {
-
 			JPanel pnl_user = new JPanel();
 			south.add(pnl_user, BorderLayout.CENTER);
 
 			JPanel pnl_list = new JPanel();
 
+			// Liste mit Stellvertretern
 			final JList<User> zlist = new JList<User>(lm);
-			ArrayList<User> stelv = database.getStellvertreter(usr.geteMail());
+			ArrayList<User> stelv = serverConnection.getStellvertreter(usr.geteMail());
 			for (int i = 0; i < stelv.size(); i++) {
 				lm.addElement(stelv.get(i));
 			}
 
 			pnl_list.add(zlist);
 
+			// ausgewählten Stellvertreter entfernen
 			JButton remove = new JButton("Stellvertreter entfernen");
 			remove.addActionListener(new ActionListener() {
 				@Override
@@ -249,7 +295,7 @@ public class userdialog extends JDialog {
 
 			south.add(pnl_list, BorderLayout.NORTH);
 
-			ArrayList<User> userlist = database.userload();
+			ArrayList<User> userlist = serverConnection.userload();
 
 			DefaultComboBoxModel<User> cbmodel = new DefaultComboBoxModel<User>();
 			for (int i = 0; i < userlist.size(); i++) {
@@ -258,10 +304,8 @@ public class userdialog extends JDialog {
 					cbmodel.addElement(s);
 			}
 
+			// Zur Auswahl stehende Benutzer
 			final JComboBox<User> cb_Z = new JComboBox<User>(cbmodel);
-			// cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width,
-			// 20));
-
 			pnl_user.add(cb_Z);
 
 			JButton z_btn = new JButton("Stellvertreter auswählen");
@@ -281,28 +325,25 @@ public class userdialog extends JDialog {
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (textVorname.getText().isEmpty()
-						|| textNachname.getText().isEmpty()
-						|| textMail.getText().isEmpty()
+				// Prüfe ob alle Felder ausgefüllt wurden
+				if (textVorname.getText().isEmpty() || textNachname.getText().isEmpty() || textMail.getText().isEmpty()
 						|| (textPass.getText().isEmpty() && usr.getPassword() != null)) {
-					JOptionPane.showMessageDialog(owner,
-							"Geben Sie gültige Daten ein!", "Fehler",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(owner, "Geben Sie gültige Daten ein!", "Fehler", JOptionPane.ERROR_MESSAGE);
 				} else {
+					// Teste auf korrekte e-Mail
 					if (validateMail(textMail.getText())) {
 						userResponse = OK_OPTION;
 						ArrayList<String> usr = new ArrayList<String>();
 						for (int i = 0; i < lm.getSize(); i++) {
 							usr.add(lm.get(i).geteMail());
 						}
-						StellvertreterList sl = new StellvertreterList(textMail
-								.getText(), usr);
-						database.setStellvertreter(sl);
+						// Liste mit Stellvertretern einreichen
+						StellvertreterList sl = new StellvertreterList(textMail.getText(), usr);
+						serverConnection.setStellvertreter(sl);
 						hide();
 					} else
-						JOptionPane.showMessageDialog(owner,
-								"Geben Sie eine gültige e-Mail-Adresse ein!",
-								"Fehler", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(owner, "Geben Sie eine gültige e-Mail-Adresse ein!", "Fehler",
+								JOptionPane.ERROR_MESSAGE);
 
 				}
 			}
@@ -325,9 +366,16 @@ public class userdialog extends JDialog {
 		this.pack();
 	}
 
+	/**
+	 * Prüft, ob es sich bei dem eingegeben String um eine e-Mail Adresse
+	 * handelt
+	 * 
+	 * @param eMail
+	 *            zu prüfenden e-Mail
+	 * @return true, wenn korrekt, ansonsten false
+	 */
 	private boolean validateMail(String eMail) {
-		String pat = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		String pat = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		Pattern pattern = Pattern.compile(pat);
 		Matcher matcher = pattern.matcher(eMail);
 		return matcher.matches();

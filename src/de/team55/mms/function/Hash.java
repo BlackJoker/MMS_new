@@ -6,9 +6,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Hash {
-	
-	public static String getMD5(String str){
-		String out ="";
+
+	/**
+	 * Erzeugt einen MD5 Hash vom eingegeben String
+	 * 
+	 * @param str
+	 *            der zu hashende String
+	 * @return MD5 Hash
+	 */
+	public static String getMD5(String str) {
+		String out = "";
 		try {
 			byte[] bytes = str.getBytes("UTF-8");
 			MessageDigest md = MessageDigest.getInstance("MD5");

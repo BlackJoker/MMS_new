@@ -34,21 +34,32 @@ public class logindialog extends JDialog {
 
 	private JTextField textMail;
 	private JPasswordField textPass;
-	public ServerConnection database;
+	public ServerConnection serverConnection;
 
 	private User usr = null;
 
+	// Dialog erzeugen
 	public logindialog(JFrame owner, String title, ServerConnection database) {
 		super(owner, title, true);
 		this.setResizable(false);
-		this.database = database;
+		this.serverConnection = database;
 		createDialog();
 	}
 
+	/**
+	 * Gibt den eingeloggte Benutzer zurück
+	 * 
+	 * @return User der eingeloggte Benutzer
+	 */
 	public User getUser() {
 		return usr;
 	}
 
+	/**
+	 * Zeigt den Dialog an und gibt den Wert des gedrückten Buttons aus
+	 * 
+	 * @return int der Wert des gedrückten Buttons
+	 */
 	public int showCustomDialog() {
 		this.setLocationRelativeTo(owner);
 		this.show();
@@ -56,10 +67,14 @@ public class logindialog extends JDialog {
 
 	}
 
+	/**
+	 * Überprüft die Logindaten
+	 * 
+	 * @return boolean true wenn Login Daten gültig sind, false wenn ungültig
+	 */
 	private boolean checkLogin() {
 		try {
-			usr = database.login(textMail.getText(),
-					Hash.getMD5(textPass.getText()));
+			usr = serverConnection.login(textMail.getText(), Hash.getMD5(textPass.getText()));
 			if (usr != null) {
 				return true;
 			}
@@ -69,6 +84,9 @@ public class logindialog extends JDialog {
 		return false;
 	}
 
+	/**
+	 * Erzeugt den Dialog
+	 */
 	private void createDialog() {
 
 		JPanel pnl_Dialog = new JPanel();
@@ -85,15 +103,15 @@ public class logindialog extends JDialog {
 		JPanel pnl_Mail = new JPanel();
 		pbl_Daten.add(pnl_Mail);
 		pnl_Mail.setLayout(new GridLayout(0, 2, 0, 0));
-		
+
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.TRAILING);
 		pnl_Mail.add(panel);
-		
-				JLabel lblEmail = new JLabel("e-Mail");
-				panel.add(lblEmail);
-		
+
+		JLabel lblEmail = new JLabel("e-Mail");
+		panel.add(lblEmail);
+
 		JPanel panel_1 = new JPanel();
 		pnl_Mail.add(panel_1);
 
@@ -104,15 +122,15 @@ public class logindialog extends JDialog {
 		JPanel pnl_Pass = new JPanel();
 		pbl_Daten.add(pnl_Pass);
 		pnl_Pass.setLayout(new GridLayout(0, 2, 0, 0));
-		
+
 		JPanel panel_2 = new JPanel();
 		FlowLayout flowLayout_1 = (FlowLayout) panel_2.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.TRAILING);
 		pnl_Pass.add(panel_2);
-		
-				JLabel lblPassword = new JLabel("Password");
-				panel_2.add(lblPassword);
-		
+
+		JLabel lblPassword = new JLabel("Password");
+		panel_2.add(lblPassword);
+
 		JPanel panel_3 = new JPanel();
 		pnl_Pass.add(panel_3);
 
@@ -127,28 +145,26 @@ public class logindialog extends JDialog {
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (textMail.getText().isEmpty()
-						|| textPass.getText().isEmpty()) {
+				// Prüfe ob alle Felder ausgefüllt sind
+				if (textMail.getText().isEmpty() || textPass.getText().isEmpty()) {
 					textPass.setText("");
-					JOptionPane.showMessageDialog(owner,
-							"Geben Sie gültige Daten ein!", "Fehler",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(owner, "Geben Sie gültige Daten ein!", "Fehler", JOptionPane.ERROR_MESSAGE);
 				} else {
-
+					// Überprüfe die Login Daten
 					if (checkLogin()) {
 						userResponse = OK_OPTION;
 						hide();
 					} else {
-						if (database.isConnected()==LOGINFALSE) {
+						// Wenn Login fehlgeschalgen ist, prüfe ob Verbindung
+						// zum Server besteht
+						// Wenn Verbindung besteht, waren die Daten falsch
+						if (serverConnection.isConnected() == LOGINFALSE) {
 							textPass.setText("");
-							JOptionPane.showMessageDialog(owner,
-									"Login Daten falsch", "Fehler",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(owner, "Login Daten falsch", "Fehler", JOptionPane.ERROR_MESSAGE);
 						} else {
+							// Ansonsten keine Verbindung zum Server
 							textPass.setText("");
-							JOptionPane.showMessageDialog(owner,
-									"Keine Verbindung zum Server!", "Fehler",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(owner, "Keine Verbindung zum Server!", "Fehler", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -159,6 +175,7 @@ public class logindialog extends JDialog {
 		pnl_footer.add(btnOk);
 		getRootPane().setDefaultButton(btnOk);
 
+		// Bei abbruch Dialog schließen
 		JButton btnAbbrechen = new JButton("Abbrechen");
 		btnAbbrechen.addActionListener(new ActionListener() {
 			@Override
@@ -167,21 +184,23 @@ public class logindialog extends JDialog {
 				hide();
 			}
 		});
-		
+
+		// Button zur Regestrierung
 		JButton btnRegistrierung = new JButton("Registrierung");
 		btnRegistrierung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(owner,"Registrierung",
-						database,true);
+				// Dialog zur eingabe der Daten erzeugen
+				userdialog dlg = new userdialog(owner, "Registrierung", serverConnection, true);
 				int response = dlg.showCustomDialog();
 				// Wenn ok gedrückt wird
-				// neuen User abfragen
+				// neuen User eintragen
 				if (response == 1) {
 					User tmp = dlg.getUser();
-					database.usersave(tmp);
-					JOptionPane.showMessageDialog(owner,
-							"Ihre Anmeldung wird von eimem Administrator geprüft. Sie werden per e-Mail benachricht, sobald Sie freigeschaltet werden.");
+					serverConnection.usersave(tmp);
+					JOptionPane
+							.showMessageDialog(owner,
+									"Ihre Anmeldung wird von eimem Administrator geprüft. Sie werden per e-Mail benachricht, sobald Sie freigeschaltet werden.");
 					userResponse = CANCEL_OPTION;
 					hide();
 				}
@@ -193,15 +212,12 @@ public class logindialog extends JDialog {
 		this.pack();
 	}
 
-	private boolean validateMail(String eMail) {
-		String pat = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-		Pattern pattern = Pattern.compile(pat);
-		Matcher matcher = pattern.matcher(eMail);
-		return matcher.matches();
-	}
-
+	/**
+	 * Gibt die Serververbindung zurück, die die Authentifizierungsdaten enthält
+	 * 
+	 * @return ServerConnection Server Verbindung mit Authentifizierungsdaten
+	 */
 	public ServerConnection getServerConnection() {
-		return database;
+		return serverConnection;
 	}
 }

@@ -61,7 +61,7 @@ public class mainscreen {
 
 	private static final int SUCCES = 2;
 	private final Dimension btnSz = new Dimension(140, 50);
-	public ServerConnection database = new ServerConnection();
+	public ServerConnection serverConnection = new ServerConnection();
 
 	// Variablen
 	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
@@ -209,7 +209,7 @@ public class mainscreen {
 					}
 
 					// Vorhanden Studiengänge aus der Datenbank abfragen
-					studienlist = database.getStudiengaenge();
+					studienlist = serverConnection.getStudiengaenge();
 
 					// Prüfe, ob schon ein Studiengang mit dem selben Namen
 					// existiert
@@ -224,10 +224,10 @@ public class mainscreen {
 					// eintragen
 					// Anschließend Liste und Modelle aktualisieren
 					if (neu) {
-						database.setStudiengang(name);
+						serverConnection.setStudiengang(name);
 						studimodel.removeAllElements();
 						cbmodel.removeAllElements();
-						studienlist = database.getStudiengaenge();
+						studienlist = serverConnection.getStudiengaenge();
 						for (int i = 0; i < studienlist.size(); i++) {
 							studimodel.addElement(studienlist.get(i));
 							cbmodel.addElement(studienlist.get(i));
@@ -298,8 +298,8 @@ public class mainscreen {
 							// Falls neu, in Datenbank eintragen und Liste und
 							// Model aktualisieren
 							if (neu) {
-								database.setZuordnung(z);
-								typen = database.getZuordnungen();
+								serverConnection.setZuordnung(z);
+								typen = serverConnection.getZuordnungen();
 								typenmodel.removeAllElements();
 								for (int i = 0; i < typen.size(); i++) {
 									typenmodel.addElement(typen.get(i));
@@ -502,8 +502,8 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
 				// Danach Modelle füllen und zur Card wechseln
-				typen = database.getZuordnungen();
-				studienlist = database.getStudiengaenge();
+				typen = serverConnection.getZuordnungen();
+				studienlist = serverConnection.getStudiengaenge();
 				cbmodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
 					cbmodel.addElement(studienlist.get(i));
@@ -528,7 +528,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Abfrage alles nicht nicht akzeptierten Module
 				// Danach Modell füllen
-				ArrayList<Modul> module = database.getModule(false);
+				ArrayList<Modul> module = serverConnection.getModule(false);
 				lm.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm.addElement(module.get(i));
@@ -536,7 +536,7 @@ public class mainscreen {
 
 				// Abfrage alles nicht akzeptierten Module
 				// Danach Modell füllen
-				module = database.getModule(true);
+				module = serverConnection.getModule(true);
 				lm_ack.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm_ack.addElement(module.get(i));
@@ -554,16 +554,16 @@ public class mainscreen {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// Verbindung zum Server
-				current = database.login(current.geteMail(), current.getPassword());
+				current = serverConnection.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					// Wenn noch nicht eingeloggt, einloggen
 					if (current.geteMail().equals("gast@gast.gast")) {
-						logindialog log = new logindialog(frame, "Login", database);
+						logindialog log = new logindialog(frame, "Login", serverConnection);
 						int resp = log.showCustomDialog();
 						if (resp == 1) {
 							// User übernehmen
 							current = log.getUser();
-							database = log.getServerConnection();
+							serverConnection = log.getServerConnection();
 							btnLogin.setText("Ausloggen");
 							// Auf Rechte prüfen
 							checkRights();
@@ -573,7 +573,7 @@ public class mainscreen {
 					else {
 						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
 								false, true);
-						if (database.isConnected() == SUCCES) {
+						if (serverConnection.isConnected() == SUCCES) {
 							checkRights();
 						}
 						btnLogin.setText("Einloggen");
@@ -603,7 +603,7 @@ public class mainscreen {
 					tmodel.setRowCount(0);
 
 					// Tabelle mit neuen daten füllen
-					worklist = database.userload();
+					worklist = serverConnection.userload();
 					for (int i = 0; i < worklist.size(); i++) {
 						// Wenn der User noch nicht freigeschaltet wurde,
 						// zur Liste mit neuen Benutzern hinzufügen
@@ -618,7 +618,7 @@ public class mainscreen {
 
 					// Einblendung aller neuen User
 					for (int i = 0; i < neueUser.size(); i++) {
-						userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, database);
+						userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, serverConnection);
 						int response = dlg.showCustomDialog();
 						// Bei Bestätigung, neuen User freischalten und e-Mail
 						// senden
@@ -627,7 +627,7 @@ public class mainscreen {
 							tmp.setFreigeschaltet(true);
 							if (SendMail.send(current.geteMail(), neueUser.get(i).geteMail(), "Sie wurden freigeschaltet!") == 1) {
 								tmp.setFreigeschaltet(true);
-								if (database.userupdate(tmp, tmp.geteMail()).getStatus() == 201) {
+								if (serverConnection.userupdate(tmp, tmp.geteMail()).getStatus() == 201) {
 									addToTable(tmp);
 									neueUser.remove(i);
 								}
@@ -637,20 +637,20 @@ public class mainscreen {
 							int n = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
 									JOptionPane.YES_NO_OPTION);
 							if (n == 0) {
-								database.deluser(tmp.geteMail());
+								serverConnection.deluser(tmp.geteMail());
 							}
 						}
 					}
 				} else {
 					// Ansonsten Dialog öffnen,
 					// in dem die eigenen Daten geändert werden können
-					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, database);
+					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, serverConnection);
 					int response = dlg.showCustomDialog();
 					// Wenn ok gedrückt wird
 					// neuen User abfragen
 					if (response == 1) {
 						User tmp = dlg.getUser();
-						if (database.userupdate(tmp, current.geteMail()).getStatus() == 201) {
+						if (serverConnection.userupdate(tmp, current.geteMail()).getStatus() == 201) {
 							current = tmp;
 							checkRights();
 						} else
@@ -669,7 +669,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
-				studienlist = database.getStudiengaenge();
+				studienlist = serverConnection.getStudiengaenge();
 				studimodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
 					studimodel.addElement(studienlist.get(i));
@@ -678,7 +678,7 @@ public class mainscreen {
 				for (int i = 0; i < studienlist.size(); i++) {
 					cbmodel.addElement(studienlist.get(i));
 				}
-				typen = database.getZuordnungen();
+				typen = serverConnection.getZuordnungen();
 				for (int i = 0; i < typen.size(); i++) {
 					typenmodel.addElement(typen.get(i));
 				}
@@ -702,15 +702,15 @@ public class mainscreen {
 		btnModulArchiv.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				current = database.login(current.geteMail(), current.getPassword());
+				current = serverConnection.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					// Studiengänge und Zuordnungen abrufen
 					studmodel.setRowCount(0);
-					studienlist = database.getStudiengaenge();
+					studienlist = serverConnection.getStudiengaenge();
 					for (int i = 0; i < studienlist.size(); i++) {
 						addToTable(studienlist.get(i));
 					}
-					typen = database.getZuordnungen();
+					typen = serverConnection.getZuordnungen();
 
 					// Zur Card wechseln
 					showCard("studiengang show");
@@ -954,7 +954,7 @@ public class mainscreen {
 							// Wenn alle aussgefüllt wurden, neues Modul
 							// erzeugen und bei Bestätigung einreichen
 							if (filled == true) {
-								int version = database.getModulVersion(Name) + 1;
+								int version = serverConnection.getModulVersion(Name) + 1;
 
 								Date d = new Date();
 
@@ -962,7 +962,7 @@ public class mainscreen {
 								int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
 										"Bestätigung", JOptionPane.YES_NO_OPTION);
 								if (n == 0) {
-									database.setModul(neu);
+									serverConnection.setModul(neu);
 									labels.removeAll(labels);
 									modul_panel.removeAll();
 									modul_panel.revalidate();
@@ -1060,7 +1060,7 @@ public class mainscreen {
 		btnUserAdd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(frame, "User hinzuf\u00fcgen", database);
+				userdialog dlg = new userdialog(frame, "User hinzuf\u00fcgen", serverConnection);
 				int response = dlg.showCustomDialog();
 				// Wenn ok gedrückt wird
 				// neuen User hinzufügen
@@ -1069,7 +1069,7 @@ public class mainscreen {
 					tmp.setFreigeschaltet(true);
 					// Wenn er erfolgreich in die DB eingetragen wurde,zur
 					// Tabelle hinzufügen
-					if (database.usersave(tmp).getStatus() == 201) {
+					if (serverConnection.usersave(tmp).getStatus() == 201) {
 						addToTable(tmp);
 					}
 				}
@@ -1098,7 +1098,7 @@ public class mainscreen {
 					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4, true);
 
 					// User an Bearbeiten dialog übergeben
-					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, database);
+					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, serverConnection);
 					int response = dlg.showCustomDialog();
 					// Wenn ok ged\u00fcckt wird
 					// neuen User abfragen
@@ -1107,7 +1107,7 @@ public class mainscreen {
 						tmp.setFreigeschaltet(true);
 						// Wenn update erfolgreich war, alten user abfragen und
 						// neu hinzufügen
-						if (database.userupdate(tmp, em).getStatus() == 201) {
+						if (serverConnection.userupdate(tmp, em).getStatus() == 201) {
 							removeFromTable(row);
 							addToTable(tmp);
 							// Falls eigener Benutzer bearbeitet wurde, Rechte
@@ -1139,7 +1139,7 @@ public class mainscreen {
 					if (n == 0) {
 						// Wenn Löschen erfolgreich war, aus der Tabelle
 						// entfernen
-						if (database.deluser((String) usrtbl.getValueAt(row, 3)).getStatus() != 201) {
+						if (serverConnection.deluser((String) usrtbl.getValueAt(row, 3)).getStatus() != 201) {
 							removeFromTable(row);
 						} else
 							JOptionPane.showMessageDialog(frame, "L\u00f6schen Fehlgeschlagen", "Fehler beim L\u00f6schen",
@@ -1236,7 +1236,7 @@ public class mainscreen {
 				Modul m = list_notack.getSelectedValue();
 				if (m != null) {
 					// Abfragen, ob Modul in Bearbeitung ist
-					m.setInbearbeitung(database.getModulInEdit(m.getName()));
+					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
 
 						// Prüfe, ob Benutzer das Rech hat, das Modul zu
@@ -1249,7 +1249,7 @@ public class mainscreen {
 						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
 						} else {
-							ArrayList<String> rel = database.getUserRelation(current.geteMail());
+							ArrayList<String> rel = serverConnection.getUserRelation(current.geteMail());
 							if (rel.contains(m.getUser())) {
 								rights = true;
 							}
@@ -1260,7 +1260,7 @@ public class mainscreen {
 							mod.removeAll();
 							mod.add(modeditCard(m), BorderLayout.CENTER);
 							m.setInbearbeitung(true);
-							database.setModulInEdit(m);
+							serverConnection.setModulInEdit(m);
 							showCard("modBearbeiten");
 						} else {
 							JOptionPane.showMessageDialog(frame,
@@ -1285,7 +1285,7 @@ public class mainscreen {
 				Modul m = list_notack.getSelectedValue();
 				if (m != null) {
 					// Prüfe, ob Modul in Bearbeitung ist
-					m.setInbearbeitung(database.getModulInEdit(m.getName()));
+					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
 						if (m.getName().isEmpty()) {
 							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!", "Fehler im Modul",
@@ -1327,14 +1327,14 @@ public class mainscreen {
 									// Bei bestätigung Modul akzeptieren und
 									// Listen neu abrufen
 									// dann zur Bearbeiten Übersicht wechseln
-									database.acceptModul(m);
-									ArrayList<Modul> module = database.getModule(false);
+									serverConnection.acceptModul(m);
+									ArrayList<Modul> module = serverConnection.getModule(false);
 									lm.removeAllElements();
 									for (int i = 0; i < module.size(); i++) {
 										lm.addElement(module.get(i));
 									}
 
-									module = database.getModule(true);
+									module = serverConnection.getModule(true);
 									lm_ack.removeAllElements();
 									for (int i = 0; i < module.size(); i++) {
 										lm_ack.addElement(module.get(i));
@@ -1352,7 +1352,7 @@ public class mainscreen {
 		});
 		buttonpnl.add(btnModulAkzeptieren);
 
-		//Zurück zur Startseite
+		// Zurück zur Startseite
 		JButton btnZurck = new JButton("Zur\u00FCck");
 		btnZurck.addActionListener(new ActionListener() {
 			@Override
@@ -1362,7 +1362,7 @@ public class mainscreen {
 		});
 		buttonpnl.add(btnZurck);
 
-		//akzeptierte Module
+		// akzeptierte Module
 		JPanel akzeptiert = new JPanel();
 		tabs.addTab("akzeptierte Module", null, akzeptiert, null);
 		tabs.setEnabledAt(1, true);
@@ -1376,28 +1376,29 @@ public class mainscreen {
 		JPanel buttonpnl2 = new JPanel();
 		akzeptiert.add(buttonpnl2, BorderLayout.SOUTH);
 
-		//akzeptierte Module bearbeiten
+		// akzeptierte Module bearbeiten
 		JButton btnModulBearbeiten2 = new JButton("Modul bearbeiten");
 		btnModulBearbeiten2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_ack.getSelectedValue();
 				if (m != null) {
-					//Prüfe, ob Modul in Bearbeitung ist
-					m.setInbearbeitung(database.getModulInEdit(m.getName()));
+					// Prüfe, ob Modul in Bearbeitung ist
+					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
-						//Prüfe, ob User das Recht hat, dieses Modul zu bearbeiten
+						// Prüfe, ob User das Recht hat, dieses Modul zu
+						// bearbeiten
 						boolean rights = false;
 						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
 						} else {
-							ArrayList<String> rel = database.getUserRelation(current.geteMail());
+							ArrayList<String> rel = serverConnection.getUserRelation(current.geteMail());
 							if (rel.contains(m.getUser())) {
 								rights = true;
 							}
 						}
 						if (rights) {
-							//Zur Bearbeitung wechseln
+							// Zur Bearbeitung wechseln
 							mod.removeAll();
 							mod.add(modeditCard(m), BorderLayout.CENTER);
 							showCard("modBearbeiten");
@@ -1416,9 +1417,8 @@ public class mainscreen {
 			}
 		});
 		buttonpnl2.add(btnModulBearbeiten2);
-		
-		
-//Zurück zur Startseite
+
+		// Zurück zur Startseite
 		JButton btnZurck2 = new JButton("Zur\u00FCck");
 		btnZurck2.addActionListener(new ActionListener() {
 			@Override
@@ -1443,6 +1443,7 @@ public class mainscreen {
 		final JPanel pnl_editmod = new JPanel();
 		final JPanel pnl_mod_prev = new JPanel();
 
+		// Felder vom Modul abfragen
 		final ArrayList<Feld> felder = m.getFelder();
 		final ArrayList<String> labels = new ArrayList<String>();
 		for (int i = 0; i < felder.size(); i++) {
@@ -1464,6 +1465,7 @@ public class mainscreen {
 		label_MH.setPreferredSize(preferredSize);
 		pnl_Z.add(label_MH);
 
+		// Zuordnugen vom Modul abfragen
 		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
 		typen = m.getZuordnungen();
 		for (int i = 0; i < typen.size(); i++) {
@@ -1475,6 +1477,7 @@ public class mainscreen {
 		pnl_mod_prev.add(pnl_Z);
 		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
 
+		// Restliche Felder erzeugen
 		JPanel jg = new JPanel();
 		jg.setLayout(new BoxLayout(jg, BoxLayout.X_AXIS));
 
@@ -1515,6 +1518,7 @@ public class mainscreen {
 			label.setPreferredSize(preferredSize);
 			pnl.add(label);
 
+			// Felder sind hier nicht bearbeitbar
 			JTextArea txt = new JTextArea(f.getValue());
 			txt.setLineWrap(true);
 			txt.setEditable(false);
@@ -1542,12 +1546,15 @@ public class mainscreen {
 	 *            Zu bearbeitendes Modul
 	 */
 	private JPanel modeditCard(final Modul m) {
+		// Alle Felder entfernen
+		// Buttonmap leeren
 		final JPanel pnl_editmod = new JPanel();
 		modul_panel_edit.removeAll();
 		if (!buttonmap.isEmpty()) {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
 		}
+		// Felder vom Modul abfragen
 		final ArrayList<Feld> felder = m.getFelder();
 		final ArrayList<String> labels = new ArrayList<String>();
 		for (int i = 0; i < felder.size(); i++) {
@@ -1560,6 +1567,7 @@ public class mainscreen {
 		JPanel pnl_bottom = new JPanel();
 		pnl_editmod.add(pnl_bottom, BorderLayout.SOUTH);
 
+		// Button zur anzeige der vorherigen Version
 		JButton alt = new JButton("Vorherige Version");
 		alt.addActionListener(new ActionListener() {
 			@Override
@@ -1567,7 +1575,7 @@ public class mainscreen {
 				int v = m.getVersion() - 1;
 				if (v > 0) {
 					String name = m.getName();
-					Modul pre = database.getModul(name, v);
+					Modul pre = serverConnection.getModul(name, v);
 					if (pre != null)
 						JOptionPane.showMessageDialog(frame, modeditCardPrev(pre), "Vorherige Version", 1);
 				} else {
@@ -1577,6 +1585,7 @@ public class mainscreen {
 		});
 		pnl_bottom.add(alt);
 
+		// Button zum erzeugen eines neuen Feldes
 		JButton btnNeuesFeld = new JButton("Neues Feld");
 		btnNeuesFeld.addActionListener(new ActionListener() {
 			@Override
@@ -1594,6 +1603,7 @@ public class mainscreen {
 					modul_panel_edit.add(pnl_tmp);
 					modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 
+					// Abfrage der Anzahl an Feldern
 					int numOfPanels = modul_panel_edit.getComponentCount();
 					pnl_tmp.setLayout(new BoxLayout(pnl_tmp, BoxLayout.X_AXIS));
 
@@ -1608,6 +1618,7 @@ public class mainscreen {
 					JCheckBox dez = new JCheckBox("Dezernat 2", false);
 					pnl_tmp.add(dez);
 
+					// Feld wieder entfernen
 					JButton btn_tmp_entf = new JButton("Entfernen");
 					btn_tmp_entf.addActionListener(new ActionListener() {
 						@Override
@@ -1651,20 +1662,23 @@ public class mainscreen {
 					modul_panel_edit.revalidate();
 
 				} catch (NullPointerException npe) {
-					// nichts tuen
+					// nichts tuen bei Abbruch
 				}
 			}
 		});
 		pnl_bottom.add(btnNeuesFeld);
 
+		// Zurück zur Startseite
 		JButton btnHome = new JButton("Zur\u00fcck");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Panel wider neu erzeugen,
+				// Modul als nicht in Bearbeitung markieren
 				modul_panel_edit.removeAll();
 				modul_panel_edit.revalidate();
 				m.setInbearbeitung(false);
-				database.setModulInEdit(m);
+				serverConnection.setModulInEdit(m);
 				modulbearbeitenCard();
 				showCard("modulbearbeiten");
 			}
@@ -1683,6 +1697,7 @@ public class mainscreen {
 		label_MH.setPreferredSize(preferredSize);
 		pnl_Z.add(label_MH);
 
+		// Liste ausgewählter Zuordnungen
 		final DefaultListModel<Zuordnung> lm_Z = new DefaultListModel<Zuordnung>();
 		typen = m.getZuordnungen();
 		for (int i = 0; i < typen.size(); i++) {
@@ -1692,16 +1707,19 @@ public class mainscreen {
 		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		pnl_Z.add(zlist);
-		typen = database.getZuordnungen();
+		typen = serverConnection.getZuordnungen();
 		cbmodel_Z.removeAllElements();
 		for (int i = 0; i < typen.size(); i++) {
 			cbmodel_Z.addElement(typen.get(i));
 		}
-		final JComboBox cb_Z = new JComboBox(cbmodel_Z);
+
+		// Zur auswahlstehende Zuordnungen
+		final JComboBox<Zuordnung> cb_Z = new JComboBox<Zuordnung>(cbmodel_Z);
 		cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width, 20));
 
 		pnl_Z.add(cb_Z);
 
+		// Zuordnung auswählen
 		JButton z_btn = new JButton("Zuordnung ausw\u00e4hlen");
 		z_btn.addActionListener(new ActionListener() {
 			@Override
@@ -1712,6 +1730,7 @@ public class mainscreen {
 		});
 		pnl_Z.add(z_btn);
 
+		// Zuordnung wieder entfernen
 		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
 		btnZuordnungEntfernen.addActionListener(new ActionListener() {
 			@Override
@@ -1745,10 +1764,12 @@ public class mainscreen {
 		modul_panel_edit.add(pnl);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 
+		// Felder erzeugen und füllen
 		for (int i = 0; i < m.getFelder().size(); i++) {
 			Feld f = m.getFelder().get(i);
 			JPanel feld = defaultmodulPanel(f.getLabel(), f.getValue(), f.isDezernat());
 
+			// Wenn es kein Standart Feld ist, einen entfernen Button hinzufügen
 			if (!defaultlabels.contains(f.getLabel())) {
 				int numOfPanels = modul_panel_edit.getComponentCount();
 
@@ -1794,6 +1815,7 @@ public class mainscreen {
 			modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
 		}
 
+		// Button zum annehmen eines Modules
 		JButton btnOk = new JButton("Annehmen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
@@ -1811,6 +1833,8 @@ public class mainscreen {
 					zlist.add(lm_Z.getElementAt(i));
 				}
 
+				// Prüfe ob min. eine Zuordnung ausgewählt ist und ein korrekter
+				// Jahrgang ausgewählt wurde
 				if (!zlist.isEmpty()) {
 
 					if (jahrgang != 0) {
@@ -1833,15 +1857,17 @@ public class mainscreen {
 								boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
 								String value = tmptxt.getText();
 								String label = tmplbl.getText();
-								if (label.isEmpty()) {
+								// Prüfe, ob Feld ausgefüllt ist
+								if (value.isEmpty()) {
 									filled = false;
 									break;
 								}
 								felder.add(new Feld(label, value, dezernat2));
 							}
 							if (filled == true) {
-
-								int version = database.getModulVersion(Name) + 1;
+								// Wenn alle ausgefüllt sind, Modul erzeugen und
+								// bei Bestätigung einreichen
+								int version = serverConnection.getModulVersion(Name) + 1;
 
 								Date d = new Date();
 
@@ -1851,18 +1877,19 @@ public class mainscreen {
 										"Bestätigung", JOptionPane.YES_NO_OPTION);
 								if (n == 0) {
 									m.setInbearbeitung(false);
-									database.setModul(neu);
+									serverConnection.setModul(neu);
 									labels.removeAll(labels);
 									modul_panel_edit.removeAll();
 									modul_panel_edit.revalidate();
 
-									ArrayList<Modul> module = database.getModule(false);
+									// Listen neu einlesen
+									ArrayList<Modul> module = serverConnection.getModule(false);
 									lm.removeAllElements();
 									for (int i = 0; i < module.size(); i++) {
 										lm.addElement(module.get(i));
 									}
 
-									module = database.getModule(true);
+									module = serverConnection.getModule(true);
 									lm_ack.removeAllElements();
 									for (int i = 0; i < module.size(); i++) {
 										lm_ack.addElement(module.get(i));
@@ -1912,6 +1939,7 @@ public class mainscreen {
 		studiengangshow.add(studscp);
 		studiengangshow.add(btnpan, BorderLayout.SOUTH);
 
+		// Tabelle mit Studiengängen
 		studmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Studiengang" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1930,6 +1958,8 @@ public class mainscreen {
 		};
 		studtable.setModel(studmodel);
 		studtransferstring = "";
+
+		// Wechseln zur Jahrgangsauswahl, wenn ein Studiengang ausgewählt wurde
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
@@ -1942,6 +1972,7 @@ public class mainscreen {
 				}
 			}
 		});
+		// Zurück zur Startseite
 		back.addActionListener(new ActionListener() {
 
 			@Override
@@ -1972,6 +2003,7 @@ public class mainscreen {
 		modbuchshow.add(modtypscp);
 		modbuchshow.add(btnpan, BorderLayout.SOUTH);
 
+		// Tabelle mit Jahrgängen
 		modbuchmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modulhandbuch Jahrgang" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -1989,15 +2021,18 @@ public class mainscreen {
 			}
 		};
 
+		// Tabelle füllen
 		modbuchtable.setModel(modbuchmodel);
 		modbuchmodel.setRowCount(0);
-		modulhandlist = database.getModulhandbuch(studtransferstring);
+		modulhandlist = serverConnection.getModulhandbuch(studtransferstring);
 		for (int i = 0; i < modulhandlist.size(); i++) {
 
 			addToTable(modulhandlist.get(i));
 
 		}
 		modbuchtransferstring = "";
+
+		// Wechseln zur Auswahl von Zuordnungen
 		goforit.addActionListener(new ActionListener() {
 
 			@Override
@@ -2040,6 +2075,7 @@ public class mainscreen {
 		modtypshow.add(modtypscp);
 		modtypshow.add(btnpan, BorderLayout.SOUTH);
 
+		//Tabelle mit Zuordnungen
 		modtypmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Modul Typ" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -2056,6 +2092,8 @@ public class mainscreen {
 				return false;
 			}
 		};
+		
+		//Tabelle füllen
 		modtyptable.setModel(modtypmodel);
 		modtypmodel.setRowCount(0);
 		int test = 0;
@@ -2071,8 +2109,9 @@ public class mainscreen {
 				addToTable(typen.get(i).getName());
 		}
 		modtyptransferstring = "";
+		
+		//Wechseln zur Anzeige mit Modulen
 		goforit.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (modtyptable.getSelectedRow() != -1) {
@@ -2083,8 +2122,9 @@ public class mainscreen {
 				}
 			}
 		});
+		
+		//Zurück zur vorherigen Ansicht
 		back.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("modbuch show");
@@ -2113,6 +2153,7 @@ public class mainscreen {
 		modshow.add(modtypscp);
 		modshow.add(btnpan, BorderLayout.SOUTH);
 
+		//Tabelle mit Modulen
 		modshowmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Module" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class };
@@ -2129,15 +2170,17 @@ public class mainscreen {
 			}
 		};
 
+		//Tabelle füllen
 		modshowtable.setModel(modshowmodel);
 		modshowmodel.setRowCount(0);
-		selectedmodullist = database.getselectedModul(studtransferstring, modtyptransferstring, modbuchtransferstring);
+		selectedmodullist = serverConnection.getselectedModul(studtransferstring, modtyptransferstring, modbuchtransferstring);
 		for (int i = 0; i < selectedmodullist.size(); i++) {
 			addToTable(selectedmodullist.get(i));
 		}
 		modulselectionstring = "";
+		
+		//Wechsel zur Anzeige des Modules
 		goforit.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (modshowtable.getSelectedRow() != -1) {
@@ -2148,8 +2191,9 @@ public class mainscreen {
 				}
 			}
 		});
+		
+		//Zurück zur vorherigen Ansicht
 		back.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showCard("modtyp show");
@@ -2183,6 +2227,7 @@ public class mainscreen {
 				zws = selectedmodullist.get(i);
 			}
 		}
+		//Felder erstellen
 		modpanel.add(modulPanel("Name", zws.getName()));
 		modpanel.add(modulPanel("Jahrgang", modbuchtransferstring));
 		for (int i = 0; i < zws.getZuordnungen().size(); i++) {
@@ -2192,13 +2237,14 @@ public class mainscreen {
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
 
+		//Pdf für das Modul erstellen
 		pdfbtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				try {
-					database.toPdf(modulselectionstring);
+					serverConnection.toPdf(modulselectionstring);
 				} catch (TransformerConfigurationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -2217,6 +2263,8 @@ public class mainscreen {
 				}
 			}
 		});
+		
+		//Zurück zur vorherigen Ansicht
 		back.addActionListener(new ActionListener() {
 
 			@Override

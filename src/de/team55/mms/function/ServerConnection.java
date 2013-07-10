@@ -63,6 +63,15 @@ public class ServerConnection {
 		client = Client.create();
 	}
 
+	/**
+	 * Verbindet zum Server
+	 * 
+	 * @param eMail
+	 *            e-Mail des Users
+	 * @param password
+	 *            Password des Users
+	 * @return status, ob erfolgreich
+	 */
 	public int connect(String eMail, String password) {
 		this.email = eMail;
 		this.password = password;
@@ -83,6 +92,13 @@ public class ServerConnection {
 		return connected;
 	}
 
+	/**
+	 * Löscht einen User
+	 * 
+	 * @param mail
+	 *            e-Mail des Users
+	 * @return Response Code, null wenn nicht vorhanden
+	 */
 	public ClientResponse deluser(String mail) {
 		if (connect(email, password) == SUCCES) {
 			webResource.path("user/delete").path(mail).type(MediaType.APPLICATION_XML).delete();
@@ -92,6 +108,13 @@ public class ServerConnection {
 
 	}
 
+	/**
+	 * Gibt ein Modul aus
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @return das gewünschte Modul, null wenn nicht vorhanden
+	 */
 	public Modul getModul(String name) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("modul/get").path(name).accept(MediaType.APPLICATION_XML).get(Modul.class);
@@ -101,6 +124,13 @@ public class ServerConnection {
 
 	}
 
+	/**
+	 * Gibt ein Modul als XML String aus
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @return das Modul als XML, null wenn nicht vorhanden
+	 */
 	public String getModulXML(String name) {
 		if (connect(email, password) == SUCCES) {
 			JAXBContext context;
@@ -125,6 +155,14 @@ public class ServerConnection {
 
 	}
 
+	/**
+	 * Gibt eine Liste von Modulen aus
+	 * 
+	 * @param b
+	 *            gibt an, ob man akzeptierte oder nicht akzeptierte Module
+	 *            möchte
+	 * @return eine Liste von Modulen
+	 */
 	public ArrayList<Modul> getModule(boolean b) {
 		String accepted = "false";
 		if (b)
@@ -137,6 +175,13 @@ public class ServerConnection {
 		return null;
 	}
 
+	/**
+	 * Gibt Modulhandbücher aus
+	 * 
+	 * @param studiengang
+	 *            Der gewünschte Studiengang
+	 * @return Liste von Modulhandbühern
+	 */
 	public ArrayList<Modulhandbuch> getModulhandbuch(String studiengang) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("modulhandbuch/getallat").path(studiengang).accept(MediaType.APPLICATION_XML)
@@ -146,67 +191,114 @@ public class ServerConnection {
 		return null;
 	}
 
+	/**
+	 * Gibt die neueste Version eines Modules aus
+	 * 
+	 * @param name
+	 *            Des Modules
+	 * @return Version des Modules
+	 */
 	public int getModulVersion(String name) {
 		if (connect(email, password) == SUCCES) {
-			String id = webResource.path("modul/getVersion").path(name).accept(MediaType.APPLICATION_XML)
-					.get(String.class);
+			String id = webResource.path("modul/getVersion").path(name).accept(MediaType.APPLICATION_XML).get(String.class);
 			return Integer.parseInt(id);
 		}
 		return 0;
 	}
 
+	/**
+	 * Gibt eine Liste mit Stellvertretern aus
+	 * 
+	 * @param eMail
+	 *            e-Mail des Benutzers, von dem die Stellvertreter abgefragt
+	 *            werden soll
+	 * @return Liste mit Benutzern
+	 */
 	public ArrayList<User> getStellvertreter(String eMail) {
 		if (eMail.isEmpty())
 			return new ArrayList<User>();
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/stellv").path(eMail).accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<User>>() {
-					});
+			return webResource.path("user/stellv").path(eMail).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
+			});
 		}
 		return null;
 	}
 
+	/**
+	 * Gibt eine Liste mit Studiengängen aus
+	 * 
+	 * @return Liste mit Studiengängen
+	 */
 	public ArrayList<Studiengang> getStudiengaenge() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("studiengang/getall").accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<Studiengang>>() {
-					});
+			return webResource.path("studiengang/getall").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Studiengang>>() {
+			});
 		}
 		return null;
 	}
 
+	/**
+	 * Gibt die ID eines Studienganges aus
+	 * 
+	 * @param name
+	 *            Name des Studienganges
+	 * @return ID des Studienganges
+	 */
 	public int getStudiengangID(String name) {
 		if (connect(email, password) == SUCCES) {
-			String id = webResource.path("studiengang/getID").path(name).accept(MediaType.APPLICATION_XML)
-					.get(String.class);
+			String id = webResource.path("studiengang/getID").path(name).accept(MediaType.APPLICATION_XML).get(String.class);
 			return Integer.parseInt(id);
 		}
 		return 0;
 	}
 
+	/**
+	 * Gibt eine Liste von Zuordnungen aus
+	 * 
+	 * @return Liste mit Zuordnungen
+	 */
 	public ArrayList<Zuordnung> getZuordnungen() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("zuordnung/getList").accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<Zuordnung>>() {
-					});
+			return webResource.path("zuordnung/getList").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Zuordnung>>() {
+			});
 		}
 		return null;
 	}
 
+	/**
+	 * Gibt an, ob man mit dem Server verbunden ist
+	 * 
+	 * @return status, ob man verbunden ist
+	 */
 	public int isConnected() {
 		return connected;
 	}
 
+	/**
+	 * Funktion zum einloggen eines Users
+	 * 
+	 * @param eMail
+	 *            e-Mail des Users
+	 * @param password
+	 *            Passwort des Users
+	 * @return Gibt den User zurück, null wenn fehlgeschlagen
+	 */
 	public User login(String eMail, String password) {
 		if (connect(eMail, password) == SUCCES) {
-			return webResource.path("login").path(eMail).path(password).accept(MediaType.APPLICATION_XML)
-					.get(User.class);
+			return webResource.path("login").path(eMail).path(password).accept(MediaType.APPLICATION_XML).get(User.class);
 		} else {
 			return null;
 		}
 
 	}
 
+	/**
+	 * Reicht ein Modul ein
+	 * 
+	 * @param neu
+	 *            Das Modul
+	 * @return Response Code
+	 */
 	public ClientResponse setModul(Modul neu) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("modul/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
@@ -214,11 +306,13 @@ public class ServerConnection {
 		return null;
 	}
 
-	public void setModulhandbuch(Modulhandbuch neu_mh) {
-		// TODO Auto-generated method stub
-
-	}
-
+	/**
+	 * Reicht eine Liste von Stellvertretern ein
+	 * 
+	 * @param sl
+	 *            Liste von Stellvertretern
+	 * @return Response Code
+	 */
 	public ClientResponse setStellvertreter(StellvertreterList sl) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("user/stellv/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, sl);
@@ -226,15 +320,28 @@ public class ServerConnection {
 		return null;
 	}
 
+	/**
+	 * Reicht einen Studiengang ein
+	 * 
+	 * @param name
+	 *            Name des Studienganges
+	 * @return Response Code
+	 */
 	public ClientResponse setStudiengang(String name) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("studiengang/post").type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, name);
+			return webResource.path("studiengang/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, name);
 		}
 		return null;
 
 	}
 
+	/**
+	 * Reicht eine Zuordnung ein
+	 * 
+	 * @param z
+	 *            die Zuordnung
+	 * @return Response Code
+	 */
 	public ClientResponse setZuordnung(Zuordnung z) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("zuordnung/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, z);
@@ -242,16 +349,27 @@ public class ServerConnection {
 		return null;
 	}
 
+	/**
+	 * Frag alle User ab
+	 * 
+	 * @return eine Liste von Usern
+	 */
 	public ArrayList<User> userload() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/getall").accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<User>>() {
-					});
+			return webResource.path("user/getall").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
+			});
 		} else {
 			return null;
 		}
 	}
 
+	/**
+	 * Reicht einen neuen User ein
+	 * 
+	 * @param tmp
+	 *            der User
+	 * @return Response Code
+	 */
 	public ClientResponse usersave(User tmp) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("user/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, tmp);
@@ -260,6 +378,15 @@ public class ServerConnection {
 
 	}
 
+	/**
+	 * Updated einen User
+	 * 
+	 * @param tmp
+	 *            der User
+	 * @param mail
+	 *            die alte e-Mail des Users
+	 * @return Response Code
+	 */
 	public ClientResponse userupdate(User tmp, String mail) {
 		if (connect(email, password) == SUCCES) {
 			UserUpdateContainer uuc = new UserUpdateContainer(tmp, mail);
@@ -268,14 +395,33 @@ public class ServerConnection {
 		return null;
 	}
 
+	/**
+	 * Fragt die Userrelation ab
+	 * 
+	 * @param eMail
+	 *            e-Mail des Benutzers
+	 * @return Liefert eine Liste mit Benutzernamen von Vorgesetzten und
+	 *         Stellvertretern
+	 */
 	public ArrayList<String> getUserRelation(String eMail) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("/user/getRelation/").path(eMail).accept(MediaType.APPLICATION_XML)
-					.get(UserRelation.class).getRelation();
+			return webResource.path("/user/getRelation/").path(eMail).accept(MediaType.APPLICATION_XML).get(UserRelation.class)
+					.getRelation();
 		}
 		return null;
 	}
 
+	/**
+	 * Gibt eine Liste von Modulen Zurück
+	 * 
+	 * @param studiengang
+	 *            Studiengang des Moduls
+	 * @param modultyp
+	 *            Zuordnung des Moduls
+	 * @param modulhandbuch
+	 *            Jahrgang des Moduls
+	 * @return
+	 */
 	public ArrayList<Modul> getselectedModul(String studiengang, String modultyp, String modulhandbuch) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("/modul/getselectedModul/").path(studiengang).path(modultyp).path(modulhandbuch)
@@ -285,15 +431,25 @@ public class ServerConnection {
 		return null;
 	}
 
+	/**
+	 * Gibt ein Modul aus
+	 * @param name Name des Moduls
+	 * @param v Version des Moduls
+	 * @return Modul
+	 */
 	public Modul getModul(String name, int v) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/get").path(name).path(v + "").accept(MediaType.APPLICATION_XML)
-					.get(Modul.class);
+			return webResource.path("modul/get").path(name).path(v + "").accept(MediaType.APPLICATION_XML).get(Modul.class);
 		} else {
 			return null;
 		}
 	}
 
+	/**
+	 * akzeptiert ein Modul
+	 * @param m Modul, das akzeptiert werden soll
+	 * @return Response Code
+	 */
 	public ClientResponse acceptModul(Modul m) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("modul/accept").type(MediaType.APPLICATION_XML).post(ClientResponse.class, m);
@@ -303,15 +459,19 @@ public class ServerConnection {
 
 	}
 
-	public void umlreplacer() { // HTML to HTML (UTF-8)
+	/**
+	 * HTML to HTML (UTF-8)
+	 */
+	public void specialreplacer() {
 		String content = "";
-		try { // html-file to html-string
+		try { // html-file zu html-string
 			BufferedReader in = new BufferedReader(new FileReader("modul.html"));
 			String str;
 			while ((str = in.readLine()) != null) {
 
 				content += str;
 			}
+			// ersetzt die sonderzeichentags durch utf-8 sonderzeichen
 			content = content.replaceAll("&uuml;", "ü");
 			content = content.replaceAll("&auml;", "ä");
 			content = content.replaceAll("&ouml;", "ö");
@@ -319,13 +479,11 @@ public class ServerConnection {
 			content = content.replaceAll("&Auml;", "Ä");
 			content = content.replaceAll("&Ouml;", "Ö");
 			content = content.replaceAll("<META", "");
-			// System.out.println(content); //gibt den bearbeiteten HTML-String
-			// aus
 			in.close();
 		} catch (IOException e) {
 		}
-
-		PrintWriter out = null; // takes html-string and creates html-file
+		// nimmt html-string und erzeugt html-file
+		PrintWriter out = null;
 		try {
 			out = new PrintWriter(new File("modul.html"), "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -334,12 +492,14 @@ public class ServerConnection {
 		}
 		out.print(content);
 		out.close();
-
 	}
 
-	public void getModulXMLFile(String name) // xmlstring to xml file
+	/**
+	 * xmlstring zu xml file
+	 * @param name xml String
+	 */
+	public void getModulXMLFile(String name)
 	{
-
 		PrintWriter out = null;
 		try {
 			out = new PrintWriter(new File("modul.xml"), "UTF-8");
@@ -351,31 +511,43 @@ public class ServerConnection {
 		out.close();
 	}
 
+	/**
+	 * erzeugt eine PDF
+	 * @param name name des Modules
+	 * @throws IOException
+	 * @throws DocumentException
+	 * @throws TransformerException
+	 * @throws TransformerConfigurationException
+	 * @throws FileNotFoundException
+	 */
 	public void toPdf(String name) throws IOException, DocumentException, TransformerException,
 
 	TransformerConfigurationException, FileNotFoundException {
 
-		getModulXMLFile(name);
+		getModulXMLFile(name); // nach einigen verschachtelten aufrufen wird
+								// hier die xml-datei erstellt
 
-		String pdfname = (name + getPDFname() + ".pdf");
+		String pdfname = (name + getPDFname() + ".pdf"); // pdf-datei name wird
+															// generiert
 
+		// transformer mit xsl datei wird erzeugt
 		TransformerFactory tFactory = TransformerFactory.newInstance();
-
 		Transformer transformer = tFactory.newTransformer(new StreamSource("style.xsl"));
 
+		// eiegnschaften des transformer werden verändert/spezifiziert
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-		// eigentliche umwandlung
-		transformer.transform(new StreamSource("modul.xml"), new StreamResult(new OutputStreamWriter(
-				new FileOutputStream("modul.html"), "UTF-8")));
+		// eigentliche umwandlung von xml + xsl zu html
+		transformer.transform(new StreamSource("modul.xml"), new StreamResult(new OutputStreamWriter(new FileOutputStream("modul.html"),
+				"UTF-8")));
 
-		umlreplacer();
+		specialreplacer(); // ersetzt sonderzeichentags in utf-8 sonderzeichen
 
 		String File_To_Convert = "modul.html";
 		String url = new File(File_To_Convert).toURI().toURL().toString();
 
-		// System.out.println("" + url); //gibt pfad der html datei aus
+		// umwandlung von html zu pdf
 		String HTML_TO_PDF = pdfname;
 
 		FileOutputStream os = new FileOutputStream(HTML_TO_PDF);
@@ -386,35 +558,37 @@ public class ServerConnection {
 
 		os.close();
 
-		Desktop.getDesktop().open(new File(pdfname));
-		dclean(); // räumt die Daten welche nicht mehr benötigt werden auf...
+		Desktop.getDesktop().open(new File(pdfname));// erstellte Pdf wird
+														// geöffnet
+		dclean(); // räumt die xml-datei welche nicht mehr benötigt wird auf...
 	}
 
+	/**
+	 * generiert pdfnamen aus erstellungszeitpunkt
+	 * @return Name der PDF
+	 */
 	public String getPDFname() {
-
 		SimpleDateFormat date = new SimpleDateFormat("HHmmss");
 		String date1 = date.format(new Date());
 		return date1;
-
 	}
 
-	public void dclean() {
-		File file1 = new File("modul.xml");
-		File file2 = new File("modul.html");
-
-		file1.delete();
-		file2.delete();
+	/**
+	 * löscht die xml-datei erstellte wieder
+	 */
+	public void dclean() { 
+		File file = new File("modul.xml");
+		file.delete();
 	}
 
-	public void dclean(String f) { // sollte was bestimmtes gelöscht werden :U
-		File f0 = new File(f);
-		f0.delete();
-	}
-
+	/**
+	 * Prüft, ob ein Modul in Bearbeitung ist
+	 * @param name Name des Moduls
+	 * @return Status, ob es in Bearbeitung ist
+	 */
 	public boolean getModulInEdit(String name) {
 		if (connect(email, password) == SUCCES) {
-			String b = webResource.path("modul/getInEdit").path(name).accept(MediaType.APPLICATION_XML)
-					.get(String.class);
+			String b = webResource.path("modul/getInEdit").path(name).accept(MediaType.APPLICATION_XML).get(String.class);
 			if (b.equals("true")) {
 				return true;
 			}
@@ -422,6 +596,11 @@ public class ServerConnection {
 		return false;
 	}
 
+	/**
+	 * Markiert ein Modul als in Bearbeitung
+	 * @param m Das Modul
+	 * @return Response Code
+	 */
 	public ClientResponse setModulInEdit(Modul m) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("modul/setInEdit").type(MediaType.APPLICATION_XML).post(ClientResponse.class, m);

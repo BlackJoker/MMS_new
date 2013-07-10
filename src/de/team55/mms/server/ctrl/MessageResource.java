@@ -26,21 +26,21 @@ import de.team55.mms.server.db.sql;
 public class MessageResource {
 
 	/**
-	 * returns a User
+	 * login Funktion
 	 * 
 	 * @param user
-	 *            e-Mail of the User
+	 *            e-Mail des Users
 	 * @param pass
-	 *            Password of the User
-	 * @return Data of User
+	 *            Passwort des User
+	 * @return eingeloggter User
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/login/{user}/{pass}")
 	public User userLogin(@PathParam("user") String user, @PathParam("pass") String pass) {
-		if(user.equals("gast@gast.gast")){
+		if (user.equals("gast@gast.gast")) {
 			System.out.println("Gast hat sich angemeldet");
-		} else{
+		} else {
 			System.out.println("User " + user + " hat sich angemeldet");
 		}
 		User tmp = new sql().getUser(user, pass);
@@ -50,10 +50,17 @@ public class MessageResource {
 			return tmp;
 	}
 
+	/**
+	 * Prüft, ob ein User exsistiert
+	 * 
+	 * @param mail
+	 *            e-Mail des Users
+	 * @return Reponse Code
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/get/{user}")
-	public Response userLogin(@PathParam("user") String mail) {
+	public Response userCheck(@PathParam("user") String mail) {
 		System.out.println("User " + mail + " abgefragt");
 		int status = new sql().getUser(mail);
 		if (status == 1)
@@ -62,6 +69,13 @@ public class MessageResource {
 			return Response.status(500).build();
 	}
 
+	/**
+	 * Fragt eine Userrelation ab
+	 * 
+	 * @param eMail
+	 *            e-Mail des Users
+	 * @return Userrelation
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/getRelation/{user}")
@@ -71,9 +85,9 @@ public class MessageResource {
 	}
 
 	/**
-	 * returns all Users
+	 * gibt alle User aus
 	 * 
-	 * @return List with Data of all Users
+	 * @return Liste von Usern
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
@@ -83,6 +97,13 @@ public class MessageResource {
 		return new sql().userload();
 	}
 
+	/**
+	 * Reicht einen User ein
+	 * 
+	 * @param user
+	 *            der User
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/user/post/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -97,6 +118,13 @@ public class MessageResource {
 		}
 	}
 
+	/**
+	 * Updated einen User
+	 * 
+	 * @param uuc
+	 *            Container mit User und alter e-Mail des Users
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/user/update/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -111,6 +139,13 @@ public class MessageResource {
 		}
 	}
 
+	/**
+	 * Reicht eine Liste von Stellvertretern ein
+	 * 
+	 * @param sl
+	 *            Liste von Stellvertretern
+	 * @return Response COde
+	 */
 	@POST
 	@Path("/user/stellv/post/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -125,6 +160,13 @@ public class MessageResource {
 		}
 	}
 
+	/**
+	 * Liefert eine Liste von Stellverteren
+	 * 
+	 * @param mail
+	 *            e-Mail des Users
+	 * @return Liste von Benutzern
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/user/stellv/{user}")
@@ -133,6 +175,12 @@ public class MessageResource {
 		return new sql().getStellv(mail);
 	}
 
+	/**
+	 * Löscht einen Benutzer
+	 * 
+	 * @param mail
+	 *            e-Mail des Benutzers
+	 */
 	@DELETE
 	@Path("/user/delete/{mail}")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -141,6 +189,13 @@ public class MessageResource {
 		new sql().deluser(mail);
 	}
 
+	/**
+	 * Gibt die neuste Version eines Moduls aus
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @return Versionsnummer
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getVersion/{name}")
@@ -149,6 +204,13 @@ public class MessageResource {
 		return Integer.toString(new sql().getModulVersion(name));
 	}
 
+	/**
+	 * Gibt ein Modul aus
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @return Modul
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/get/{name}")
@@ -156,22 +218,39 @@ public class MessageResource {
 		System.out.println("Modul " + name + " abgefragt");
 		return new sql().getModul(name);
 	}
-	
+
+	/**
+	 * Gibt ein Modul mit bestimmter Version aus
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @param version
+	 *            Versionsnummer
+	 * @return Modul
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/get/{name}/{version}")
 	public Modul getModul(@PathParam("name") String name, @PathParam("version") String version) {
 		int v = 0;
-		try{
+		try {
 			v = Integer.parseInt(version);
-		} catch (NumberFormatException nf){
-			System.out.println("Modul " + name + " ,Version "+version+" nicht erfolgreich abgefragt");
+		} catch (NumberFormatException nf) {
+			System.out.println("Modul " + name + " ,Version " + version + " nicht erfolgreich abgefragt");
 			return null;
 		}
-		System.out.println("Modul " + name + " ,Version "+version+" abgefragt");
-		return new sql().getModul(name,v);
+		System.out.println("Modul " + name + " ,Version " + version + " abgefragt");
+		return new sql().getModul(name, v);
 	}
 
+	/**
+	 * Gibt eine Liste von Modulen aus, die akzeptiert oder nicht akzeptiert
+	 * sind
+	 * 
+	 * @param a
+	 *            Gibt an, ob akzeptiert oder nicht
+	 * @return Liste von Modulen
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getList/{accepted}")
@@ -186,6 +265,13 @@ public class MessageResource {
 		return new sql().getModule(b);
 	}
 
+	/**
+	 * Reicht ein Modu ein
+	 * 
+	 * @param m
+	 *            Das Modul
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/modul/post/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -199,12 +285,19 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
-	
+
+	/**
+	 * Akzeptiert ein Modul
+	 * 
+	 * @param m
+	 *            Das Modul
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/modul/accept/")
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response modulAccept(Modul m) {
-		int status = new sql().acceptModul(m.getName(),m.getVersion());
+		int status = new sql().acceptModul(m.getName(), m.getVersion());
 		if (status == 1) {
 			System.out.println("Modul " + m.getName() + " akzeptiert");
 			return Response.status(201).build();
@@ -213,7 +306,14 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
-	
+
+	/**
+	 * Markiert ein Modul als in Bearbeitung
+	 * 
+	 * @param m
+	 *            Das Modul
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/modul/setInEdit/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -228,6 +328,11 @@ public class MessageResource {
 		}
 	}
 
+	/**
+	 * Gibt eine Lisete von Zuordnungen aus
+	 * 
+	 * @return Liste von Zuordnungen
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/zuordnung/getList/")
@@ -236,6 +341,13 @@ public class MessageResource {
 		return new sql().getZuordnungen();
 	}
 
+	/**
+	 * Reicht eine Zuordnung ein
+	 * 
+	 * @param z
+	 *            Zuordnung
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/zuordnung/post/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -250,6 +362,13 @@ public class MessageResource {
 		}
 	}
 
+	/**
+	 * Gibt die ID eines Studienganges aus
+	 * 
+	 * @param name
+	 *            Name des Studienganges
+	 * @return ID des Studienganges
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/studiengang/getID/{name}")
@@ -258,6 +377,13 @@ public class MessageResource {
 		return Integer.toString(new sql().getStudiengangID(name));
 	}
 
+	/**
+	 * Gibt alle Modulhandbücher eines Studienganges aus
+	 * 
+	 * @param studiengang
+	 *            Name des Studienganges
+	 * @return Liste von Modulhandbüchern
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modulhandbuch/getallat/{studiengang}")
@@ -266,6 +392,11 @@ public class MessageResource {
 		return new sql().getModulhandbuch(studiengang);
 	}
 
+	/**
+	 * Gibt alle Studiengänge aus
+	 * 
+	 * @return Liste von Studiengängen
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/studiengang/getall")
@@ -274,6 +405,13 @@ public class MessageResource {
 		return new sql().getStudiengaenge();
 	}
 
+	/**
+	 * Reicht einen Studiengang ein
+	 * 
+	 * @param name
+	 *            Name des Studienganges
+	 * @return Response Code
+	 */
 	@POST
 	@Path("/studiengang/post/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -287,22 +425,41 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
-	
+
+	/**
+	 * Gibt eine Liste von Modulen aus
+	 * 
+	 * @param studiengang
+	 *            Studiengang des Moduls
+	 * @param modultyp
+	 *            Zuordnung des Moduls
+	 * @param modulhandbuch
+	 *            Jahrgang des Moduls
+	 * @return Liste von Modulen
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getselectedModul/{studiengang}/{modultyp}/{modulhandbuch}")
-	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp, @PathParam("modulhandbuch") String modulhandbuch){
+	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp,
+			@PathParam("modulhandbuch") String modulhandbuch) {
 		System.out.println("Ausgewählte Module abfragen");
 		return new sql().getselectedModul(studiengang, modultyp, modulhandbuch);
 	}
-	
+
+	/**
+	 * Gibt an, ob ein Modul in Bearbeitung ist
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @return Status des Moduls
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/getInEdit/{name}")
 	public String getModulInEdit(@PathParam("name") String name) {
 		System.out.println("Abfrage, ob " + name + " in Bearbeitung ist");
-		boolean b=new sql().getModulInEdit(name);
-		if(b){
+		boolean b = new sql().getModulInEdit(name);
+		if (b) {
 			return "true";
 		} else {
 			return "false";

@@ -31,6 +31,11 @@ public class sql {
 	private int FAILED = 0;
 	private int SUCCES = 1;
 
+	/**
+	 * Verbindet zur Datenbank
+	 * 
+	 * @return Status, ob berbunden
+	 */
 	public boolean connect() {
 		connected = false;
 		Properties prop = new Properties();
@@ -50,61 +55,35 @@ public class sql {
 			// user table
 			Statement stmt = this.con.createStatement();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (  " +
-					"`modulname` varchar(255) NOT NULL," +
-					"`jahrgang` int(255) DEFAULT NULL,  " +
-					"`Version` int(11) DEFAULT NULL,  " +
-					"`Datum` date DEFAULT NULL,  " +
-					"`akzeptiert` tinyint(1) DEFAULT '0',  " +
-					"`inbearbeitung` tinyint(1) DEFAULT '0',  " +
-					"`typid` int(11) NOT NULL,  " +
-					"`user` varchar(255) DEFAULT NULL,  " +
-					"UNIQUE KEY `name_jahrgang_Version_typid` (`modulname`,`jahrgang`,`Version`,`typid`))");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (  " + "`modulname` varchar(255) NOT NULL,"
+					+ "`jahrgang` int(255) DEFAULT NULL,  " + "`Version` int(11) DEFAULT NULL,  " + "`Datum` date DEFAULT NULL,  "
+					+ "`akzeptiert` tinyint(1) DEFAULT '0',  " + "`inbearbeitung` tinyint(1) DEFAULT '0',  "
+					+ "`typid` int(11) NOT NULL,  " + "`user` varchar(255) DEFAULT NULL,  "
+					+ "UNIQUE KEY `name_jahrgang_Version_typid` (`modulname`,`jahrgang`,`Version`,`typid`))");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" +
-					"`id` int(11) NOT NULL," +
-					"`userchange` tinyint(1) NOT NULL," +
-					"`modcreate` tinyint(1) NOT NULL," +
-					"`modacc` tinyint(1) NOT NULL," +
-					"`manage` tinyint(1) NOT NULL," +
-					"PRIMARY KEY (`id`))");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" + "`id` int(11) NOT NULL," + "`userchange` tinyint(1) NOT NULL,"
+					+ "`modcreate` tinyint(1) NOT NULL," + "`modacc` tinyint(1) NOT NULL," + "`manage` tinyint(1) NOT NULL,"
+					+ "PRIMARY KEY (`id`))");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" +
-					"`id` int(10) NOT NULL AUTO_INCREMENT," +
-					"`name` varchar(255) NOT NULL," +
-					"PRIMARY KEY (`id`)," +
-					"UNIQUE KEY `Studiengang` (`name`))");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" + "`id` int(10) NOT NULL AUTO_INCREMENT,"
+					+ "`name` varchar(255) NOT NULL," + "PRIMARY KEY (`id`)," + "UNIQUE KEY `Studiengang` (`name`))");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `text` (" +
-					"`name` varchar(255) NOT NULL," +
-					"`version` int(11) NOT NULL," +
-					"`label` varchar(255) NOT NULL," +
-					"`text` varchar(255) NOT NULL," +
-					"`dezernat2` tinyint(1) NOT NULL DEFAULT '0')");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `text` (" + "`name` varchar(255) NOT NULL," + "`version` int(11) NOT NULL,"
+					+ "`label` varchar(255) NOT NULL," + "`text` varchar(255) NOT NULL," + "`dezernat2` tinyint(1) NOT NULL DEFAULT '0')");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` (" +
-					"`tid` int(10) NOT NULL AUTO_INCREMENT," +
-					"`tName` varchar(250) NOT NULL," +
-					"`sid` int(10) NOT NULL DEFAULT '0'," +
-					"`abschluss` varchar(250) NOT NULL," +
-					"PRIMARY KEY (`tid`)," +
-					"UNIQUE KEY `UNIQUE KEY` (`sid`,`tName`,`abschluss`))");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` (" + "`tid` int(10) NOT NULL AUTO_INCREMENT,"
+					+ "`tName` varchar(250) NOT NULL," + "`sid` int(10) NOT NULL DEFAULT '0'," + "`abschluss` varchar(250) NOT NULL,"
+					+ "PRIMARY KEY (`tid`)," + "UNIQUE KEY `UNIQUE KEY` (`sid`,`tName`,`abschluss`))");
 			this.con.commit();
-			
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" +
-					"`id` int(11) NOT NULL AUTO_INCREMENT," +
-					"`email` varchar(255) NOT NULL," +
-					"`titel` varchar(255) DEFAULT NULL," +
-					"`vorname` varchar(255) DEFAULT NULL," +
-					"`namen` varchar(255) DEFAULT NULL, " +
-					"`password` varchar(255) NOT NULL," +
-					"`frei` tinyint(1) DEFAULT '0'," +
-					"PRIMARY KEY (`id`)," +
-					"UNIQUE KEY `email` (`email`))");
+
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" + "`id` int(11) NOT NULL AUTO_INCREMENT,"
+					+ "`email` varchar(255) NOT NULL," + "`titel` varchar(255) DEFAULT NULL," + "`vorname` varchar(255) DEFAULT NULL,"
+					+ "`namen` varchar(255) DEFAULT NULL, " + "`password` varchar(255) NOT NULL," + "`frei` tinyint(1) DEFAULT '0',"
+					+ "PRIMARY KEY (`id`)," + "UNIQUE KEY `email` (`email`))");
 			this.con.commit();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user_relation` (" + "  `main_email` varchar(255) NOT NULL,"
@@ -149,6 +128,12 @@ public class sql {
 		return connected;
 	}
 
+	/**
+	 * Löscht einen User
+	 * 
+	 * @param email
+	 *            e-mail des Users
+	 */
 	public void deluser(String email) {
 		if (connect() == true) {
 			Statement state = null;
@@ -192,6 +177,9 @@ public class sql {
 		}
 	}
 
+	/**
+	 * trennt Verbindung zurDatenbank
+	 */
 	public void disconnect() {
 		try {
 			this.con.commit();
@@ -204,6 +192,11 @@ public class sql {
 
 	}
 
+	/**
+	 * Gibt anzahl an Studiengängen aus
+	 * 
+	 * @return Anzahl von Studiengängen
+	 */
 	public int getAnzahlStudiengaenge() {
 		ResultSet res = null;
 		Statement state = null;
@@ -227,6 +220,13 @@ public class sql {
 
 	}
 
+	/**
+	 * Gibt ein Modul aus
+	 * 
+	 * @param name
+	 *            Name des Moduls
+	 * @return Modul
+	 */
 	public Modul getModul(String name) {
 		ResultSet res = null;
 		Statement state = null;
@@ -295,6 +295,13 @@ public class sql {
 
 	}
 
+	/**
+	 * Gibt eine Liste von Modulhandbücher aus
+	 * 
+	 * @param studiengang
+	 *            Name des Studienganges
+	 * @return Liste von Modulhandbüchern
+	 */
 	public ArrayList<Modulhandbuch> getModulhandbuch(String studiengang) {
 		ResultSet res = null;
 		Statement state = null;
@@ -324,6 +331,13 @@ public class sql {
 
 	}
 
+	/**
+	 * Gibt neuste Versionsnummer eines Moduls aus
+	 * 
+	 * @param name
+	 *            name des Moduls
+	 * @return Versionsnummer
+	 */
 	public int getModulVersion(String name) {
 		ResultSet res = null;
 		Statement state = null;
@@ -346,6 +360,11 @@ public class sql {
 		return version;
 	}
 
+	/**
+	 * Gibt eine Liste von Studiengängen aus
+	 * 
+	 * @return Liste von Studiengängen
+	 */
 	public ArrayList<Studiengang> getStudiengaenge() {
 		ResultSet res = null;
 		Statement state = null;
@@ -372,6 +391,15 @@ public class sql {
 
 	}
 
+	/**
+	 * Fragt einen User ab
+	 * 
+	 * @param email
+	 *            e-Mail des Users
+	 * @param pass
+	 *            Passwort des Users
+	 * @return User
+	 */
 	public User getUser(String email, String pass) {
 		User zws = null;
 		ResultSet res = null;
@@ -400,10 +428,19 @@ public class sql {
 
 	}
 
+	/**
+	 * Gibt an, ob Verbindung zur Datenbank besteht
+	 * @return Status der Verbindung
+	 */
 	public boolean isConnected() {
 		return connected;
 	}
 
+	/**
+	 * Trägt ein Modul ein
+	 * @param neu Das Modul
+	 * @return erfolgreich oder nicht
+	 */
 	public int setModul(Modul neu) {
 		int ok = FAILED;
 		PreparedStatement state = null;
@@ -447,38 +484,11 @@ public class sql {
 
 	}
 
-	/*
-	 * Hier muss man leider noch mehr machen, da ich nicht weiß wie du dich
-	 * entschieden hast den dynmaischen text zu speichern
+	/**
+	 * Neuen Studiengang anlegen
+	 * @param name Name des Studienganges
+	 * @return efolgreich oder nicht
 	 */
-	public void setModul(String name, int version /* LISTE? aka Text zeug */) {
-		// ResultSet res = null;
-		Statement state = null;
-		if (connect() == true) {
-			try {
-				state = this.con.createStatement();
-				state.executeUpdate("");
-				// res.close();
-				state.close();
-			} catch (SQLException e) {
-				// TODO fehler fenster aufrufen
-				e.printStackTrace();
-			}
-			try {
-				state = this.con.createStatement();
-				state.executeUpdate("");
-				// res.close();
-				state.close();
-			} catch (SQLException e) {
-				// TODO fehler fenster aufrufen
-				e.printStackTrace();
-			}
-			disconnect();
-		}
-
-	}
-
-	// Neuen Studiengang anlegen
 	public int setStudiengang(String name) {
 		Statement state = null;
 		int status = FAILED;
@@ -497,6 +507,10 @@ public class sql {
 
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<User> userload() {
 		User zws = null;
 		ResultSet res = null;

@@ -85,10 +85,8 @@ public class ServerConnection {
 
 	public ClientResponse deluser(String mail) {
 		if (connect(email, password) == SUCCES) {
-			webResource.path("user/delete").path(mail)
-					.type(MediaType.APPLICATION_XML).delete();
-			return webResource.path("user/get").path(mail)
-					.get(ClientResponse.class);
+			webResource.path("user/delete").path(mail).type(MediaType.APPLICATION_XML).delete();
+			return webResource.path("user/get").path(mail).get(ClientResponse.class);
 		}
 		return null;
 
@@ -96,8 +94,7 @@ public class ServerConnection {
 
 	public Modul getModul(String name) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/get").path(name)
-					.accept(MediaType.APPLICATION_XML).get(Modul.class);
+			return webResource.path("modul/get").path(name).accept(MediaType.APPLICATION_XML).get(Modul.class);
 		} else {
 			return null;
 		}
@@ -112,10 +109,8 @@ public class ServerConnection {
 				Marshaller mar = context.createMarshaller();
 				mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 				StringWriter stringWriter = new StringWriter();
-				Modul m = webResource.path("modul/get").path(name)
-						.accept(MediaType.APPLICATION_XML)
-						.get(Modul.class);
-				if(m.getName()!=null){
+				Modul m = webResource.path("modul/get").path(name).accept(MediaType.APPLICATION_XML).get(Modul.class);
+				if (m.getName() != null) {
 					mar.marshal(m, stringWriter);
 					return stringWriter.toString();
 				}
@@ -135,8 +130,7 @@ public class ServerConnection {
 		if (b)
 			accepted = "true";
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/getList").path(accepted)
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("modul/getList").path(accepted).accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Modul>>() {
 					});
 		}
@@ -145,20 +139,17 @@ public class ServerConnection {
 
 	public ArrayList<Modulhandbuch> getModulhandbuch(String studiengang) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modulhandbuch/getallat").path(studiengang)
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("modulhandbuch/getallat").path(studiengang).accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Modulhandbuch>>() {
 					});
 		}
 		return null;
 	}
 
-	
-
 	public int getModulVersion(String name) {
 		if (connect(email, password) == SUCCES) {
-			String id = webResource.path("modul/getVersion").path(name)
-					.accept(MediaType.APPLICATION_XML).get(String.class);
+			String id = webResource.path("modul/getVersion").path(name).accept(MediaType.APPLICATION_XML)
+					.get(String.class);
 			return Integer.parseInt(id);
 		}
 		return 0;
@@ -168,8 +159,7 @@ public class ServerConnection {
 		if (eMail.isEmpty())
 			return new ArrayList<User>();
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/stellv").path(eMail)
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("user/stellv").path(eMail).accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<User>>() {
 					});
 		}
@@ -178,8 +168,7 @@ public class ServerConnection {
 
 	public ArrayList<Studiengang> getStudiengaenge() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("studiengang/getall")
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("studiengang/getall").accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Studiengang>>() {
 					});
 		}
@@ -188,8 +177,8 @@ public class ServerConnection {
 
 	public int getStudiengangID(String name) {
 		if (connect(email, password) == SUCCES) {
-			String id = webResource.path("studiengang/getID").path(name)
-					.accept(MediaType.APPLICATION_XML).get(String.class);
+			String id = webResource.path("studiengang/getID").path(name).accept(MediaType.APPLICATION_XML)
+					.get(String.class);
 			return Integer.parseInt(id);
 		}
 		return 0;
@@ -197,8 +186,7 @@ public class ServerConnection {
 
 	public ArrayList<Zuordnung> getZuordnungen() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("zuordnung/getList")
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("zuordnung/getList").accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Zuordnung>>() {
 					});
 		}
@@ -211,8 +199,8 @@ public class ServerConnection {
 
 	public User login(String eMail, String password) {
 		if (connect(eMail, password) == SUCCES) {
-			return webResource.path("login").path(eMail).path(password)
-					.accept(MediaType.APPLICATION_XML).get(User.class);
+			return webResource.path("login").path(eMail).path(password).accept(MediaType.APPLICATION_XML)
+					.get(User.class);
 		} else {
 			return null;
 		}
@@ -221,9 +209,7 @@ public class ServerConnection {
 
 	public ClientResponse setModul(Modul neu) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/post")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, neu);
+			return webResource.path("modul/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
 		}
 		return null;
 	}
@@ -235,17 +221,14 @@ public class ServerConnection {
 
 	public ClientResponse setStellvertreter(StellvertreterList sl) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/stellv/post")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, sl);
+			return webResource.path("user/stellv/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, sl);
 		}
 		return null;
 	}
 
 	public ClientResponse setStudiengang(String name) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("studiengang/post")
-					.type(MediaType.APPLICATION_XML)
+			return webResource.path("studiengang/post").type(MediaType.APPLICATION_XML)
 					.post(ClientResponse.class, name);
 		}
 		return null;
@@ -254,17 +237,14 @@ public class ServerConnection {
 
 	public ClientResponse setZuordnung(Zuordnung z) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("zuordnung/post")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, z);
+			return webResource.path("zuordnung/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, z);
 		}
 		return null;
 	}
 
 	public ArrayList<User> userload() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/getall")
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("user/getall").accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<User>>() {
 					});
 		} else {
@@ -274,9 +254,7 @@ public class ServerConnection {
 
 	public ClientResponse usersave(User tmp) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/post")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, tmp);
+			return webResource.path("user/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, tmp);
 		}
 		return null;
 
@@ -285,27 +263,23 @@ public class ServerConnection {
 	public ClientResponse userupdate(User tmp, String mail) {
 		if (connect(email, password) == SUCCES) {
 			UserUpdateContainer uuc = new UserUpdateContainer(tmp, mail);
-			return webResource.path("user/update")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, uuc);
+			return webResource.path("user/update").type(MediaType.APPLICATION_XML).post(ClientResponse.class, uuc);
 		}
 		return null;
 	}
 
 	public ArrayList<String> getUserRelation(String eMail) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("/user/getRelation/").path(eMail)
-					.accept(MediaType.APPLICATION_XML)
+			return webResource.path("/user/getRelation/").path(eMail).accept(MediaType.APPLICATION_XML)
 					.get(UserRelation.class).getRelation();
-		} 
+		}
 		return null;
 	}
 
 	public ArrayList<Modul> getselectedModul(String studiengang, String modultyp, String modulhandbuch) {
-		if(connect(email, password) == SUCCES){
+		if (connect(email, password) == SUCCES) {
 			return webResource.path("/modul/getselectedModul/").path(studiengang).path(modultyp).path(modulhandbuch)
-					.accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<Modul>>(){
+					.accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Modul>>() {
 					});
 		}
 		return null;
@@ -313,139 +287,135 @@ public class ServerConnection {
 
 	public Modul getModul(String name, int v) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/get").path(name).path(v+"")
-					.accept(MediaType.APPLICATION_XML).get(Modul.class);
+			return webResource.path("modul/get").path(name).path(v + "").accept(MediaType.APPLICATION_XML)
+					.get(Modul.class);
 		} else {
 			return null;
 		}
 	}
- 
+
 	public ClientResponse acceptModul(Modul m) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/accept")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, m);
+			return webResource.path("modul/accept").type(MediaType.APPLICATION_XML).post(ClientResponse.class, m);
 		} else {
 			return null;
 		}
-		
-	}
-	
-	public void umlreplacer (){  	//HTML to HTML (UTF-8)
-	    String content = "";
-	    try {						//html-file to html-string
-	    	 BufferedReader in = new BufferedReader(new FileReader("modul.html"));
-	    	 String str;
-	         while ((str = in.readLine()) != null) {
 
-	             content +=str;
-	         }
-	        content=content.replaceAll("&uuml;","ü");
-	     	content=content.replaceAll("&auml;","ä");
-	     	content=content.replaceAll("&ouml;","ö");
-	     	content=content.replaceAll("&Uuml;","Ü");
-	     	content=content.replaceAll("&Auml;","Ä");
-	     	content=content.replaceAll("&Ouml;","Ö");
-	     	content=content.replaceAll("<META","");
-	 	//System.out.println(content); //gibt den bearbeiteten HTML-String aus
-	 	in.close();
-	    } catch (IOException e) {
-	    }
-    
-    PrintWriter out = null;			//takes html-string and creates html-file
-	try {
-		out = new PrintWriter(new File("modul.html"), "UTF-8");
-	} catch (FileNotFoundException | UnsupportedEncodingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
 	}
-	    out.print(content);
-	    out.close();
-	
-	}
-	
-	 public void getModulXMLFile (String name)	// xmlstring to xml file
-	    {
-	    	
-	    	PrintWriter out = null;
-			try {
-				out = new PrintWriter(new File("modul.xml"), "UTF-8");
-			} catch (FileNotFoundException | UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+	public void umlreplacer() { // HTML to HTML (UTF-8)
+		String content = "";
+		try { // html-file to html-string
+			BufferedReader in = new BufferedReader(new FileReader("modul.html"));
+			String str;
+			while ((str = in.readLine()) != null) {
+
+				content += str;
 			}
-			    out.print(getModulXML(name));
-			    out.close();
-	    }
-	
-	
+			content = content.replaceAll("&uuml;", "ü");
+			content = content.replaceAll("&auml;", "ä");
+			content = content.replaceAll("&ouml;", "ö");
+			content = content.replaceAll("&Uuml;", "Ü");
+			content = content.replaceAll("&Auml;", "Ä");
+			content = content.replaceAll("&Ouml;", "Ö");
+			content = content.replaceAll("<META", "");
+			// System.out.println(content); //gibt den bearbeiteten HTML-String
+			// aus
+			in.close();
+		} catch (IOException e) {
+		}
+
+		PrintWriter out = null; // takes html-string and creates html-file
+		try {
+			out = new PrintWriter(new File("modul.html"), "UTF-8");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		out.print(content);
+		out.close();
+
+	}
+
+	public void getModulXMLFile(String name) // xmlstring to xml file
+	{
+
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(new File("modul.xml"), "UTF-8");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		out.print(getModulXML(name));
+		out.close();
+	}
+
 	public void toPdf(String name) throws IOException, DocumentException, TransformerException,
 
 	TransformerConfigurationException, FileNotFoundException {
-	
+
 		getModulXMLFile(name);
-	
-		String pdfname=(name+getPDFname()+".pdf");
-		
-		
+
+		String pdfname = (name + getPDFname() + ".pdf");
+
 		TransformerFactory tFactory = TransformerFactory.newInstance();
-		
+
 		Transformer transformer = tFactory.newTransformer(new StreamSource("style.xsl"));
-	
-	        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	     	
+
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
 		// eigentliche umwandlung
-		transformer.transform(new StreamSource("modul.xml"), new StreamResult(
-				new OutputStreamWriter(new FileOutputStream("modul.html"), "UTF-8")));
-		
+		transformer.transform(new StreamSource("modul.xml"), new StreamResult(new OutputStreamWriter(
+				new FileOutputStream("modul.html"), "UTF-8")));
+
 		umlreplacer();
 
 		String File_To_Convert = "modul.html";
 		String url = new File(File_To_Convert).toURI().toURL().toString();
-	
-		//System.out.println("" + url);  //gibt pfad der html datei aus
-		String HTML_TO_PDF = pdfname;	
-		
+
+		// System.out.println("" + url); //gibt pfad der html datei aus
+		String HTML_TO_PDF = pdfname;
+
 		FileOutputStream os = new FileOutputStream(HTML_TO_PDF);
 		ITextRenderer renderer = new ITextRenderer();
 		renderer.setDocument(url);
 		renderer.layout();
 		renderer.createPDF(os);
-	
+
 		os.close();
-		
+
 		Desktop.getDesktop().open(new File(pdfname));
-		dclean(); //räumt die Daten welche nicht mehr benötigt werden auf...
+		dclean(); // räumt die Daten welche nicht mehr benötigt werden auf...
 	}
-	
+
 	public String getPDFname() {
-	
-        SimpleDateFormat date=new SimpleDateFormat("HHmmss");
-        String date1=date.format(new Date());
-    return date1;
-		
+
+		SimpleDateFormat date = new SimpleDateFormat("HHmmss");
+		String date1 = date.format(new Date());
+		return date1;
+
 	}
-	
-	
-	public void dclean(){
+
+	public void dclean() {
 		File file1 = new File("modul.xml");
 		File file2 = new File("modul.html");
-		
+
 		file1.delete();
 		file2.delete();
 	}
-	
-	public void dclean(String f){	//sollte was bestimmtes gelöscht werden :U
+
+	public void dclean(String f) { // sollte was bestimmtes gelöscht werden :U
 		File f0 = new File(f);
 		f0.delete();
 	}
 
 	public boolean getModulInEdit(String name) {
 		if (connect(email, password) == SUCCES) {
-			String b = webResource.path("modul/getInEdit").path(name)
-					.accept(MediaType.APPLICATION_XML).get(String.class);
-			if(b.equals("true")){
+			String b = webResource.path("modul/getInEdit").path(name).accept(MediaType.APPLICATION_XML)
+					.get(String.class);
+			if (b.equals("true")) {
 				return true;
 			}
 		}
@@ -454,13 +424,10 @@ public class ServerConnection {
 
 	public ClientResponse setModulInEdit(Modul m) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("modul/setInEdit")
-					.type(MediaType.APPLICATION_XML)
-					.post(ClientResponse.class, m);
+			return webResource.path("modul/setInEdit").type(MediaType.APPLICATION_XML).post(ClientResponse.class, m);
 		} else {
 			return null;
 		}
 	}
-	
 
 }

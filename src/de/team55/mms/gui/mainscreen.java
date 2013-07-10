@@ -488,6 +488,8 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
+				//Danach Modelle füllen und zur Card wechseln
 				typen = database.getZuordnungen();
 				studienlist = database.getStudiengaenge();
 				cbmodel.removeAllElements();
@@ -503,47 +505,60 @@ public class mainscreen {
 
 		});
 
+		//Button zum Bearbeiten eines Modules
 		left.add(btnModulBearbeiten);
 		btnModulBearbeiten.setEnabled(false);
 		btnModulBearbeiten.setPreferredSize(btnSz);
 		btnModulBearbeiten.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//Abfrage alles nicht nicht akzeptierten Module
+				//Danach Modell füllen
 				ArrayList<Modul> module = database.getModule(false);
 				lm.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm.addElement(module.get(i));
 				}
 
+				//Abfrage alles nicht akzeptierten Module
+				//Danach Modell füllen
 				module = database.getModule(true);
 				lm_ack.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm_ack.addElement(module.get(i));
 				}
+				
+				//Zur card mit Übersicht an Modulen wechseln
 				showCard("modulbearbeiten");
 			}
 
 		});
 
+		//Button zum Login
 		left.add(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				// Verbindung zum Server
 				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
+					//Wenn noch nicht eingeloggt, einloggen
 					if (current.geteMail().equals("gast@gast.gast")) {
 						logindialog log = new logindialog(frame, "Login", database);
 						int resp = log.showCustomDialog();
 						if (resp == 1) {
+							//User übernehmen
 							current = log.getUser();
 							database = log.getServerConnection();
 							btnLogin.setText("Ausloggen");
+							// Auf Rechte prüfen
 							checkRights();
 						}
-					} else {
+					} 
+					//Wenn bereits eingeloggt, ausloggen
+					else {
 						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
 								false, false, false, false, true);
 						if (database.isConnected() == SUCCES) {

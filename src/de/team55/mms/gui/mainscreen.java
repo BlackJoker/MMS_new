@@ -64,8 +64,8 @@ public class mainscreen {
 	public ServerConnection database = new ServerConnection();
 
 	// Variablen
-	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
-			false, false, false, false, true); // Gast
+	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
+			false, true); // Gast
 	String studtransferstring = ""; // uebergabe String fuer Tabellen -
 									// studiengang
 	String modbuchtransferstring = ""; // uebergabe String fuer Tabellen -
@@ -113,6 +113,7 @@ public class mainscreen {
 	private static JButton btnModulArchiv = new JButton("<html>Module<br>Durchst\u00f6bern");
 	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
 	private static JButton btnLogin = new JButton("Einloggen");
+	private static JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
 	private static JPanel mod = new JPanel();
 
 	// main Frame
@@ -199,13 +200,12 @@ public class mainscreen {
 				try {
 
 					// Dialog anzeigen, in dem Daten eingetragen werden
-					String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:",
-							"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
+					String name = JOptionPane.showInputDialog(frame, "Name des neuen Studiengangs:", "neuer Studiengang",
+							JOptionPane.PLAIN_MESSAGE);
 
 					while (name.isEmpty()) {
-						name = JOptionPane.showInputDialog(frame,
-								"Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:", "neuer Studiengang",
-								JOptionPane.PLAIN_MESSAGE);
+						name = JOptionPane.showInputDialog(frame, "Bitte g\u00fcltigen Namen des neuen Studiengangs eingeben:",
+								"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
 					}
 
 					// Vorhanden Studiengänge aus der Datenbank abfragen
@@ -235,8 +235,7 @@ public class mainscreen {
 
 						// Ansonsten Fehler ausgeben
 					} else {
-						JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "Studiengang ist schon vorhanden", "Fehler", JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (NullPointerException np) {
 					// Bei abbruch nichts tuen
@@ -269,27 +268,23 @@ public class mainscreen {
 					JTextField neu_Abschluss = new JTextField();
 					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
 
-					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:",
-							neu_sgbox };
+					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
 
 					// Dialog anzeigen, in dem Daten eingetragen werden
-					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen",
-							JOptionPane.OK_CANCEL_OPTION);
+					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
 					if (option == JOptionPane.OK_OPTION) {
 
 						// Teste, ob alle Felder ausgefüllt werden
-						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss
-								.getText().isEmpty()) && (option == JOptionPane.OK_OPTION)) {
-							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name,
-									"Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
-							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen",
-									JOptionPane.OK_CANCEL_OPTION);
+						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss.getText().isEmpty())
+								&& (option == JOptionPane.OK_OPTION)) {
+							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name, "Abschluss:",
+									neu_Abschluss, "Studiengang:", neu_sgbox };
+							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
 						}
 						// Wenn ok gedrückt wird
 						if (option == JOptionPane.OK_OPTION) {
 							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
-							Zuordnung z = new Zuordnung(neu_Name.getText(), s.getName(), s.getId(), neu_Abschluss
-									.getText());
+							Zuordnung z = new Zuordnung(neu_Name.getText(), s.getName(), s.getId(), neu_Abschluss.getText());
 
 							// Teste, ob Zuordnung schon vorhanden
 							boolean neu = true;
@@ -312,8 +307,7 @@ public class mainscreen {
 							}
 							// Ansonsten Fehler ausgeben
 							else {
-								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler",
-										JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
@@ -330,7 +324,7 @@ public class mainscreen {
 		btnZurck_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//Zurück zur Start Card
+				// Zurück zur Start Card
 				showCard("welcome page");
 			}
 		});
@@ -346,7 +340,7 @@ public class mainscreen {
 	}
 
 	/**
-	 * Erstellt den oberen Teil der GUI 
+	 * Erstellt den oberen Teil der GUI
 	 */
 	private void topscr() {
 		JPanel top = new JPanel();
@@ -363,49 +357,65 @@ public class mainscreen {
 
 	/**
 	 * Hinzufügen eines Users in die Usertabelle
-	 * @param usr Zu hinzufügender User
+	 * 
+	 * @param usr
+	 *            Zu hinzufügender User
 	 */
 	private void addToTable(User usr) {
-		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(),
-				usr.getManageUsers(), usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
+		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(), usr.getManageUsers(),
+				usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
 	}
-	
+
 	/**
-	 * Hinzufügen eines Studienganges zur  Studiengangtabelle
-	 * @param stud Zu hinzufügender Studiengang
+	 * Hinzufügen eines Studienganges zur Studiengangtabelle
+	 * 
+	 * @param stud
+	 *            Zu hinzufügender Studiengang
 	 */
 	private void addToTable(Studiengang stud) {
 		studmodel.addRow(new Object[] { stud.getName() });
 	}
+
 	/**
-	 * Hinzufügen eines Modules zur  Modultabelle
-	 * @param mod Zu hinzufügendes Modul
+	 * Hinzufügen eines Modules zur Modultabelle
+	 * 
+	 * @param mod
+	 *            Zu hinzufügendes Modul
 	 */
 	private void addToTable(Modul mod) {
 		modshowmodel.addRow(new Object[] { mod.getName() });
 	}
+
 	/**
 	 * Hinzufügen eines Modulhandbuches zur Modulhandbuchtabelle
-	 * @param modbuch Zu hinzufügendes Modulhandbuch
+	 * 
+	 * @param modbuch
+	 *            Zu hinzufügendes Modulhandbuch
 	 */
 	private void addToTable(Modulhandbuch modbuch) {
 		modbuchmodel.addRow(new Object[] { modbuch.getJahrgang() });
 	}
-	
+
 	/**
-	 * Hinzufügen einer Zuordnung zur  Zuordnungstabelle
-	 * @param modtyp Name der zu hinzufügenden Zuordnung
+	 * Hinzufügen einer Zuordnung zur Zuordnungstabelle
+	 * 
+	 * @param modtyp
+	 *            Name der zu hinzufügenden Zuordnung
 	 */
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
 	}
-	
+
 	/**
 	 * Liefert ein Feld mit Label, TextArea und Checkbox
-	 * @return	JPanel	ausgefülltes Panel
-	 * @param name Beschriftung des Labels
-	 * @param string Inhalt der TextArea
-	 * @param b	Gibt an, ob die Checkbox ausgewählt ist
+	 * 
+	 * @return JPanel ausgefülltes Panel
+	 * @param name
+	 *            Beschriftung des Labels
+	 * @param string
+	 *            Inhalt der TextArea
+	 * @param b
+	 *            Gibt an, ob die Checkbox ausgewählt ist
 	 */
 	private JPanel defaultmodulPanel(String name, String string, boolean b) {
 		final Dimension preferredSize = new Dimension(120, 20);
@@ -430,9 +440,12 @@ public class mainscreen {
 
 	/**
 	 * Liefert ein Feld mit Label und TextArea
-	 * @return	JPanel	ausgefülltes Panel
-	 * @param name Beschriftung des Labels
-	 * @param string Inhalt der TextArea
+	 * 
+	 * @return JPanel ausgefülltes Panel
+	 * @param name
+	 *            Beschriftung des Labels
+	 * @param string
+	 *            Inhalt der TextArea
 	 */
 	private JPanel modulPanel(String name, String string) {
 		final Dimension preferredSize = new Dimension(120, 20);
@@ -478,7 +491,7 @@ public class mainscreen {
 		leftpan.add(left);
 		left.setLayout(new GridLayout(0, 1, 5, 20));
 
-		//Button zum Einreichen eines Modules
+		// Button zum Einreichen eines Modules
 		left.add(btnModulEinreichen);
 		btnModulEinreichen.setEnabled(false);
 		btnModulEinreichen.setPreferredSize(btnSz);
@@ -487,8 +500,8 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
-				//Danach Modelle füllen und zur Card wechseln
+				// Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
+				// Danach Modelle füllen und zur Card wechseln
 				typen = database.getZuordnungen();
 				studienlist = database.getStudiengaenge();
 				cbmodel.removeAllElements();
@@ -504,7 +517,7 @@ public class mainscreen {
 
 		});
 
-		//Button zum Bearbeiten eines Modules
+		// Button zum Bearbeiten eines Modules
 		left.add(btnModulBearbeiten);
 		btnModulBearbeiten.setEnabled(false);
 		btnModulBearbeiten.setPreferredSize(btnSz);
@@ -513,29 +526,29 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Abfrage alles nicht nicht akzeptierten Module
-				//Danach Modell füllen
+				// Abfrage alles nicht nicht akzeptierten Module
+				// Danach Modell füllen
 				ArrayList<Modul> module = database.getModule(false);
 				lm.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm.addElement(module.get(i));
 				}
 
-				//Abfrage alles nicht akzeptierten Module
-				//Danach Modell füllen
+				// Abfrage alles nicht akzeptierten Module
+				// Danach Modell füllen
 				module = database.getModule(true);
 				lm_ack.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm_ack.addElement(module.get(i));
 				}
-				
-				//Zur card mit Übersicht an Modulen wechseln
+
+				// Zur card mit Übersicht an Modulen wechseln
 				showCard("modulbearbeiten");
 			}
 
 		});
 
-		//Button zum Login
+		// Button zum Login
 		left.add(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
@@ -543,23 +556,23 @@ public class mainscreen {
 				// Verbindung zum Server
 				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
-					//Wenn noch nicht eingeloggt, einloggen
+					// Wenn noch nicht eingeloggt, einloggen
 					if (current.geteMail().equals("gast@gast.gast")) {
 						logindialog log = new logindialog(frame, "Login", database);
 						int resp = log.showCustomDialog();
 						if (resp == 1) {
-							//User übernehmen
+							// User übernehmen
 							current = log.getUser();
 							database = log.getServerConnection();
 							btnLogin.setText("Ausloggen");
 							// Auf Rechte prüfen
 							checkRights();
 						}
-					} 
-					//Wenn bereits eingeloggt, ausloggen
+					}
+					// Wenn bereits eingeloggt, ausloggen
 					else {
-						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
-								false, false, false, false, true);
+						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
+								false, true);
 						if (database.isConnected() == SUCCES) {
 							checkRights();
 						}
@@ -569,7 +582,7 @@ public class mainscreen {
 						showCard("welcome page");
 					}
 				} else {
-					//Wenn keine Verbindung besteht
+					// Wenn keine Verbindung besteht
 					noConnection();
 				}
 			}
@@ -583,8 +596,8 @@ public class mainscreen {
 		btnUserVerwaltung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Wenn User das Recht hat, um Benutzer zu Verwalten,
-				//dann Anzeige der Benutzerverwaltung
+				// Wenn User das Recht hat, um Benutzer zu Verwalten,
+				// dann Anzeige der Benutzerverwaltung
 				if (current.getManageUsers()) {
 					// Tabelle leeren
 					tmodel.setRowCount(0);
@@ -592,46 +605,45 @@ public class mainscreen {
 					// Tabelle mit neuen daten füllen
 					worklist = database.userload();
 					for (int i = 0; i < worklist.size(); i++) {
-						//Wenn der User noch nicht freigeschaltet wurde,
-						//zur Liste mit neuen Benutzern hinzufügen
-						if (worklist.get(i).isFreigeschaltet()){
+						// Wenn der User noch nicht freigeschaltet wurde,
+						// zur Liste mit neuen Benutzern hinzufügen
+						if (worklist.get(i).isFreigeschaltet()) {
 							addToTable(worklist.get(i));
-						}
-						else{
+						} else {
 							neueUser.add(worklist.get(i));
 						}
 					}
-					//Zur Userverwaltungs Card wechseln
+					// Zur Userverwaltungs Card wechseln
 					showCard("user managment");
-					
-					//Einblendung aller neuen User
+
+					// Einblendung aller neuen User
 					for (int i = 0; i < neueUser.size(); i++) {
 						userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, database);
 						int response = dlg.showCustomDialog();
-						// Bei Bestätigung, neuen User freischalten und e-Mail senden
+						// Bei Bestätigung, neuen User freischalten und e-Mail
+						// senden
 						User tmp = dlg.getUser();
 						if (response == 1) {
 							tmp.setFreigeschaltet(true);
-							if (SendMail.send(current.geteMail(), neueUser.get(i).geteMail(),
-									"Sie wurden freigeschaltet!") == 1) {
+							if (SendMail.send(current.geteMail(), neueUser.get(i).geteMail(), "Sie wurden freigeschaltet!") == 1) {
 								tmp.setFreigeschaltet(true);
 								if (database.userupdate(tmp, tmp.geteMail()).getStatus() == 201) {
 									addToTable(tmp);
 									neueUser.remove(i);
 								}
 							}
-						//Ansonsten möglichkeit ihn wieder zu löschen
+							// Ansonsten möglichkeit ihn wieder zu löschen
 						} else {
-							int n = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen",
-									"Bestätigung", JOptionPane.YES_NO_OPTION);
+							int n = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
+									JOptionPane.YES_NO_OPTION);
 							if (n == 0) {
 								database.deluser(tmp.geteMail());
 							}
 						}
 					}
 				} else {
-					//Ansonsten Dialog öffnen,
-					//in dem die eigenen Daten geändert werden können
+					// Ansonsten Dialog öffnen,
+					// in dem die eigenen Daten geändert werden können
 					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, database);
 					int response = dlg.showCustomDialog();
 					// Wenn ok gedrückt wird
@@ -642,8 +654,7 @@ public class mainscreen {
 							current = tmp;
 							checkRights();
 						} else
-							JOptionPane.showMessageDialog(frame, "Update Fehlgeschlagen!", "Update Error",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "Update Fehlgeschlagen!", "Update Error", JOptionPane.ERROR_MESSAGE);
 
 					}
 				}
@@ -651,13 +662,13 @@ public class mainscreen {
 		});
 		btnUserVerwaltung.setPreferredSize(btnSz);
 		btnUserVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		//Button zur Verwaltung von Studiengängen und Zuordnungen
+
+		// Button zur Verwaltung von Studiengängen und Zuordnungen
 		btnVerwaltung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Zuordnungen und Studiengänge aus Datenbank abrufen
-				//und Listen füllen
+				// Zuordnungen und Studiengänge aus Datenbank abrufen
+				// und Listen füllen
 				studienlist = database.getStudiengaenge();
 				studimodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
@@ -671,7 +682,7 @@ public class mainscreen {
 				for (int i = 0; i < typen.size(); i++) {
 					typenmodel.addElement(typen.get(i));
 				}
-				//Zur Card wechseln
+				// Zur Card wechseln
 				showCard("manage");
 
 			}
@@ -682,19 +693,18 @@ public class mainscreen {
 		btnVerwaltung.setPreferredSize(btnSz);
 		btnVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		
 		left.add(btnModulArchiv);
 		btnModulArchiv.setEnabled(true);
 		btnModulArchiv.setPreferredSize(btnSz);
 		btnModulArchiv.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		//Button zum Durchstöbern von Modulen
+
+		// Button zum Durchstöbern von Modulen
 		btnModulArchiv.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
-					//Studiengänge und Zuordnungen abrufen
+					// Studiengänge und Zuordnungen abrufen
 					studmodel.setRowCount(0);
 					studienlist = database.getStudiengaenge();
 					for (int i = 0; i < studienlist.size(); i++) {
@@ -702,7 +712,7 @@ public class mainscreen {
 					}
 					typen = database.getZuordnungen();
 
-					//Zur Card wechseln
+					// Zur Card wechseln
 					showCard("studiengang show");
 				} else {
 					noConnection();
@@ -717,17 +727,18 @@ public class mainscreen {
 	 * 
 	 */
 	private void newmodulecard() {
-		//Alle vorhandenen Felder entfernen
+		// Alle vorhandenen Felder entfernen
 		modul_panel.removeAll();
 		final JPanel pnl_newmod = new JPanel();
-		
-		//Liste dynamischer Buttons leeren
+
+		// Liste dynamischer Buttons leeren
 		if (!buttonmap.isEmpty()) {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
 		}
-		
-		//Liste mit bereits vorhandenen Felder erstellen und mit den Standartfeldern füllen
+
+		// Liste mit bereits vorhandenen Felder erstellen und mit den
+		// Standartfeldern füllen
 		final ArrayList<String> labels = new ArrayList<String>();
 		labels.addAll(defaultlabels);
 		final Dimension preferredSize = new Dimension(120, 20);
@@ -736,25 +747,27 @@ public class mainscreen {
 		JPanel pnl_bottom = new JPanel();
 		pnl_newmod.add(pnl_bottom, BorderLayout.SOUTH);
 
-		//Button zum erstellen eines neuen Feldes
+		// Button zum erstellen eines neuen Feldes
 		JButton btnNeuesFeld = new JButton("Neues Feld");
 		btnNeuesFeld.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String text = "Name des Feldes";
-				//Abfrage des Namen des Feldes
+				// Abfrage des Namen des Feldes
 				String name = JOptionPane.showInputDialog(frame, text);
 				try {
+					// Prüfe, ob Name leer oder schon vorhanden ist
 					while (name.isEmpty() || labels.contains(name)) {
 						Object[] params = { "Bitte geben Sie eine gültige Bezeichnung ein!", text };
 						name = JOptionPane.showInputDialog(frame, params);
 					}
 					labels.add(name);
-					// Platzhalter
 					JPanel pnl_tmp = new JPanel();
 					modul_panel.add(pnl_tmp);
+					// Platzhalter
 					modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
+					// Abfrage der Anzahl an Panels, die bereits vorhanden sind
 					int numOfPanels = modul_panel.getComponentCount();
 					pnl_tmp.setLayout(new BoxLayout(pnl_tmp, BoxLayout.X_AXIS));
 
@@ -769,6 +782,7 @@ public class mainscreen {
 					JCheckBox dez = new JCheckBox("Dezernat 2", false);
 					pnl_tmp.add(dez);
 
+					// Button, um das Feld wieder zu entfernen
 					JButton btn_tmp_entf = new JButton("Entfernen");
 					btn_tmp_entf.addActionListener(new ActionListener() {
 						@Override
@@ -805,6 +819,7 @@ public class mainscreen {
 					});
 
 					// Button btn_tmp_entf mit ID (numOfPanels-2) zu ButtonMap
+					// hinzufügen
 					buttonmap.put(btn_tmp_entf, numOfPanels - 2);
 
 					pnl_tmp.add(btn_tmp_entf);
@@ -812,19 +827,20 @@ public class mainscreen {
 					modul_panel.revalidate();
 
 				} catch (NullPointerException npe) {
-					// nichts tuen
+					// nichts tuen bei Abbruch
 				}
 			}
 		});
 		pnl_bottom.add(btnNeuesFeld);
 
+		// Zurück zur Startseite
 		JButton btnHome = new JButton("Zur\u00fcck");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				modul_panel.removeAll();
-				modul_panel.revalidate();
+				// Card wieder erneuern und zur Startseite wechseln
 				newmodulecard();
+				modul_panel.revalidate();
 				showCard("welcome page");
 			}
 		});
@@ -842,17 +858,20 @@ public class mainscreen {
 		label_MH.setPreferredSize(preferredSize);
 		pnl_Z.add(label_MH);
 
+		// Liste mit ausgewählten Zuordnungen
 		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
 		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
 		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		pnl_Z.add(zlist);
 
-		final JComboBox cb_Z = new JComboBox(cbmodel_Z);
+		// ComboBox mit Zuordnungen
+		final JComboBox<Zuordnung> cb_Z = new JComboBox<Zuordnung>(cbmodel_Z);
 		cb_Z.setMaximumSize(new Dimension(400, 20));
 
 		pnl_Z.add(cb_Z);
 
+		// Auswahl einer Zuordnung aus der ComboBox
 		JButton z_btn = new JButton("Zuordnung ausw\u00e4hlen");
 		z_btn.addActionListener(new ActionListener() {
 			@Override
@@ -863,8 +882,7 @@ public class mainscreen {
 		});
 		pnl_Z.add(z_btn);
 
-		modul_panel.add(pnl_Z);
-
+		// In der Liste ausgewählte Zuordnung wieder entfernen
 		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
 		btnZuordnungEntfernen.addActionListener(new ActionListener() {
 			@Override
@@ -876,13 +894,17 @@ public class mainscreen {
 			}
 		});
 		pnl_Z.add(btnZuordnungEntfernen);
+
+		modul_panel.add(pnl_Z);
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
+		// Alle Standartfelder, außer Zuordnung,Name,Jahrgang erzeugen
 		for (int i = 3; i < defaultlabels.size(); i++) {
 			modul_panel.add(defaultmodulPanel(defaultlabels.get(i), "", false));
 			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 		}
 
+		// Button zum Annehmen eines Modules
 		JButton btnOk = new JButton("Annehmen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
@@ -899,14 +921,15 @@ public class mainscreen {
 					zlist.add(lm.getElementAt(i));
 				}
 
+				// Prüfe, ob min. eine Zuordnung ausgewählt und ein gültiger
+				// Jahrgang eingegeben wurde
 				if (!zlist.isEmpty()) {
-
 					if (jahrgang != 0) {
 
 						String Name = ((JTextArea) ((JPanel) modul_panel.getComponent(4)).getComponent(1)).getText();
 
 						if (Name.isEmpty()) {
-							JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
+							JOptionPane.showMessageDialog(frame, "Bitte geben Sie einen Namen ein!", "Eingabe Fehler",
 									JOptionPane.ERROR_MESSAGE);
 						} else {
 
@@ -921,22 +944,23 @@ public class mainscreen {
 								boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
 								String value = tmptxt.getText();
 								String label = tmplbl.getText();
-								if (label.isEmpty()) {
+								// Prüfe, ob alle Felder ausgefüllt wurden
+								if (value.isEmpty()) {
 									filled = false;
 									break;
 								}
 								felder.add(new Feld(label, value, dezernat2));
 							}
+							// Wenn alle aussgefüllt wurden, neues Modul
+							// erzeugen und bei Bestätigung einreichen
 							if (filled == true) {
 								int version = database.getModulVersion(Name) + 1;
 
 								Date d = new Date();
 
-								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
-										.geteMail());
-								int n = JOptionPane.showConfirmDialog(frame,
-										"Sind Sie sicher, dass Sie dieses Modul einreichen wollen?", "Bestätigung",
-										JOptionPane.YES_NO_OPTION);
+								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current.geteMail());
+								int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
+										"Bestätigung", JOptionPane.YES_NO_OPTION);
 								if (n == 0) {
 									database.setModul(neu);
 									labels.removeAll(labels);
@@ -945,19 +969,19 @@ public class mainscreen {
 									newmodulecard();
 									showCard("newmodule");
 								}
-							} else {
-								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!",
-										"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
+							} // Fehler, wenn nicht alle ausgefüllt wurden
+							else {
+								JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
+										JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
+						JOptionPane.showMessageDialog(frame, "Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!",
-							"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!", "Eingabe Fehler",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -968,17 +992,28 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Entfernt einen Eintrag aus der Usertabelle
+	 * 
+	 * @param rowid
+	 *            Der Index des zu enfernenden Eintrages
+	 */
 	private void removeFromTable(int rowid) {
 		tmodel.removeRow(rowid);
 	}
 
+	/**
+	 * Wechselt zur angegeben Card
+	 * 
+	 * @param card
+	 *            Die Bezeichnung der Card, zu der gewechselt werden soll
+	 */
 	private static void showCard(String card) {
 		((CardLayout) cards.getLayout()).show(cards, card);
 	}
 
 	/**
 	 * Erstellt eine Card zur Verwaltung von Benutzern
-	 * 
 	 */
 	@SuppressWarnings("serial")
 	private void usermgtcard() {
@@ -999,11 +1034,11 @@ public class mainscreen {
 		//
 		// Inhalt der Tabelle
 		//
-		tmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Titel", "Vorname", "Nachname", "e-Mail",
-				"Benutzer verwalten", "Module einreichen", "Module Annehmen", "Verwaltung" }) {
+		tmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Titel", "Vorname", "Nachname", "e-Mail", "Benutzer verwalten",
+				"Module einreichen", "Module Annehmen", "Verwaltung" }) {
 			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, boolean.class,
-					boolean.class, boolean.class, boolean.class };
+			Class[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, boolean.class, boolean.class,
+					boolean.class, boolean.class };
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
@@ -1020,6 +1055,7 @@ public class mainscreen {
 
 		usrtbl.setModel(tmodel);
 
+		// Button zum hinzufügen eines Benutzers
 		JButton btnUserAdd = new JButton("User hinzuf\u00fcgen");
 		btnUserAdd.addActionListener(new ActionListener() {
 			@Override
@@ -1027,18 +1063,22 @@ public class mainscreen {
 				userdialog dlg = new userdialog(frame, "User hinzuf\u00fcgen", database);
 				int response = dlg.showCustomDialog();
 				// Wenn ok gedrückt wird
-				// neuen User abfragen
+				// neuen User hinzufügen
 				if (response == 1) {
 					User tmp = dlg.getUser();
 					tmp.setFreigeschaltet(true);
-					database.usersave(tmp);
-					addToTable(tmp);
+					// Wenn er erfolgreich in die DB eingetragen wurde,zur
+					// Tabelle hinzufügen
+					if (database.usersave(tmp).getStatus() == 201) {
+						addToTable(tmp);
+					}
 				}
 			}
 
 		});
 		usrpan.add(btnUserAdd);
 
+		// Button zum bearbeiten eines in der Tabelle ausgewählten Users
 		JButton btnUserEdit = new JButton("User bearbeiten");
 		btnUserEdit.setToolTipText("Zum Bearbeiten Benutzer in der Tabelle markieren");
 		btnUserEdit.addActionListener(new ActionListener() {
@@ -1046,6 +1086,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int row = usrtbl.getSelectedRow();
 				if (row != -1) {
+					// Daten aus der Tabelle abrufen und User erzeugen
 					String t = (String) usrtbl.getValueAt(row, 0);
 					String vn = (String) usrtbl.getValueAt(row, 1);
 					String nn = (String) usrtbl.getValueAt(row, 2);
@@ -1056,6 +1097,7 @@ public class mainscreen {
 					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
 					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4, true);
 
+					// User an Bearbeiten dialog übergeben
 					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, database);
 					int response = dlg.showCustomDialog();
 					// Wenn ok ged\u00fcckt wird
@@ -1063,16 +1105,19 @@ public class mainscreen {
 					if (response == 1) {
 						User tmp = dlg.getUser();
 						tmp.setFreigeschaltet(true);
+						// Wenn update erfolgreich war, alten user abfragen und
+						// neu hinzufügen
 						if (database.userupdate(tmp, em).getStatus() == 201) {
 							removeFromTable(row);
 							addToTable(tmp);
+							// Falls eigener Benutzer bearbeitet wurde, Rechte
+							// erneut prüfen
 							if (em.equals(current.geteMail())) {
 								current = tmp;
 								checkRights();
 							}
 						} else
-							JOptionPane.showMessageDialog(frame, "Update Fehlgeschlagen", "Update Fehler",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "Update Fehlgeschlagen", "Update Fehler", JOptionPane.ERROR_MESSAGE);
 
 					}
 
@@ -1081,6 +1126,7 @@ public class mainscreen {
 		});
 		usrpan.add(btnUserEdit);
 
+		// Löschen eines ausgewählten Benutzers
 		JButton btnUserDel = new JButton("User l\u00f6schen");
 		btnUserDel.setToolTipText("Zum L\u00f6schen Benutzer in der Tabelle markieren");
 		btnUserDel.addActionListener(new ActionListener() {
@@ -1088,21 +1134,23 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent e) {
 				int row = usrtbl.getSelectedRow();
 				if (row != -1) {
-					int n = JOptionPane.showConfirmDialog(frame,
-							"Sind Sie sicher, dass Sie diesen Benutzer l\u00f6schen wollen?", "Bestätigung",
-							JOptionPane.YES_NO_OPTION);
+					int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie diesen Benutzer l\u00f6schen wollen?",
+							"Bestätigung", JOptionPane.YES_NO_OPTION);
 					if (n == 0) {
+						// Wenn Löschen erfolgreich war, aus der Tabelle
+						// entfernen
 						if (database.deluser((String) usrtbl.getValueAt(row, 3)).getStatus() != 201) {
 							removeFromTable(row);
 						} else
-							JOptionPane.showMessageDialog(frame, "L\u00f6schen Fehlgeschlagen",
-									"Fehler beim L\u00f6schen", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "L\u00f6schen Fehlgeschlagen", "Fehler beim L\u00f6schen",
+									JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
 		});
 		usrpan.add(btnUserDel);
 
+		// Zurück zur Startseite
 		JButton btnHome = new JButton("Zur\u00fcck");
 		btnHome.addActionListener(new ActionListener() {
 			@Override
@@ -1122,18 +1170,26 @@ public class mainscreen {
 
 	}
 
+	/**
+	 * Überprüft die Rechte des aktuell eingeloggten Benutzers und aktiviert
+	 * Buttons, auf die er Zugriff hat und deaktiviert Bttons, auf die er keinen
+	 * Zugriff hat
+	 */
 	protected void checkRights() {
 		btnModulEinreichen.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
 		btnVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
 		btnUserVerwaltung.setEnabled(false);
+		btnModulAkzeptieren.setEnabled(false);
 
 		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
+			btnModulBearbeiten.setEnabled(true);
 		}
 		if (current.getAcceptModule()) {
 			btnModulBearbeiten.setEnabled(true);
+			btnModulAkzeptieren.setEnabled(true);
 		}
 		if (current.getReadModule()) {
 			btnVerwaltung.setEnabled(true);
@@ -1150,12 +1206,13 @@ public class mainscreen {
 
 	/**
 	 * Erstellt eine Card zur Bearbeitung von Modulen
-	 * 
 	 */
 	public void modulbearbeitenCard() {
 
 		JPanel pnl_modedit = new JPanel();
 		pnl_modedit.setLayout(new BorderLayout(0, 0));
+
+		// Tab für akzeptierte und für nicht akzeptierte Module erstellen
 		JTabbedPane tabs = new JTabbedPane(SwingConstants.TOP);
 		pnl_modedit.add(tabs);
 
@@ -1171,14 +1228,23 @@ public class mainscreen {
 		JPanel buttonpnl = new JPanel();
 		nichtakzeptiert.add(buttonpnl, BorderLayout.SOUTH);
 
+		// Button zum bearbeiten eines nicht akzeptierten Modules
 		JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_notack.getSelectedValue();
 				if (m != null) {
+					// Abfragen, ob Modul in Bearbeitung ist
 					m.setInbearbeitung(database.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
+
+						// Prüfe, ob Benutzer das Rech hat, das Modul zu
+						// Bearbeiten
+						// Wenn er das Modul selbst erstellt hat, darf er es
+						// auch bearbeiten
+						// Ansonsten Prüfen, ob es von einem Stellvertreter oder
+						// Vorgesetzetn von ihm erstellt wurde
 						boolean rights = false;
 						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
@@ -1188,6 +1254,8 @@ public class mainscreen {
 								rights = true;
 							}
 						}
+						// Wenn er die Rechte dazu hat, Modul als in Bearbeitung
+						// markieren und zur Bearbeitung wechseln
 						if (rights) {
 							mod.removeAll();
 							mod.add(modeditCard(m), BorderLayout.CENTER);
@@ -1196,12 +1264,12 @@ public class mainscreen {
 							showCard("modBearbeiten");
 						} else {
 							JOptionPane.showMessageDialog(frame,
-									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!",
-									"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!", "Zugriff verweigert",
+									JOptionPane.ERROR_MESSAGE);
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
-								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
+								JOptionPane.ERROR_MESSAGE);
 
 					}
 				}
@@ -1210,26 +1278,29 @@ public class mainscreen {
 		});
 		buttonpnl.add(btnModulBearbeiten);
 
-		JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
+		// Button zum akzeptieren eines Modules
 		btnModulAkzeptieren.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Modul m = list_notack.getSelectedValue();
 				if (m != null) {
+					// Prüfe, ob Modul in Bearbeitung ist
 					m.setInbearbeitung(database.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
 						if (m.getName().isEmpty()) {
-							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
-									"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!", "Fehler im Modul",
+									JOptionPane.ERROR_MESSAGE);
 						} else {
+							// Prüfe, ob ein Feld für das Dezernat 2 markiert
+							// wurde
+							// und ob alle Felder ausgefüllt wurden
 							boolean hasDezernat = false;
 							boolean isCorrect = true;
 							ArrayList<Feld> felder = m.getFelder();
 							for (int i = 0; i < felder.size(); i++) {
 								if (felder.get(i).getValue().isEmpty()) {
-									JOptionPane.showMessageDialog(frame,
-											"Bei diesem Modul sind nicht alle Felder ausgefüllt!", "Fehler im Modul",
-											JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
+											"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
 									isCorrect = false;
 									break;
 								}
@@ -1240,12 +1311,12 @@ public class mainscreen {
 
 							if (isCorrect) {
 								boolean checked = true;
+								// Wenn Felder als Dezernat 2 markiert wurden,
+								// nach Bestätigung fragen
 								if (hasDezernat) {
-									int n = JOptionPane
-											.showConfirmDialog(
-													frame,
-													"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?",
-													"Bestätigung", JOptionPane.YES_NO_OPTION);
+									int n = JOptionPane.showConfirmDialog(frame,
+											"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?",
+											"Bestätigung", JOptionPane.YES_NO_OPTION);
 									if (n == 0) {
 										checked = true;
 									} else {
@@ -1253,6 +1324,9 @@ public class mainscreen {
 									}
 								}
 								if (checked) {
+									// Bei bestätigung Modul akzeptieren und
+									// Listen neu abrufen
+									// dann zur Bearbeiten Übersicht wechseln
 									database.acceptModul(m);
 									ArrayList<Modul> module = database.getModule(false);
 									lm.removeAllElements();
@@ -1270,8 +1344,8 @@ public class mainscreen {
 							}
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
-								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
+								JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -1323,12 +1397,12 @@ public class mainscreen {
 							showCard("modBearbeiten");
 						} else {
 							JOptionPane.showMessageDialog(frame,
-									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!",
-									"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!", "Zugriff verweigert",
+									JOptionPane.ERROR_MESSAGE);
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!",
-								"Zugriff verweigert", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
+								JOptionPane.ERROR_MESSAGE);
 
 					}
 				}
@@ -1489,8 +1563,7 @@ public class mainscreen {
 					if (pre != null)
 						JOptionPane.showMessageDialog(frame, modeditCardPrev(pre), "Vorherige Version", 1);
 				} else {
-					JOptionPane.showMessageDialog(frame, "Keine Vorherige Version vorhanden!", "Fehler",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Keine Vorherige Version vorhanden!", "Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -1533,8 +1606,7 @@ public class mainscreen {
 						public void actionPerformed(ActionEvent e) {
 							int id = buttonmap.get(e.getSource());
 							// Bezeichnung aus Liste entfernen
-							String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0))
-									.getText();
+							String name = ((JLabel) ((JPanel) modul_panel_edit.getComponent(id)).getComponent(0)).getText();
 							labels.remove(name);
 
 							// Feld mit ID id von Panel entfernen
@@ -1735,8 +1807,7 @@ public class mainscreen {
 
 					if (jahrgang != 0) {
 
-						String Name = ((JTextArea) ((JPanel) modul_panel_edit.getComponent(4)).getComponent(1))
-								.getText();
+						String Name = ((JTextArea) ((JPanel) modul_panel_edit.getComponent(4)).getComponent(1)).getText();
 
 						if (Name.isEmpty()) {
 							JOptionPane.showMessageDialog(frame, "Bitte füllen Sie alle Felder aus!", "Eingabe Fehler",
@@ -1766,12 +1837,10 @@ public class mainscreen {
 
 								Date d = new Date();
 
-								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current
-										.geteMail());
+								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current.geteMail());
 
-								int n = JOptionPane.showConfirmDialog(frame,
-										"Sind Sie sicher, dass Sie dieses Modul einreichen wollen?", "Bestätigung",
-										JOptionPane.YES_NO_OPTION);
+								int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
+										"Bestätigung", JOptionPane.YES_NO_OPTION);
 								if (n == 0) {
 									m.setInbearbeitung(false);
 									database.setModul(neu);
@@ -1797,13 +1866,12 @@ public class mainscreen {
 							}
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame,
-								"Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
+						JOptionPane.showMessageDialog(frame, "Bitte geben Sie einen gültigen Wert für den Jahrgang ein!", "Eingabe Fehler",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!",
-							"Eingabe Fehler", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie min. einen Zuordnung aus!", "Eingabe Fehler",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -2157,10 +2225,8 @@ public class mainscreen {
 	 * Benutzer auf den Standart User zurückgesetzt
 	 */
 	public static void noConnection() {
-		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler",
-				JOptionPane.ERROR_MESSAGE);
-		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false,
-				false, false, true);
+		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler", JOptionPane.ERROR_MESSAGE);
+		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false, false, true);
 		btnModulEinreichen.setEnabled(false);
 		btnVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);

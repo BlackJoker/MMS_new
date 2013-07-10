@@ -222,7 +222,7 @@ public class ServerConnection {
 			return webResource.path("user/stellv").path(eMail).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
 			});
 		}
-		return null;
+		return new ArrayList<User>();
 	}
 
 	/**

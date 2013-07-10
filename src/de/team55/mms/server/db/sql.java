@@ -44,56 +44,71 @@ public class sql {
 
 			// connect to the server
 			Class.forName(url);
-			this.con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + database + "?"
-					+ "user=" + dbUser + "&" + "password=" + dbPassword);
+			this.con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + database + "?" + "user=" + dbUser + "&"
+					+ "password=" + dbPassword);
 			this.con.setAutoCommit(false);
 			// user table
 			Statement stmt = this.con.createStatement();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (" + "  `modulname` varchar(255) NOT NULL,"
-					+ "  `jahrgang` INT(255) NOT NULL," + "  `Version` int(11) NOT NULL,"
-					+ "  `Datum` date NOT NULL," + "  `akzeptiert` BOOLEAN NOT NULL DEFAULT '0',"
-					+ "  `inbearbeitung` BOOLEAN NOT NULL DEFAULT '0'," + "  `typid` int(10) NOT NULL, 'user' varchar(255) " + ") ");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (  " +
+					"`modulname` varchar(255) NOT NULL," +
+					"`jahrgang` int(255) DEFAULT NULL,  " +
+					"`Version` int(11) DEFAULT NULL,  " +
+					"`Datum` date DEFAULT NULL,  " +
+					"`akzeptiert` tinyint(1) DEFAULT '0',  " +
+					"`inbearbeitung` tinyint(1) DEFAULT '0',  " +
+					"`typid` int(11) NOT NULL,  " +
+					"`user` varchar(255) DEFAULT NULL,  " +
+					"UNIQUE KEY `name_jahrgang_Version_typid` (`modulname`,`jahrgang`,`Version`,`typid`))");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" + "  `id` int(11) NOT NULL,"
-					+ "  `userchange` BOOLEAN NOT NULL," + "  `modcreate` BOOLEAN NOT NULL,"
-					+ "  `modacc` BOOLEAN NOT NULL," + "  `manage` BOOLEAN NOT NULL"
-					+ ")");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" +
+					"`id` int(11) NOT NULL," +
+					"`userchange` tinyint(1) NOT NULL," +
+					"`modcreate` tinyint(1) NOT NULL," +
+					"`modacc` tinyint(1) NOT NULL," +
+					"`manage` tinyint(1) NOT NULL," +
+					"PRIMARY KEY (`id`))");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" + "  `id` int(10) NOT NULL AUTO_INCREMENT,"
-					+ "  `name` varchar(255) NOT NULL," + "  PRIMARY KEY (`id`),"
-					+ "  UNIQUE KEY `Studiengang` (`name`)" + ")");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" +
+					"`id` int(10) NOT NULL AUTO_INCREMENT," +
+					"`name` varchar(255) NOT NULL," +
+					"PRIMARY KEY (`id`)," +
+					"UNIQUE KEY `Studiengang` (`name`))");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `text` (" + "  `name` varchar(255) NOT NULL,"
-					+ "  `version` int(11) NOT NULL," + "  `label` varchar(255) NOT NULL,"
-					+ "  `text` varchar(255) NOT NULL," + "  `dezernat2` BOOLEAN NOT NULL DEFAULT '0'" + ")");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `text` (" +
+					"`name` varchar(255) NOT NULL," +
+					"`version` int(11) NOT NULL," +
+					"`label` varchar(255) NOT NULL," +
+					"`text` varchar(255) NOT NULL," +
+					"`dezernat2` tinyint(1) NOT NULL DEFAULT '0')");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` ( " +
-					"`tid` int(10) NOT NULL AUTO_INCREMENT, " +
-					"`tName` varchar(255), " +
-					"`sid` int(10), " +
-					"`abschluss` varchar(255) " +
-					");");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` (" +
+					"`tid` int(10) NOT NULL AUTO_INCREMENT," +
+					"`tName` varchar(250) NOT NULL," +
+					"`sid` int(10) NOT NULL DEFAULT '0'," +
+					"`abschluss` varchar(250) NOT NULL," +
+					"PRIMARY KEY (`tid`)," +
+					"UNIQUE KEY `UNIQUE KEY` (`sid`,`tName`,`abschluss`))");
 			this.con.commit();
 			
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" 
-					+ "  `id` int(11) NOT NULL AUTO_INCREMENT,"
-					+ "  `email` varchar(255) NOT NULL," 
-					+ "  `titel` varchar(255) DEFAULT NULL,"
-					+ "  `vorname` varchar(255) DEFAULT NULL," 
-					+ "  `namen` varchar(255) DEFAULT NULL,"
-					+ "  `password` varchar(255) NOT NULL,"
-					+ "  `frei` BOOLEAN NOT NULL DEFAULT '0',"
-					+ "  PRIMARY KEY (`id`),"
-					+ "  UNIQUE KEY `email` (`email`)" + ")");
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" +
+					"`id` int(11) NOT NULL AUTO_INCREMENT," +
+					"`email` varchar(255) NOT NULL," +
+					"`titel` varchar(255) DEFAULT NULL," +
+					"`vorname` varchar(255) DEFAULT NULL," +
+					"`namen` varchar(255) DEFAULT NULL, " +
+					"`password` varchar(255) NOT NULL," +
+					"`frei` tinyint(1) DEFAULT '0'," +
+					"PRIMARY KEY (`id`)," +
+					"UNIQUE KEY `email` (`email`))");
 			this.con.commit();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user_relation` (" + "  `main_email` varchar(255) NOT NULL,"
-					+ "  `sellver_email` varchar(255) NOT NULL" + ")");
+					+ "  `sellver_email` varchar(255) NOT NULL" + ");");
 			this.con.commit();
 
 			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`) VALUES"
@@ -257,8 +272,8 @@ public class sql {
 						String abschluss = res.getString("abschluss");
 						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name
-							+ "' AND version = " + version + ";");
+					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name + "' AND version = " + version
+							+ ";");
 
 					while (res.next()) {
 						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
@@ -369,10 +384,9 @@ public class sql {
 						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,frei FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email='"
 								+ email + "' and password='" + pass + "' AND frei=1;");
 				if (res.first()) {
-					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"),
-							res.getString("email"), res.getString("password"), res.getBoolean("userchange"),
-							res.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"),
-							res.getBoolean("frei"));
+					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
+							res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"),
+							res.getBoolean("manage"), res.getBoolean("frei"));
 				}
 				res.close();
 				state.close();
@@ -411,8 +425,7 @@ public class sql {
 					state.setString(6, user);
 					state.executeUpdate();
 				}
-				state = con
-						.prepareStatement("INSERT INTO text (name,version, label, text, dezernat2) VALUES(?,?,?,?,?)");
+				state = con.prepareStatement("INSERT INTO text (name,version, label, text, dezernat2) VALUES(?,?,?,?,?)");
 				for (int i = 0; i < felder.size(); i++) {
 					Feld f = felder.get(i);
 					state.setString(1, name);
@@ -465,31 +478,6 @@ public class sql {
 
 	}
 
-	// public void setModulhandbuch(Modulhandbuch mh) {
-	// String name = mh.getName();
-	// String studiengang = mh.getStudiengang();
-	// String jahrgang = mh.getJahrgang();
-	// Statement state = null;
-	// if (connect() == true) {
-	// try {
-	// state = this.con.createStatement();
-	// state.executeUpdate("INSERT INTO modulhandbuch (name, studiengang, jahrgang) VALUES ('"
-	// + name
-	// + "', '"
-	// + studiengang
-	// + "', '"
-	// + jahrgang
-	// + "');");
-	//
-	// } catch (SQLException e) {
-	// // TODO fehler fenster aufrufen
-	// e.printStackTrace();
-	// }
-	// disconnect();
-	// }
-	//
-	// }
-
 	// Neuen Studiengang anlegen
 	public int setStudiengang(String name) {
 		Statement state = null;
@@ -522,10 +510,9 @@ public class sql {
 				res = state
 						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,frei FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email!='gast@gast.gast';");
 				while (res.next()) {
-					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"),
-							res.getString("email"), res.getString("password"), res.getBoolean("userchange"),
-							res.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"),
-							res.getBoolean("frei"));
+					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
+							res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"),
+							res.getBoolean("manage"), res.getBoolean("frei"));
 					list.add(zws);
 				}
 				res.close();
@@ -547,8 +534,7 @@ public class sql {
 			ResultSet res = null;
 			int id = -1;
 			try {
-				state = con
-						.prepareStatement("INSERT INTO user (email,vorname,namen,password, titel, frei) VALUES (?,?,?,?,?,?)");
+				state = con.prepareStatement("INSERT INTO user (email,vorname,namen,password, titel, frei) VALUES (?,?,?,?,?,?)");
 				state.setString(1, user.geteMail());
 				state.setString(2, user.getVorname());
 				state.setString(3, user.getNachname());
@@ -572,8 +558,7 @@ public class sql {
 			}
 			if (id != -1) {
 				try {
-					state = con
-							.prepareStatement("INSERT INTO rights (id,userchange,modcreate,modacc,manage) VALUES (?,?,?,?,?)");
+					state = con.prepareStatement("INSERT INTO rights (id,userchange,modcreate,modacc,manage) VALUES (?,?,?,?,?)");
 					state.setInt(1, id);
 					state.setBoolean(2, user.getManageUsers());
 					state.setBoolean(3, user.getCreateModule());
@@ -639,8 +624,7 @@ public class sql {
 							state.executeUpdate();
 							state.close();
 						} else {
-							state = con
-									.prepareStatement("UPDATE user SET titel = ?, vorname = ?, namen = ?, email = ? WHERE id = ? ;");
+							state = con.prepareStatement("UPDATE user SET titel = ?, vorname = ?, namen = ?, email = ? WHERE id = ? ;");
 							state.setString(1, user.getTitel());
 							state.setString(2, user.getVorname());
 							state.setString(3, user.getNachname());
@@ -650,8 +634,7 @@ public class sql {
 							state.close();
 						}
 
-						state = con
-								.prepareStatement("UPDATE rights SET userchange = ?, modcreate =?, modacc =?, manage =? WHERE id = ?;");
+						state = con.prepareStatement("UPDATE rights SET userchange = ?, modcreate =?, modacc =?, manage =? WHERE id = ?;");
 						state.setBoolean(1, user.getManageUsers());
 						state.setBoolean(2, user.getCreateModule());
 						state.setBoolean(3, user.getAcceptModule());
@@ -700,34 +683,6 @@ public class sql {
 		}
 		return id;
 	}
-
-	// public ArrayList<Modulhandbuch> getModulhandbuecher() {
-	// ResultSet res = null;
-	// Statement state = null;
-	// ArrayList<Modulhandbuch> MHs = new ArrayList<Modulhandbuch>();
-	// if (connect() == true) {
-	// try {
-	// state = this.con.createStatement();
-	// res = state.executeQuery("SELECT * FROM modulhandbuch;");
-	// // verarbeitung der resultset
-	// while (res.next()) {
-	// String name = res.getString("name");
-	// String sg = res.getString("studiengang");
-	// String jg = res.getString("jahrgang");
-	// boolean ack = res.getBoolean("akzeptiert");
-	// MHs.add(new Modulhandbuch(name, sg, jg, ack));
-	// }
-	//
-	// res.close();
-	// state.close();
-	// } catch (SQLException e) {
-	// // TODO fehler fenster aufrufen
-	// e.printStackTrace();
-	// }
-	// disconnect();
-	// }
-	// return MHs;
-	// }
 
 	public ArrayList<Modul> getModule(boolean b) {
 		ArrayList<Modul> module = new ArrayList<Modul>();
@@ -784,12 +739,11 @@ public class sql {
 
 						ArrayList<Feld> felder = new ArrayList<Feld>();
 
-						res2 = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name
-								+ "' AND version = " + version + ";");
+						res2 = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name + "' AND version = "
+								+ version + ";");
 
 						while (res2.next()) {
-							felder.add(new Feld(res2.getString("label"), res2.getString("text"), res2
-									.getBoolean("dezernat2")));
+							felder.add(new Feld(res2.getString("label"), res2.getString("text"), res2.getBoolean("dezernat2")));
 						}
 						res2.close();
 
@@ -840,8 +794,8 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				state.executeUpdate("INSERT INTO user_relation (main_email, stellver_email) VALUES ('"
-						+ main.geteMail() + "','" + stellv.geteMail() + "');");
+				state.executeUpdate("INSERT INTO user_relation (main_email, stellver_email) VALUES ('" + main.geteMail() + "','"
+						+ stellv.geteMail() + "');");
 				status = SUCCES;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
@@ -853,59 +807,6 @@ public class sql {
 
 	}
 
-	// überlegung wie man das einbaut
-
-	// public ArrayList<User> getUserRelation(User main){
-	// ResultSet res = null;
-	// Statement state = null;
-	// ArrayList<User> rellist = new ArrayList<User>();
-	//
-	// if (connect() == true) {
-	// try {
-	// state = this.con.createStatement();
-	// res = state
-	// .executeQuery("SELECT st.email, st.titel, st.vorname, st.namen FROM user as st  id=;");
-	// while (res.next()) {
-	// if(res.getInt("id")==0);
-	//
-	// }
-	// res.close();
-	// state.close();
-	// } catch (SQLException e) {
-	// // TODO fehler fenster aufrufen
-	// e.printStackTrace();
-	// }
-	// disconnect();
-	// }
-	// return rellist;
-	// }
-
-	// public ArrayList<String> getallModultyp() {
-	// ResultSet res = null;
-	// Statement state = null;
-	// ArrayList<String> retyp = new ArrayList<String>();
-	// if (connect() == true) {
-	// try {
-	// state = this.con.createStatement();
-	// res = state.executeQuery("select name from moduletyp;");
-	//
-	// while (res.next()) {
-	// String typ = res.getString("name");
-	// retyp.add(typ);
-	// }
-	//
-	// res.close();
-	// state.close();
-	// } catch (SQLException e) {
-	// // TODO fehler fenster aufrufen
-	// e.printStackTrace();
-	// }
-	// disconnect();
-	// }
-	// return retyp;
-	//
-	// }
-
 	public ArrayList<Zuordnung> getZuordnungen() {
 		ResultSet res = null;
 		Statement state = null;
@@ -916,8 +817,8 @@ public class sql {
 				res = state
 						.executeQuery("SELECT t.tid, t.tname, t.abschluss, t.sid, s.name FROM typ AS t JOIN studiengang AS s ON t.sid=s.id ORDER BY t.tName ASC, s.name ASC, t.abschluss ASC;");
 				while (res.next()) {
-					zlist.add(new Zuordnung(res.getInt("tid"), res.getString("tname"), res.getString("name"), res
-							.getInt("sid"), res.getString("abschluss")));
+					zlist.add(new Zuordnung(res.getInt("tid"), res.getString("tname"), res.getString("name"), res.getInt("sid"), res
+							.getString("abschluss")));
 				}
 				res.close();
 				state.close();
@@ -936,8 +837,8 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				state.executeUpdate("INSERT INTO typ (tname, sid, abschluss) VALUES ('" + z.getName() + "','"
-						+ z.getSid() + "','" + z.getAbschluss() + "');");
+				state.executeUpdate("INSERT INTO typ (tname, sid, abschluss) VALUES ('" + z.getName() + "','" + z.getSid() + "','"
+						+ z.getAbschluss() + "');");
 				status = SUCCES;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
@@ -989,10 +890,9 @@ public class sql {
 						.executeQuery("SELECT * FROM user_relation as ur JOIN user AS u ON ur.stellver_email=u.email JOIN rights AS r ON u.id=r.id WHERE main_email='"
 								+ mail + "';");
 				while (res.next()) {
-					stellv.add(new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res
-							.getString("email"), res.getString("password"), res.getBoolean("userchange"), res
-							.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res
-							.getBoolean("frei")));
+					stellv.add(new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
+							res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"),
+							res.getBoolean("manage"), res.getBoolean("frei")));
 				}
 				res.close();
 				state.close();
@@ -1018,7 +918,8 @@ public class sql {
 								+ "where modu.akzeptiert = 1 and stud.name = '"
 								+ studiengang
 								+ "' and typ.tName = '"
-								+ modultyp + "' and modu.jahrgang = '" + modulhandbuch + "';");
+								+ modultyp
+								+ "' and modu.jahrgang = '" + modulhandbuch + "';");
 				while (res.next()) {
 					zwsstring.add(res.getString("modname"));
 				}
@@ -1045,8 +946,7 @@ public class sql {
 
 		if (connect() == true) {
 			try {
-				state = this.con
-						.prepareStatement("SELECT * FROM user_relation WHERE main_email=? OR stellver_email=?;");
+				state = this.con.prepareStatement("SELECT * FROM user_relation WHERE main_email=? OR stellver_email=?;");
 				state.setString(1, email);
 				state.setString(2, email);
 				res = state.executeQuery();
@@ -1107,8 +1007,8 @@ public class sql {
 						String abschluss = res.getString("abschluss");
 						zs.add(new Zuordnung(tid, tname, sname, sid, abschluss));
 					}
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name
-							+ "' AND version = " + version + ";");
+					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name + "' AND version = " + version
+							+ ";");
 
 					while (res.next()) {
 						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
@@ -1163,8 +1063,7 @@ public class sql {
 					version = res.getInt("version");
 				}
 				if (version != 0) {
-					sql = "SELECT inbearbeitung FROM module WHERE Modulname ='" + name + "'AND version =" + version
-							+ ";";
+					sql = "SELECT inbearbeitung FROM module WHERE Modulname ='" + name + "'AND version =" + version + ";";
 					res = state.executeQuery(sql);
 					if (res.first()) {
 						inbearbeitung = res.getBoolean("inbearbeitung");

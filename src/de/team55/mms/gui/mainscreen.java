@@ -898,7 +898,7 @@ public class mainscreen {
 		modul_panel.add(pnl_Z);
 		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		// Alle Standartfelder, auﬂer Zuordnung,Name,Jahrgang erzeugen
+		// Alle Standartfelder, auﬂer Zuordnung erzeugen
 		for (int i = 3; i < defaultlabels.size(); i++) {
 			modul_panel.add(defaultmodulPanel(defaultlabels.get(i), "", false));
 			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));

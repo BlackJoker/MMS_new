@@ -32,7 +32,6 @@ public class sql {
 	private int SUCCES = 1;
 
 	public boolean connect() {
-		// TODO alle Tabellen am ende sobald da Prog fertig ist anpassen!!!!!
 		connected = false;
 		Properties prop = new Properties();
 		try {
@@ -52,19 +51,15 @@ public class sql {
 			Statement stmt = this.con.createStatement();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (" + "  `modulname` varchar(255) NOT NULL,"
-					+ "  `Modulhandbuchname` varchar(255) NOT NULL," + "  `Version` int(11) NOT NULL,"
+					+ "  `jahrgang` INT(255) NOT NULL," + "  `Version` int(11) NOT NULL,"
 					+ "  `Datum` date NOT NULL," + "  `akzeptiert` BOOLEAN NOT NULL DEFAULT '0',"
-					+ "  `inbearbeitung` BOOLEAN NOT NULL DEFAULT '0'," + "  `sid` int(10) NOT NULL" + ") ");
-			this.con.commit();
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `modulhandbuch` (" + "  `name` varchar(255) NOT NULL,"
-					+ "  `studiengang` varchar(255) DEFAULT NULL," + "  `jahrgang` varchar(255) NOT NULL,"
-					+ "  `akzeptiert` BOOLEAN NOT NULL DEFAULT '0'" + ") ");
+					+ "  `inbearbeitung` BOOLEAN NOT NULL DEFAULT '0'," + "  `typid` int(10) NOT NULL, 'user' varchar(255) " + ") ");
 			this.con.commit();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" + "  `id` int(11) NOT NULL,"
 					+ "  `userchange` BOOLEAN NOT NULL," + "  `modcreate` BOOLEAN NOT NULL,"
-					+ "  `modacc` BOOLEAN NOT NULL," + "  `manage` BOOLEAN NOT NULL,"
-					+ "  `adminwork` BOOLEAN NOT NULL" + ")");
+					+ "  `modacc` BOOLEAN NOT NULL," + "  `manage` BOOLEAN NOT NULL"
+					+ ")");
 			this.con.commit();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" + "  `id` int(10) NOT NULL AUTO_INCREMENT,"
@@ -77,10 +72,23 @@ public class sql {
 					+ "  `text` varchar(255) NOT NULL," + "  `dezernat2` BOOLEAN NOT NULL DEFAULT '0'" + ")");
 			this.con.commit();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" + "  `id` int(11) NOT NULL AUTO_INCREMENT,"
-					+ "  `email` varchar(255) NOT NULL," + "  `titel` varchar(255) DEFAULT NULL,"
-					+ "  `vorname` varchar(255) DEFAULT NULL," + "  `namen` varchar(255) DEFAULT NULL,"
-					+ "  `password` varchar(255) NOT NULL," + "  PRIMARY KEY (`id`),"
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` ( " +
+					"`tid` int(10) NOT NULL AUTO_INCREMENT, " +
+					"`tName` varchar(255), " +
+					"`sid` int(10), " +
+					"`abschluss` varchar(255) " +
+					");");
+			this.con.commit();
+			
+			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" 
+					+ "  `id` int(11) NOT NULL AUTO_INCREMENT,"
+					+ "  `email` varchar(255) NOT NULL," 
+					+ "  `titel` varchar(255) DEFAULT NULL,"
+					+ "  `vorname` varchar(255) DEFAULT NULL," 
+					+ "  `namen` varchar(255) DEFAULT NULL,"
+					+ "  `password` varchar(255) NOT NULL,"
+					+ "  `frei` BOOLEAN NOT NULL DEFAULT '0',"
+					+ "  PRIMARY KEY (`id`),"
 					+ "  UNIQUE KEY `email` (`email`)" + ")");
 			this.con.commit();
 

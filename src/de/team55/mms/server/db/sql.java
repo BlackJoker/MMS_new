@@ -87,7 +87,7 @@ public class sql {
 			this.con.commit();
 
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user_relation` (" + "  `main_email` varchar(255) NOT NULL,"
-					+ "  `sellver_email` varchar(255) NOT NULL" + ");");
+					+ "  `stellver_email` varchar(255) NOT NULL" + ");");
 			this.con.commit();
 
 			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`,`frei`) VALUES"

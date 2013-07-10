@@ -92,7 +92,6 @@ public class mainscreen {
 
 	// Modelle
 	private DefaultTableModel tmodel;
-	private DefaultTableModel tmodelNeu;
 	private DefaultTableModel studmodel;
 	private DefaultTableModel modbuchmodel;
 	private DefaultTableModel modtypmodel;
@@ -109,7 +108,7 @@ public class mainscreen {
 	private static JPanel modul_panel = new JPanel();
 	private static JPanel modul_panel_edit = new JPanel();
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
-	private static JButton btnModulVerwaltung = new JButton("Verwaltung");
+	private static JButton btnVerwaltung = new JButton("Verwaltung");
 	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
 	private static JButton btnModulArchiv = new JButton("<html>Module<br>Durchst\u00f6bern");
 	private static JButton btnUserVerwaltung = new JButton("User Verwaltung");
@@ -488,6 +487,8 @@ public class mainscreen {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
+				//Danach Modelle füllen und zur Card wechseln
 				typen = database.getZuordnungen();
 				studienlist = database.getStudiengaenge();
 				cbmodel.removeAllElements();
@@ -503,47 +504,60 @@ public class mainscreen {
 
 		});
 
+		//Button zum Bearbeiten eines Modules
 		left.add(btnModulBearbeiten);
 		btnModulBearbeiten.setEnabled(false);
 		btnModulBearbeiten.setPreferredSize(btnSz);
 		btnModulBearbeiten.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 		btnModulBearbeiten.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//Abfrage alles nicht nicht akzeptierten Module
+				//Danach Modell füllen
 				ArrayList<Modul> module = database.getModule(false);
 				lm.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm.addElement(module.get(i));
 				}
 
+				//Abfrage alles nicht akzeptierten Module
+				//Danach Modell füllen
 				module = database.getModule(true);
 				lm_ack.removeAllElements();
 				for (int i = 0; i < module.size(); i++) {
 					lm_ack.addElement(module.get(i));
 				}
+				
+				//Zur card mit Übersicht an Modulen wechseln
 				showCard("modulbearbeiten");
 			}
 
 		});
 
+		//Button zum Login
 		left.add(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				// Verbindung zum Server
 				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
+					//Wenn noch nicht eingeloggt, einloggen
 					if (current.geteMail().equals("gast@gast.gast")) {
 						logindialog log = new logindialog(frame, "Login", database);
 						int resp = log.showCustomDialog();
 						if (resp == 1) {
+							//User übernehmen
 							current = log.getUser();
 							database = log.getServerConnection();
 							btnLogin.setText("Ausloggen");
+							// Auf Rechte prüfen
 							checkRights();
 						}
-					} else {
+					} 
+					//Wenn bereits eingeloggt, ausloggen
+					else {
 						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb",
 								false, false, false, false, true);
 						if (database.isConnected() == SUCCES) {
@@ -555,6 +569,7 @@ public class mainscreen {
 						showCard("welcome page");
 					}
 				} else {
+					//Wenn keine Verbindung besteht
 					noConnection();
 				}
 			}
@@ -562,11 +577,14 @@ public class mainscreen {
 		btnLogin.setPreferredSize(btnSz);
 		btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		// Button zur Userverwaltung
 		btnUserVerwaltung.setEnabled(false);
 		left.add(btnUserVerwaltung);
 		btnUserVerwaltung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//Wenn User das Recht hat, um Benutzer zu Verwalten,
+				//dann Anzeige der Benutzerverwaltung
 				if (current.getManageUsers()) {
 					// Tabelle leeren
 					tmodel.setRowCount(0);
@@ -574,18 +592,23 @@ public class mainscreen {
 					// Tabelle mit neuen daten füllen
 					worklist = database.userload();
 					for (int i = 0; i < worklist.size(); i++) {
-						if (worklist.get(i).isFreigeschaltet())
+						//Wenn der User noch nicht freigeschaltet wurde,
+						//zur Liste mit neuen Benutzern hinzufügen
+						if (worklist.get(i).isFreigeschaltet()){
 							addToTable(worklist.get(i));
-						else
+						}
+						else{
 							neueUser.add(worklist.get(i));
+						}
 					}
+					//Zur Userverwaltungs Card wechseln
 					showCard("user managment");
+					
+					//Einblendung aller neuen User
 					for (int i = 0; i < neueUser.size(); i++) {
-
 						userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, database);
 						int response = dlg.showCustomDialog();
-						// Wenn ok gedrückt wird
-						// neuen User abfragen
+						// Bei Bestätigung, neuen User freischalten und e-Mail senden
 						User tmp = dlg.getUser();
 						if (response == 1) {
 							tmp.setFreigeschaltet(true);
@@ -597,6 +620,7 @@ public class mainscreen {
 									neueUser.remove(i);
 								}
 							}
+						//Ansonsten möglichkeit ihn wieder zu löschen
 						} else {
 							int n = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen",
 									"Bestätigung", JOptionPane.YES_NO_OPTION);
@@ -606,6 +630,8 @@ public class mainscreen {
 						}
 					}
 				} else {
+					//Ansonsten Dialog öffnen,
+					//in dem die eigenen Daten geändert werden können
 					userdialog dlg = new userdialog(frame, "User bearbeiten", current, false, database);
 					int response = dlg.showCustomDialog();
 					// Wenn ok gedrückt wird
@@ -625,9 +651,13 @@ public class mainscreen {
 		});
 		btnUserVerwaltung.setPreferredSize(btnSz);
 		btnUserVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnModulVerwaltung.addActionListener(new ActionListener() {
+		
+		//Button zur Verwaltung von Studiengängen und Zuordnungen
+		btnVerwaltung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//Zuordnungen und Studiengänge aus Datenbank abrufen
+				//und Listen füllen
 				studienlist = database.getStudiengaenge();
 				studimodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
@@ -641,34 +671,38 @@ public class mainscreen {
 				for (int i = 0; i < typen.size(); i++) {
 					typenmodel.addElement(typen.get(i));
 				}
+				//Zur Card wechseln
 				showCard("manage");
 
 			}
 		});
 
-		left.add(btnModulVerwaltung);
-		btnModulVerwaltung.setEnabled(false);
-		btnModulVerwaltung.setPreferredSize(btnSz);
-		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
+		left.add(btnVerwaltung);
+		btnVerwaltung.setEnabled(false);
+		btnVerwaltung.setPreferredSize(btnSz);
+		btnVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		
 		left.add(btnModulArchiv);
 		btnModulArchiv.setEnabled(true);
 		btnModulArchiv.setPreferredSize(btnSz);
 		btnModulArchiv.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		//Button zum Durchstöbern von Modulen
 		btnModulArchiv.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				current = database.login(current.geteMail(), current.getPassword());
 				if (current != null) {
+					//Studiengänge und Zuordnungen abrufen
 					studmodel.setRowCount(0);
 					studienlist = database.getStudiengaenge();
 					for (int i = 0; i < studienlist.size(); i++) {
 						addToTable(studienlist.get(i));
 					}
-
 					typen = database.getZuordnungen();
 
+					//Zur Card wechseln
 					showCard("studiengang show");
 				} else {
 					noConnection();
@@ -682,14 +716,18 @@ public class mainscreen {
 	 * Erstellt eine Card, um ein neues Modul anzulegen
 	 * 
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 	private void newmodulecard() {
+		//Alle vorhandenen Felder entfernen
 		modul_panel.removeAll();
 		final JPanel pnl_newmod = new JPanel();
+		
+		//Liste dynamischer Buttons leeren
 		if (!buttonmap.isEmpty()) {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
 		}
+		
+		//Liste mit bereits vorhandenen Felder erstellen und mit den Standartfeldern füllen
 		final ArrayList<String> labels = new ArrayList<String>();
 		labels.addAll(defaultlabels);
 		final Dimension preferredSize = new Dimension(120, 20);
@@ -698,11 +736,13 @@ public class mainscreen {
 		JPanel pnl_bottom = new JPanel();
 		pnl_newmod.add(pnl_bottom, BorderLayout.SOUTH);
 
+		//Button zum erstellen eines neuen Feldes
 		JButton btnNeuesFeld = new JButton("Neues Feld");
 		btnNeuesFeld.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String text = "Name des Feldes";
+				//Abfrage des Namen des Feldes
 				String name = JOptionPane.showInputDialog(frame, text);
 				try {
 					while (name.isEmpty() || labels.contains(name)) {
@@ -1085,7 +1125,7 @@ public class mainscreen {
 	protected void checkRights() {
 		btnModulEinreichen.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
-		btnModulVerwaltung.setEnabled(false);
+		btnVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
 		btnUserVerwaltung.setEnabled(false);
 
@@ -1096,7 +1136,7 @@ public class mainscreen {
 			btnModulBearbeiten.setEnabled(true);
 		}
 		if (current.getReadModule()) {
-			btnModulVerwaltung.setEnabled(true);
+			btnVerwaltung.setEnabled(true);
 		}
 		if (current.getManageUsers()) {
 			btnUserVerwaltung.setEnabled(true);
@@ -2122,7 +2162,7 @@ public class mainscreen {
 		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false,
 				false, false, true);
 		btnModulEinreichen.setEnabled(false);
-		btnModulVerwaltung.setEnabled(false);
+		btnVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);
 		btnModulArchiv.setEnabled(true);
 		btnUserVerwaltung.setEnabled(false);

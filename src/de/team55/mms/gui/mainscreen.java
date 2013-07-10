@@ -1352,6 +1352,7 @@ public class mainscreen {
 		});
 		buttonpnl.add(btnModulAkzeptieren);
 
+		//Zurück zur Startseite
 		JButton btnZurck = new JButton("Zur\u00FCck");
 		btnZurck.addActionListener(new ActionListener() {
 			@Override
@@ -1361,6 +1362,7 @@ public class mainscreen {
 		});
 		buttonpnl.add(btnZurck);
 
+		//akzeptierte Module
 		JPanel akzeptiert = new JPanel();
 		tabs.addTab("akzeptierte Module", null, akzeptiert, null);
 		tabs.setEnabledAt(1, true);
@@ -1374,14 +1376,17 @@ public class mainscreen {
 		JPanel buttonpnl2 = new JPanel();
 		akzeptiert.add(buttonpnl2, BorderLayout.SOUTH);
 
+		//akzeptierte Module bearbeiten
 		JButton btnModulBearbeiten2 = new JButton("Modul bearbeiten");
 		btnModulBearbeiten2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Modul m = list_ack.getSelectedValue();
 				if (m != null) {
+					//Prüfe, ob Modul in Bearbeitung ist
 					m.setInbearbeitung(database.getModulInEdit(m.getName()));
 					if (!m.isInbearbeitung()) {
+						//Prüfe, ob User das Recht hat, dieses Modul zu bearbeiten
 						boolean rights = false;
 						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
@@ -1392,6 +1397,7 @@ public class mainscreen {
 							}
 						}
 						if (rights) {
+							//Zur Bearbeitung wechseln
 							mod.removeAll();
 							mod.add(modeditCard(m), BorderLayout.CENTER);
 							showCard("modBearbeiten");
@@ -1410,7 +1416,9 @@ public class mainscreen {
 			}
 		});
 		buttonpnl2.add(btnModulBearbeiten2);
-
+		
+		
+//Zurück zur Startseite
 		JButton btnZurck2 = new JButton("Zur\u00FCck");
 		btnZurck2.addActionListener(new ActionListener() {
 			@Override

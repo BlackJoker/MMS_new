@@ -430,6 +430,7 @@ public class sql {
 
 	/**
 	 * Gibt an, ob Verbindung zur Datenbank besteht
+	 * 
 	 * @return Status der Verbindung
 	 */
 	public boolean isConnected() {
@@ -438,8 +439,10 @@ public class sql {
 
 	/**
 	 * Trägt ein Modul ein
-	 * @param neu Das Modul
-	 * @return erfolgreich oder nicht
+	 * 
+	 * @param neu
+	 *            Das Modul
+	 * @return Erfolgsstatus
 	 */
 	public int setModul(Modul neu) {
 		int ok = FAILED;
@@ -486,7 +489,9 @@ public class sql {
 
 	/**
 	 * Neuen Studiengang anlegen
-	 * @param name Name des Studienganges
+	 * 
+	 * @param name
+	 *            Name des Studienganges
 	 * @return efolgreich oder nicht
 	 */
 	public int setStudiengang(String name) {
@@ -508,8 +513,9 @@ public class sql {
 	}
 
 	/**
+	 * Fragt alle User ab
 	 * 
-	 * @return
+	 * @return Liste von Usern
 	 */
 	public ArrayList<User> userload() {
 		User zws = null;
@@ -541,6 +547,13 @@ public class sql {
 
 	}
 
+	/**
+	 * Speichert einen User
+	 * 
+	 * @param user
+	 *            Der User
+	 * @return Erfolgsstatus
+	 */
 	public int usersave(User user) {
 		int ok = FAILED;
 		if (connect() == true) {
@@ -594,6 +607,15 @@ public class sql {
 		return ok;
 	}
 
+	/**
+	 * Update eines Users
+	 * 
+	 * @param user
+	 *            Der User
+	 * @param email
+	 *            Die alte e-Mail des Users
+	 * @return Erfolgsstatus
+	 */
 	public int userupdate(User user, String email) {
 		int ok = FAILED;
 		if (connect() == true) {
@@ -671,10 +693,24 @@ public class sql {
 		return ok;
 	}
 
+	/**
+	 * Konvertiert ein java.util.Date zu einem java.sql.Date
+	 * 
+	 * @param utilDate
+	 *            Das java.util.Date
+	 * @return Datum als java.sql.Date
+	 */
 	private java.sql.Date convertToSQLDate(java.util.Date utilDate) {
 		return new java.sql.Date(utilDate.getTime());
 	}
 
+	/**
+	 * Liefert die ID eines Studienganges
+	 * 
+	 * @param name
+	 *            Name des Studienganges
+	 * @return ID des Studienganges
+	 */
 	public int getStudiengangID(String name) {
 		ResultSet res = null;
 		Statement state = null;
@@ -698,6 +734,14 @@ public class sql {
 		return id;
 	}
 
+	/**
+	 * Liefert akzeptierte/nicht akzeptierte Module
+	 * 
+	 * @param b
+	 *            true wenn akzeptiert, false wenn nicht akzeptierte Module
+	 *            gewünscht sind
+	 * @return Liste von Modulen
+	 */
 	public ArrayList<Modul> getModule(boolean b) {
 		ArrayList<Modul> module = new ArrayList<Modul>();
 		ResultSet res = null;
@@ -777,6 +821,13 @@ public class sql {
 		return module;
 	}
 
+	/**
+	 * Prüft, ob ein User vorhanden ist
+	 * 
+	 * @param email
+	 *            e-Mail des Users
+	 * @return Status, ob vorhanden oder nicht
+	 */
 	public int getUser(String email) {
 		ResultSet res = null;
 		Statement state = null;
@@ -800,7 +851,15 @@ public class sql {
 		return status;
 	}
 
-	// bitte durchschaun ob das wirklich so funktionieren kann xD
+	/**
+	 * Speichert eine Userrelation
+	 * 
+	 * @param main
+	 *            Der Vorgesetzte User
+	 * @param stellv
+	 *            Dessen Stellvertreter
+	 * @return Erfolgsstatus
+	 */
 	public int setUserRelation(User main, User stellv) {
 		Statement state = null;
 		int status = FAILED;
@@ -821,6 +880,10 @@ public class sql {
 
 	}
 
+	/**
+	 * Fragt alle Zuordnungen ab
+	 * @return Liste von Zuordnungen
+	 */
 	public ArrayList<Zuordnung> getZuordnungen() {
 		ResultSet res = null;
 		Statement state = null;
@@ -845,6 +908,11 @@ public class sql {
 		return zlist;
 	}
 
+	/**
+	 * Reicht eine Zuordnung ein
+	 * @param z Die Zuordnung
+	 * @return Erfolgsstatus
+	 */
 	public int setZuordnung(Zuordnung z) {
 		Statement state = null;
 		int status = FAILED;
@@ -863,6 +931,11 @@ public class sql {
 		return status;
 	}
 
+	/**
+	 * Reicht eine Stellvertreter Liste ein
+	 * @param sl Liste von Stellvertretern
+	 * @return Erfolgsstatus
+	 */
 	public int setStellvertreter(StellvertreterList sl) {
 		PreparedStatement state = null;
 		int status = FAILED;
@@ -893,6 +966,11 @@ public class sql {
 		return status;
 	}
 
+	/**
+	 * Liefert eine Liste von Stellvertretern
+	 * @param mail e-Mail des Vorgesetzten
+	 * @return Liste mit Usern
+	 */
 	public ArrayList<User> getStellv(String mail) {
 		ResultSet res = null;
 		Statement state = null;
@@ -919,6 +997,13 @@ public class sql {
 		return stellv;
 	}
 
+	/**
+	 * Gibt ein Modul aus
+	 * @param studiengang Studiengang des Moduls
+	 * @param modultyp	Zuordnung des Moduls
+	 * @param modulhandbuch Jahrgang des Moduls
+	 * @return
+	 */
 	public ArrayList<Modul> getselectedModul(String studiengang, String modultyp, String modulhandbuch) {
 		ArrayList<Modul> selmodul = new ArrayList<Modul>();
 		ResultSet res = null;
@@ -953,6 +1038,11 @@ public class sql {
 		return selmodul;
 	}
 
+	/**
+	 * Gibt eine UserRelation aus
+	 * @param email e-Mail des Benutzers
+	 * @return Liste mit Benutzernamen
+	 */
 	public ArrayList<String> getUserRelation(String email) {
 		ArrayList<String> rel = new ArrayList<String>();
 		ResultSet res = null;
@@ -983,6 +1073,12 @@ public class sql {
 		return rel;
 	}
 
+	/**
+	 * Gibt ein Modul aus
+	 * @param name Name des Moduls
+	 * @param version Version des Moduls
+	 * @return Das Modul
+	 */
 	public Modul getModul(String name, int version) {
 		ResultSet res = null;
 		Statement state = null;
@@ -1043,6 +1139,12 @@ public class sql {
 			return new Modul();
 	}
 
+	/**
+	 * akzeptiert ein Modul
+	 * @param name name des Moduls
+	 * @param versionm Version des Moduls
+	 * @return Erfolgsstatus
+	 */
 	public int acceptModul(String name, int version) {
 		int ok = FAILED;
 		PreparedStatement state = null;
@@ -1063,6 +1165,11 @@ public class sql {
 		return ok;
 	}
 
+	/**
+	 * Gibt aus, ob ein Modul in Bearbeitung ist
+	 * @param name Name des Moduls
+	 * @return status
+	 */
 	public boolean getModulInEdit(String name) {
 		ResultSet res = null;
 		Statement state = null;
@@ -1093,6 +1200,11 @@ public class sql {
 		return inbearbeitung;
 	}
 
+	/**
+	 * Setzt ein Modul als in Bearbeitung
+	 * @param m Das Modul
+	 * @return Erfolgsstatus
+	 */
 	public int setInEdit(Modul m) {
 		int ok = FAILED;
 		PreparedStatement state = null;

@@ -90,14 +90,14 @@ public class sql {
 					+ "  `sellver_email` varchar(255) NOT NULL" + ");");
 			this.con.commit();
 
-			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`) VALUES"
-					+ "	(1, 'admin@mms.de', NULL, 'Admin', 'Admin', 'a384b6463fc216a5f8ecb6670f86456a');");
+			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`,`frei`) VALUES"
+					+ "	(1, 'admin@mms.de', NULL, 'Admin', 'Admin', 'a384b6463fc216a5f8ecb6670f86456a',1);");
 			this.con.commit();
 			stmt.executeUpdate("INSERT IGNORE INTO `rights` (`id`, `userchange`, `modcreate`, `modacc`, `manage`) VALUES"
 					+ "	(1, 1, 1, 1, 1);");
 			this.con.commit();
-			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`) VALUES"
-					+ "	(2, 'gast@gast.gast', NULL, 'NULL', 'NULL', 'd4061b1486fe2da19dd578e8d970f7eb');");
+			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`,`frei`) VALUES"
+					+ "	(2, 'gast@gast.gast', NULL, 'NULL', 'NULL', 'd4061b1486fe2da19dd578e8d970f7eb',1);");
 			this.con.commit();
 			stmt.executeUpdate("INSERT IGNORE INTO `rights` (`id`, `userchange`, `modcreate`, `modacc`, `manage`) VALUES"
 					+ "	(2, 0, 0, 0, 0);");

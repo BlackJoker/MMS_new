@@ -247,7 +247,7 @@ public class userdialog extends JDialog {
 		cb_ModAnn = new JCheckBox("Module Annehmen", usr.getAcceptModule());
 		pnl_checkboxes.add(cb_ModAnn);
 
-		cb_ModLes = new JCheckBox("Module lesen", usr.getReadModule());
+		cb_ModLes = new JCheckBox("Verwaltung", usr.getReadModule());
 		pnl_checkboxes.add(cb_ModLes);
 
 		// Wenn der Benutzer nicht vom Admin bearbeitet wird

@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlType;
 //
 @XmlRootElement(name = "User")
 @XmlType(propOrder = { "eMail", "titel", "vorname", "nachname", "password",
-		"manageUsers", "acceptModule", "createModule", "readModule" ,"freigeschaltet"})
+		"manageUsers", "acceptModule", "createModule", "manageSystem", "redaktion" ,"freigeschaltet"})
 public class User {
 	private String Vorname;
 	private String Nachname;
@@ -13,9 +13,10 @@ public class User {
 	private String Password;
 	private String Titel;
 	private boolean manageUsers;
-	private boolean readModule;
+	private boolean manageSystem;
 	private boolean createModule;
 	private boolean acceptModule;
+	private boolean redaktion;
 	private boolean freigeschaltet=false;
 	
 	
@@ -34,15 +35,16 @@ public class User {
 		this.eMail = "null";
 		this.Password = "null";
 		this.manageUsers = false;
-		this.readModule = false;
+		this.manageSystem = false;
 		this.createModule = false;
 		this.acceptModule = false;
+		this.redaktion = false;
 		this.freigeschaltet=false;
 	}
 
 	public User(String Vorname, String Nachname, String Titel, String eMail,
 			String Password, boolean manageUsers, boolean createModule,
-			boolean acceptModule, boolean readModule, boolean freigeschaltet) {
+			boolean acceptModule, boolean manageSystem, boolean redaktion, boolean freigeschaltet) {
 
 		this.Vorname = Vorname;
 		this.Nachname = Nachname;
@@ -50,9 +52,10 @@ public class User {
 		this.eMail = eMail;
 		this.Password = Password;
 		this.manageUsers = manageUsers;
-		this.readModule = readModule;
+		this.manageSystem = manageSystem;
 		this.createModule = createModule;
 		this.acceptModule = acceptModule;
+		this.redaktion = redaktion;
 		this.freigeschaltet=freigeschaltet;
 
 	}
@@ -105,7 +108,7 @@ public class User {
 			return false;
 		if (manageUsers != other.manageUsers)
 			return false;
-		if (readModule != other.readModule)
+		if (manageSystem != other.manageSystem)
 			return false;
 		return true;
 	}
@@ -135,12 +138,16 @@ public class User {
 		return Password;
 	}
 
-	public boolean getReadModule() {
-		return readModule;
+	public boolean getmanageSystem() {
+		return manageSystem;
 	}
 
 	public String getVorname() {
 		return Vorname;
+	}
+	
+	public boolean getRedaktion(){
+		return redaktion;
 	}
 
 	@Override
@@ -157,7 +164,7 @@ public class User {
 		result = prime * result + (createModule ? 1231 : 1237);
 		result = prime * result + ((eMail == null) ? 0 : eMail.hashCode());
 		result = prime * result + (manageUsers ? 1231 : 1237);
-		result = prime * result + (readModule ? 1231 : 1237);
+		result = prime * result + (manageSystem ? 1231 : 1237);
 		return result;
 	}
 
@@ -185,14 +192,18 @@ public class User {
 		Password = password;
 	}
 
-	public void setReadModule(boolean readModule) {
-		this.readModule = readModule;
+	public void manageSystem(boolean manageSystem) {
+		this.manageSystem = manageSystem;
 	}
 
 	public void setVorname(String vorname) {
 		Vorname = vorname;
 	}
 
+	public void setRedaktion(Boolean redaktion) {
+		this.redaktion = redaktion;
+	}
+	
 	@Override
 	public String toString() {
 		return eMail;

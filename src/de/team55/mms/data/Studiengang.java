@@ -6,14 +6,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Studiengang {
 	private int id;
 	private String name;
+	private String abschluss;
 	
 	public Studiengang(){
 		
 	}
 
-	public Studiengang(int id, String name) {
+	public Studiengang(int id, String name, String abschluss) {
 		this.id = id;
-		this.name=name;
+		this.name = name;
+		this.abschluss = abschluss;
 	}
 
 	@Override
@@ -23,6 +25,10 @@ public class Studiengang {
 
 	public int getId() {
 		return id;
+	}
+	
+	public String getAbschluss(){
+		return abschluss;
 	}
 
 	@Override
@@ -50,6 +56,8 @@ public class Studiengang {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if(!abschluss.equals(other.abschluss))
+			return false;
 		return true;
 	}
 
@@ -63,6 +71,10 @@ public class Studiengang {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setAbschluss(String abschluss){
+		this.abschluss = abschluss;
 	}
 
 }

@@ -1,5 +1,7 @@
 package de.team55.mms.data;
 
+import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Studiengang")
@@ -7,7 +9,7 @@ public class Studiengang {
 	private int id;
 	private String name;
 	private String abschluss;
-	
+	private ArrayList<Modulhandbuch> modbuch = new ArrayList<Modulhandbuch>();
 	public Studiengang(){
 		
 	}
@@ -17,7 +19,14 @@ public class Studiengang {
 		this.name = name;
 		this.abschluss = abschluss;
 	}
-
+	
+	public Studiengang(int id, String name, String abschluss, ArrayList<Modulhandbuch> modbuch) {
+		this.id = id;
+		this.name = name;
+		this.abschluss = abschluss;
+		this.modbuch = modbuch;
+	}
+	
 	@Override
 	public String toString() {
 		return name;
@@ -75,6 +84,14 @@ public class Studiengang {
 	
 	public void setAbschluss(String abschluss){
 		this.abschluss = abschluss;
+	}
+
+	public ArrayList<Modulhandbuch> getModbuch() {
+		return modbuch;
+	}
+
+	public void setModbuch(ArrayList<Modulhandbuch> modbuch) {
+		this.modbuch = modbuch;
 	}
 
 }

@@ -19,14 +19,15 @@ public class Modul {
 	private boolean akzeptiert = false;
 	private boolean inbearbeitung = false;
 	private String user;
-	private ArrayList<Zuordnung> zuordnungen = new ArrayList<Zuordnung>();
+//	private ArrayList<Zuordnung> zuordnungen = new ArrayList<Zuordnung>();
 	private ArrayList<Feld> felder = new ArrayList<Feld>();
+//	private User owner;  soll man den User mituebergeben
 
 	public Modul(String name2, ArrayList<Zuordnung> zs, int jahrgang2,
 			ArrayList<Feld> felder, int version2, Date datum2,
 			boolean akzeptiert2, boolean inbearbeitung2, String user2) {
 		this.name = name2;
-		this.zuordnungen = zs;
+//		this.zuordnungen = zs;
 		this.jahrgang = jahrgang2;
 		this.felder = felder;
 		this.version = version2;
@@ -82,11 +83,11 @@ public class Modul {
 				return false;
 		} else if (!user.equals(other.user))
 			return false;
-		if (zuordnungen == null) {
-			if (other.zuordnungen != null)
-				return false;
-		} else if (!zuordnungen.equals(other.zuordnungen))
-			return false;
+//		if (zuordnungen == null) {
+//			if (other.zuordnungen != null)
+//				return false;
+//		} else if (!zuordnungen.equals(other.zuordnungen))
+//			return false;
 		return true;
 	} 
 
@@ -117,11 +118,11 @@ public class Modul {
 		return version;
 	}
 	
-	@XmlElementWrapper(name = "zuordnungen")
-	@XmlElement(name = "zuordnung")
-	public ArrayList<Zuordnung> getZuordnungen() {
-		return zuordnungen;
-	}
+//	@XmlElementWrapper(name = "zuordnungen")
+//	@XmlElement(name = "zuordnung")
+//	public ArrayList<Zuordnung> getZuordnungen() {
+//		return zuordnungen;
+//	}
 
 	@Override
 	public int hashCode() {
@@ -133,7 +134,7 @@ public class Modul {
 		result = prime * result + jahrgang;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + ((zuordnungen == null) ? 0 : zuordnungen.hashCode());
+//		result = prime * result + ((zuordnungen == null) ? 0 : zuordnungen.hashCode());
 		return result;
 	}
 
@@ -177,9 +178,9 @@ public class Modul {
 		this.version = version;
 	}
 
-	public void setZuordnungen(ArrayList<Zuordnung> zuordnungen) {
-		this.zuordnungen = zuordnungen;
-	}
+//	public void setZuordnungen(ArrayList<Zuordnung> zuordnungen) {
+//		this.zuordnungen = zuordnungen;
+//	}
 
 	@Override
 	public String toString() {

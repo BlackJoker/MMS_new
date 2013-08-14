@@ -1,19 +1,27 @@
 package de.team55.mms.data;
 
+import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Modulhandbuch")
 public class Modulhandbuch {
 
 	private String name;
+	private String prosa;
 	//private String studiengang;
 	private String jahrgang;
-	private int studiengang;
+	private int pruefungsordnungsjahr;
+	private int studiengangID;
 	private boolean akzeptiert;
+	private ArrayList<Fach> fach = new ArrayList<Fach>();
 	
-	public Modulhandbuch(String jahrgang, int studiengang) {
-		this.jahrgang=jahrgang;
-		this.studiengang=studiengang;
+	public Modulhandbuch(String jahrgang, String prosa, int studiengang, int pordnung, ArrayList<Fach> fach) {
+		this.jahrgang = jahrgang;
+		this.prosa = prosa;
+		this.studiengangID = studiengang;
+		this.pruefungsordnungsjahr = pordnung;
+		this.fach = fach;
 	}
 	
 	public Modulhandbuch(){
@@ -29,16 +37,16 @@ public class Modulhandbuch {
 	
 	@Override
 	public String toString() {
-		return name + ", " + studiengang
+		return name + ", " + studiengangID
 				+ ", " + jahrgang;
 	}
 
 	public int getStudiengang() {
-		return studiengang;
+		return studiengangID;
 	}
 
 	public void setStudiengang(int studiengang) {
-		this.studiengang = studiengang;
+		this.studiengangID = studiengang;
 	}
 
 	@Override
@@ -49,7 +57,7 @@ public class Modulhandbuch {
 		result = prime * result
 				+ ((jahrgang == null) ? 0 : jahrgang.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + studiengang;
+		result = prime * result + studiengangID;
 		return result;
 	}
 
@@ -74,7 +82,7 @@ public class Modulhandbuch {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (studiengang != other.studiengang)
+		if (studiengangID != other.studiengangID)
 			return false;
 		return true;
 	}
@@ -117,6 +125,30 @@ public class Modulhandbuch {
 
 	public void setJahrgang(String jahrgang) {
 		this.jahrgang = jahrgang;
+	}
+
+	public String getProsa() {
+		return prosa;
+	}
+
+	public void setProsa(String prosa) {
+		this.prosa = prosa;
+	}
+
+	public int getPruefungsordnungsjahr() {
+		return pruefungsordnungsjahr;
+	}
+
+	public void setPruefungsordnungsjahr(int pruefungsordnungsjahr) {
+		this.pruefungsordnungsjahr = pruefungsordnungsjahr;
+	}
+
+	public ArrayList<Fach> getFach() {
+		return fach;
+	}
+
+	public void setFach(ArrayList<Fach> fach) {
+		this.fach = fach;
 	}
 
 }

@@ -65,7 +65,7 @@ public class mainscreen {
 
 	// Variablen
 	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
-			false, true); // Gast
+			false, false, true); // Gast
 	String studtransferstring = ""; // uebergabe String fuer Tabellen -
 									// studiengang
 	String modbuchtransferstring = ""; // uebergabe String fuer Tabellen -
@@ -363,7 +363,7 @@ public class mainscreen {
 	 */
 	private void addToTable(User usr) {
 		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(), usr.getManageUsers(),
-				usr.getCreateModule(), usr.getAcceptModule(), usr.getReadModule() });
+				usr.getCreateModule(), usr.getAcceptModule(), usr.getmanageSystem() });
 	}
 
 	/**
@@ -572,7 +572,7 @@ public class mainscreen {
 					// Wenn bereits eingeloggt, ausloggen
 					else {
 						current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
-								false, true);
+								false, false, true);
 						if (serverConnection.isConnected() == SUCCES) {
 							checkRights();
 						}
@@ -1095,7 +1095,8 @@ public class mainscreen {
 					boolean r2 = (boolean) usrtbl.getValueAt(row, 5);
 					boolean r3 = (boolean) usrtbl.getValueAt(row, 6);
 					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
-					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4, true);
+					boolean r5 = (boolean) usrtbl.getValueAt(row, 8);
+					User alt = new User(vn, nn, t, em, null, r1, r2, r3, r4, r5, true);
 
 					// User an Bearbeiten dialog übergeben
 					userdialog dlg = new userdialog(frame, "User bearbeiten", alt, true, serverConnection);
@@ -1191,7 +1192,7 @@ public class mainscreen {
 			btnModulBearbeiten.setEnabled(true);
 			btnModulAkzeptieren.setEnabled(true);
 		}
-		if (current.getReadModule()) {
+		if (current.getmanageSystem()) {
 			btnVerwaltung.setEnabled(true);
 		}
 		if (current.getManageUsers()) {
@@ -1466,13 +1467,13 @@ public class mainscreen {
 		pnl_Z.add(label_MH);
 
 		// Zuordnugen vom Modul abfragen
-		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
-		typen = m.getZuordnungen();
-		for (int i = 0; i < typen.size(); i++) {
-			lm.addElement(typen.get(i));
-		}
-		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
-		pnl_Z.add(zlist);
+//		final DefaultListModel<Zuordnung> lm = new DefaultListModel<Zuordnung>();
+//		typen = m.getZuordnungen();
+//		for (int i = 0; i < typen.size(); i++) {
+//			lm.addElement(typen.get(i));
+//		}
+//		JList<Zuordnung> zlist = new JList<Zuordnung>(lm);
+//		pnl_Z.add(zlist);
 
 		pnl_mod_prev.add(pnl_Z);
 		pnl_mod_prev.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -1698,50 +1699,50 @@ public class mainscreen {
 		pnl_Z.add(label_MH);
 
 		// Liste ausgewählter Zuordnungen
-		final DefaultListModel<Zuordnung> lm_Z = new DefaultListModel<Zuordnung>();
-		typen = m.getZuordnungen();
-		for (int i = 0; i < typen.size(); i++) {
-			lm_Z.addElement(typen.get(i));
-		}
-		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm_Z);
-		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		final DefaultListModel<Zuordnung> lm_Z = new DefaultListModel<Zuordnung>();
+//		typen = m.getZuordnungen();
+//		for (int i = 0; i < typen.size(); i++) {
+//			lm_Z.addElement(typen.get(i));
+//		}
+//		final JList<Zuordnung> zlist = new JList<Zuordnung>(lm_Z);
+//		zlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//
+//		pnl_Z.add(zlist);
+//		typen = serverConnection.getZuordnungen();
+//		cbmodel_Z.removeAllElements();
+//		for (int i = 0; i < typen.size(); i++) {
+//			cbmodel_Z.addElement(typen.get(i));
+//		}
 
-		pnl_Z.add(zlist);
-		typen = serverConnection.getZuordnungen();
-		cbmodel_Z.removeAllElements();
-		for (int i = 0; i < typen.size(); i++) {
-			cbmodel_Z.addElement(typen.get(i));
-		}
-
-		// Zur auswahlstehende Zuordnungen
-		final JComboBox<Zuordnung> cb_Z = new JComboBox<Zuordnung>(cbmodel_Z);
-		cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width, 20));
-
-		pnl_Z.add(cb_Z);
-
-		// Zuordnung auswählen
-		JButton z_btn = new JButton("Zuordnung ausw\u00e4hlen");
-		z_btn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!lm_Z.contains(cb_Z.getSelectedItem()))
-					lm_Z.addElement((Zuordnung) cb_Z.getSelectedItem());
-			}
-		});
-		pnl_Z.add(z_btn);
-
-		// Zuordnung wieder entfernen
-		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
-		btnZuordnungEntfernen.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int i = zlist.getSelectedIndex();
-				if (i > -1) {
-					lm_Z.remove(i);
-				}
-			}
-		});
-		pnl_Z.add(btnZuordnungEntfernen);
+//		// Zur auswahlstehende Zuordnungen
+//		final JComboBox<Zuordnung> cb_Z = new JComboBox<Zuordnung>(cbmodel_Z);
+//		cb_Z.setMaximumSize(new Dimension(cb_Z.getMaximumSize().width, 20));
+//
+//		pnl_Z.add(cb_Z);
+//
+//		// Zuordnung auswählen
+//		JButton z_btn = new JButton("Zuordnung ausw\u00e4hlen");
+//		z_btn.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				if (!lm_Z.contains(cb_Z.getSelectedItem()))
+//					lm_Z.addElement((Zuordnung) cb_Z.getSelectedItem());
+//			}
+//		});
+//		pnl_Z.add(z_btn);
+//
+//		// Zuordnung wieder entfernen
+//		JButton btnZuordnungEntfernen = new JButton("Zuordnung entfernen");
+//		btnZuordnungEntfernen.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				int i = zlist.getSelectedIndex();
+//				if (i > -1) {
+//					lm_Z.remove(i);
+//				}
+//			}
+//		});
+//		pnl_Z.add(btnZuordnungEntfernen);
 
 		modul_panel_edit.add(pnl_Z);
 		modul_panel_edit.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -1829,9 +1830,9 @@ public class mainscreen {
 					jahrgang = 0;
 				}
 
-				for (int i = 0; i < lm_Z.getSize(); i++) {
-					zlist.add(lm_Z.getElementAt(i));
-				}
+//				for (int i = 0; i < lm_Z.getSize(); i++) {
+//					zlist.add(lm_Z.getElementAt(i));
+//				}
 
 				// Prüfe ob min. eine Zuordnung ausgewählt ist und ein korrekter
 				// Jahrgang ausgewählt wurde
@@ -2230,9 +2231,9 @@ public class mainscreen {
 		//Felder erstellen
 		modpanel.add(modulPanel("Name", zws.getName()));
 		modpanel.add(modulPanel("Jahrgang", modbuchtransferstring));
-		for (int i = 0; i < zws.getZuordnungen().size(); i++) {
-			modpanel.add(modulPanel("Zuordnung", zws.getZuordnungen().get(i).toString()));
-		}
+//		for (int i = 0; i < zws.getZuordnungen().size(); i++) {
+//			modpanel.add(modulPanel("Zuordnung", zws.getZuordnungen().get(i).toString()));
+//		}
 		for (int i = 0; i < zws.getFelder().size(); i++) {
 			modpanel.add(modulPanel(zws.getFelder().get(i).getLabel(), zws.getFelder().get(i).getValue()));
 		}
@@ -2282,7 +2283,7 @@ public class mainscreen {
 	 */
 	public static void noConnection() {
 		JOptionPane.showMessageDialog(frame, "Keine Verbindung zum Server!", "Verbindungsfehler", JOptionPane.ERROR_MESSAGE);
-		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false, false, true);
+		current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false, false, false, true);
 		btnModulEinreichen.setEnabled(false);
 		btnVerwaltung.setEnabled(false);
 		btnModulBearbeiten.setEnabled(false);

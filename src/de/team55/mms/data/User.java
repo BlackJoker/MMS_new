@@ -192,7 +192,7 @@ public class User {
 		Password = password;
 	}
 
-	public void manageSystem(boolean manageSystem) {
+	public void setmanageSystem(boolean manageSystem) {
 		this.manageSystem = manageSystem;
 	}
 

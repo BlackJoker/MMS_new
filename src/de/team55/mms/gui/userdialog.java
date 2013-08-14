@@ -52,7 +52,7 @@ public class userdialog extends JDialog {
 
 	private boolean adminedit = true;
 
-	private User usr = new User("", "", "", "", null, false, false, false, false, false);
+	private User usr = new User("", "", "", "", null, false, false, false, false, false, false);
 
 	/**
 	 * erzeugen des Dialoges
@@ -126,7 +126,7 @@ public class userdialog extends JDialog {
 		if (!textPass.getText().isEmpty() && !textPass.getText().equals(usr.getPassword()))
 			usr.setPassword(Hash.getMD5(textPass.getText()));
 		usr.seteMail(textMail.getText());
-		usr.setReadModule(cb_ModLes.isSelected());
+		usr.setmanageSystem(cb_ModLes.isSelected());
 		usr.setCreateModule(cb_ModErst.isSelected());
 		usr.setAcceptModule(cb_ModAnn.isSelected());
 		usr.setManageUsers(cb_BV.isSelected());
@@ -247,7 +247,7 @@ public class userdialog extends JDialog {
 		cb_ModAnn = new JCheckBox("Module Annehmen", usr.getAcceptModule());
 		pnl_checkboxes.add(cb_ModAnn);
 
-		cb_ModLes = new JCheckBox("Verwaltung", usr.getReadModule());
+		cb_ModLes = new JCheckBox("Verwaltung", usr.getmanageSystem());
 		pnl_checkboxes.add(cb_ModLes);
 
 		// Wenn der Benutzer nicht vom Admin bearbeitet wird

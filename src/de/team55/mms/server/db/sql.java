@@ -1222,4 +1222,58 @@ public class sql {
 		}
 		return ok;
 	}
+	
+	public ArrayList<Studiengang> getAllActiveData(){
+		ResultSet res = null;
+		Statement state = null;
+		ArrayList<Studiengang> alldata = new ArrayList<Studiengang>();
+		ArrayList<Modulhandbuch> mhb = new ArrayList<Modulhandbuch>();
+		if (connect() == true) {
+			try {
+				state = this.con.createStatement();
+				String sql = "SELECT * FROM studiengang;";
+				res = state.executeQuery(sql);
+				while (res.next()) {
+					int sid = res.getInt("id");
+					String abschluss = res.getString("abschluss");
+					String sname = res.getString("name");
+					alldata.add(new Studiengang(sid,sname,abschluss));
+				}
+				for(int i = 0; i < alldata.size(); i++){
+					sql = "SELECT po.jahr as pojahr, mhb.* "
+						+ "FROM pordnung as po JOIN studiengang as s on s.id = po.sID join modulhandbuch as mhb on po.id = mhb.poID "
+						+ "WHERE s.name = '"+alldata.get(i).getName()+"' and s.abschluss = '"+alldata.get(i).getAbschluss()+"';";
+					res = state.executeQuery(sql);
+					while (res.next()) {
+						int pojahr = res.getInt("pojahr");
+						int id = res.getInt("id");
+						String prosa = res.getString("prosa");
+						String semester = res.getString("semester");
+						String jahr = res.getString("jahr");
+						mhb.add(new Modulhandbuch(id, semester+" "+jahr, prosa, pojahr));
+					}
+					alldata.get(i).setModbuch(mhb);
+					mhb = new ArrayList<Modulhandbuch>();
+					
+				
+				}
+				
+				
+				res.close();
+				state.close();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		
+		return alldata;
+		
+	}
+	
+	
+	
+	
+	
 }

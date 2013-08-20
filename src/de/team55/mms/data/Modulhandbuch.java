@@ -7,18 +7,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Modulhandbuch")
 public class Modulhandbuch {
 
+	private int id;
 	private String name;
 	private String prosa;
 	private String jahrgang;
 	private int pruefungsordnungsjahr;
-	private int studiengangID;
 	private boolean akzeptiert;
 	private ArrayList<Fach> fach = new ArrayList<Fach>();
 	
-	public Modulhandbuch(String jahrgang, String prosa, int studiengang, int pordnung, ArrayList<Fach> fach) {
+	public Modulhandbuch(int id, String jahrgang, String prosa, int pordnung) {
+		this.id = id;
 		this.jahrgang = jahrgang;
 		this.prosa = prosa;
-		this.studiengangID = studiengang;
+		this.pruefungsordnungsjahr = pordnung;
+	}
+	
+	public Modulhandbuch(int id, String jahrgang, String prosa, int pordnung, ArrayList<Fach> fach) {
+		this.id = id;
+		this.jahrgang = jahrgang;
+		this.prosa = prosa;
 		this.pruefungsordnungsjahr = pordnung;
 		this.fach = fach;
 	}
@@ -36,17 +43,9 @@ public class Modulhandbuch {
 	
 	@Override
 	public String toString() {
-		return name + ", " + studiengangID
-				+ ", " + jahrgang;
+		return name + ", "  + jahrgang;
 	}
 
-	public int getStudiengang() {
-		return studiengangID;
-	}
-
-	public void setStudiengang(int studiengang) {
-		this.studiengangID = studiengang;
-	}
 
 	@Override
 	public int hashCode() {
@@ -56,7 +55,6 @@ public class Modulhandbuch {
 		result = prime * result
 				+ ((jahrgang == null) ? 0 : jahrgang.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + studiengangID;
 		return result;
 	}
 
@@ -80,8 +78,6 @@ public class Modulhandbuch {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (studiengangID != other.studiengangID)
 			return false;
 		return true;
 	}
@@ -148,6 +144,14 @@ public class Modulhandbuch {
 
 	public void setFach(ArrayList<Fach> fach) {
 		this.fach = fach;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

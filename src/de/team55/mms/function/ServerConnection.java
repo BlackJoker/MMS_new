@@ -43,7 +43,7 @@ import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
 import de.team55.mms.data.UserRelation;
 import de.team55.mms.data.UserUpdateContainer;
-import de.team55.mms.data.Zuordnung;
+//import de.team55.mms.data.Zuordnung;
 
 public class ServerConnection {
 
@@ -258,13 +258,13 @@ public class ServerConnection {
 	 * 
 	 * @return Liste mit Zuordnungen
 	 */
-	public ArrayList<Zuordnung> getZuordnungen() {
-		if (connect(email, password) == SUCCES) {
-			return webResource.path("zuordnung/getList").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Zuordnung>>() {
-			});
-		}
-		return null;
-	}
+//	public ArrayList<Zuordnung> getZuordnungen() {
+//		if (connect(email, password) == SUCCES) {
+//			return webResource.path("zuordnung/getList").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Zuordnung>>() {
+//			});
+//		}
+//		return null;
+//	}
 
 	/**
 	 * Gibt an, ob man mit dem Server verbunden ist
@@ -343,12 +343,12 @@ public class ServerConnection {
 	 *            die Zuordnung
 	 * @return Response Code
 	 */
-	public ClientResponse setZuordnung(Zuordnung z) {
-		if (connect(email, password) == SUCCES) {
-			return webResource.path("zuordnung/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, z);
-		}
-		return null;
-	}
+//	public ClientResponse setZuordnung(Zuordnung z) {
+//		if (connect(email, password) == SUCCES) {
+//			return webResource.path("zuordnung/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, z);
+//		}
+//		return null;
+//	}
 
 	/**
 	 * Frag alle User ab

@@ -55,40 +55,40 @@ public class sql {
 			// user table
 			Statement stmt = this.con.createStatement();
 
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (  " + "`modulname` varchar(255) NOT NULL,"
-					+ "`jahrgang` int(255) DEFAULT NULL,  " + "`Version` int(11) DEFAULT NULL,  " + "`Datum` date DEFAULT NULL,  "
-					+ "`akzeptiert` tinyint(1) DEFAULT '0',  " + "`inbearbeitung` tinyint(1) DEFAULT '0',  "
-					+ "`typid` int(11) NOT NULL,  " + "`user` varchar(255) DEFAULT NULL,  "
-					+ "UNIQUE KEY `name_jahrgang_Version_typid` (`modulname`,`jahrgang`,`Version`,`typid`))");
-			this.con.commit();
-
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" + "`id` int(11) NOT NULL," + "`userchange` tinyint(1) NOT NULL,"
-					+ "`modcreate` tinyint(1) NOT NULL," + "`modacc` tinyint(1) NOT NULL," + "`manage` tinyint(1) NOT NULL,"
-					+ "PRIMARY KEY (`id`))");
-			this.con.commit();
-
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" + "`id` int(10) NOT NULL AUTO_INCREMENT,"
-					+ "`name` varchar(255) NOT NULL," + "PRIMARY KEY (`id`)," + "UNIQUE KEY `Studiengang` (`name`))");
-			this.con.commit();
-
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `text` (" + "`name` varchar(255) NOT NULL," + "`version` int(11) NOT NULL,"
-					+ "`label` varchar(255) NOT NULL," + "`text` varchar(255) NOT NULL," + "`dezernat2` tinyint(1) NOT NULL DEFAULT '0')");
-			this.con.commit();
-
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` (" + "`tid` int(10) NOT NULL AUTO_INCREMENT,"
-					+ "`tName` varchar(250) NOT NULL," + "`sid` int(10) NOT NULL DEFAULT '0'," + "`abschluss` varchar(250) NOT NULL,"
-					+ "PRIMARY KEY (`tid`)," + "UNIQUE KEY `UNIQUE KEY` (`sid`,`tName`,`abschluss`))");
-			this.con.commit();
-
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" + "`id` int(11) NOT NULL AUTO_INCREMENT,"
-					+ "`email` varchar(255) NOT NULL," + "`titel` varchar(255) DEFAULT NULL," + "`vorname` varchar(255) DEFAULT NULL,"
-					+ "`namen` varchar(255) DEFAULT NULL, " + "`password` varchar(255) NOT NULL," + "`frei` tinyint(1) DEFAULT '0',"
-					+ "PRIMARY KEY (`id`)," + "UNIQUE KEY `email` (`email`))");
-			this.con.commit();
-
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user_relation` (" + "  `main_email` varchar(255) NOT NULL,"
-					+ "  `stellver_email` varchar(255) NOT NULL" + ");");
-			this.con.commit();
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `module` (  " + "`modulname` varchar(255) NOT NULL,"
+//					+ "`jahrgang` int(255) DEFAULT NULL,  " + "`Version` int(11) DEFAULT NULL,  " + "`Datum` date DEFAULT NULL,  "
+//					+ "`akzeptiert` tinyint(1) DEFAULT '0',  " + "`inbearbeitung` tinyint(1) DEFAULT '0',  "
+//					+ "`typid` int(11) NOT NULL,  " + "`user` varchar(255) DEFAULT NULL,  "
+//					+ "UNIQUE KEY `name_jahrgang_Version_typid` (`modulname`,`jahrgang`,`Version`,`typid`))");
+//			this.con.commit();
+//
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `rights` (" + "`id` int(11) NOT NULL," + "`userchange` tinyint(1) NOT NULL,"
+//					+ "`modcreate` tinyint(1) NOT NULL," + "`modacc` tinyint(1) NOT NULL," + "`manage` tinyint(1) NOT NULL,"
+//					+ "PRIMARY KEY (`id`))");
+//			this.con.commit();
+//
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `studiengang` (" + "`id` int(10) NOT NULL AUTO_INCREMENT,"
+//					+ "`name` varchar(255) NOT NULL," + "PRIMARY KEY (`id`)," + "UNIQUE KEY `Studiengang` (`name`))");
+//			this.con.commit();
+//
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `text` (" + "`name` varchar(255) NOT NULL," + "`version` int(11) NOT NULL,"
+//					+ "`label` varchar(255) NOT NULL," + "`text` varchar(255) NOT NULL," + "`dezernat2` tinyint(1) NOT NULL DEFAULT '0')");
+//			this.con.commit();
+//
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `typ` (" + "`tid` int(10) NOT NULL AUTO_INCREMENT,"
+//					+ "`tName` varchar(250) NOT NULL," + "`sid` int(10) NOT NULL DEFAULT '0'," + "`abschluss` varchar(250) NOT NULL,"
+//					+ "PRIMARY KEY (`tid`)," + "UNIQUE KEY `UNIQUE KEY` (`sid`,`tName`,`abschluss`))");
+//			this.con.commit();
+//
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user` (" + "`id` int(11) NOT NULL AUTO_INCREMENT,"
+//					+ "`email` varchar(255) NOT NULL," + "`titel` varchar(255) DEFAULT NULL," + "`vorname` varchar(255) DEFAULT NULL,"
+//					+ "`namen` varchar(255) DEFAULT NULL, " + "`password` varchar(255) NOT NULL," + "`frei` tinyint(1) DEFAULT '0',"
+//					+ "PRIMARY KEY (`id`)," + "UNIQUE KEY `email` (`email`))");
+//			this.con.commit();
+//
+//			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `user_relation` (" + "  `main_email` varchar(255) NOT NULL,"
+//					+ "  `stellver_email` varchar(255) NOT NULL" + ");");
+//			this.con.commit();
 
 			stmt.executeUpdate("INSERT IGNORE INTO `user` (`id`, `email`, `titel`, `vorname`, `namen`, `password`,`frei`) VALUES"
 					+ "	(1, 'admin@mms.de', NULL, 'Admin', 'Admin', 'a384b6463fc216a5f8ecb6670f86456a',1);");
@@ -377,7 +377,8 @@ public class sql {
 				while (res.next()) {
 					int id = res.getInt("id");
 					String name = res.getString("name");
-					sgs.add(new Studiengang(id, name));
+					String abschluss = res.getString("abschluss");
+					sgs.add(new Studiengang(id, name, abschluss));
 				}
 				res.close();
 				state.close();
@@ -414,7 +415,7 @@ public class sql {
 				if (res.first()) {
 					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
 							res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"),
-							res.getBoolean("manage"), res.getBoolean("frei"));
+							res.getBoolean("manage"), res.getBoolean("redaktion"), res.getBoolean("frei"));
 				}
 				res.close();
 				state.close();
@@ -448,24 +449,20 @@ public class sql {
 		int ok = FAILED;
 		PreparedStatement state = null;
 		if (connect() == true) {
-			ArrayList<Zuordnung> typen = neu.getZuordnungen();
 			String name = neu.getName();
 			int version = neu.getVersion();
 			ArrayList<Feld> felder = neu.getFelder();
-			String user = neu.getUser();
 			try {
-				for (int i = 0; i < typen.size(); i++) {
 					state = con
-							.prepareStatement("INSERT INTO module (modulname, jahrgang, version, datum, typid, user) VALUES(?,?,?,?,?,?)");
+							.prepareStatement("INSERT INTO module (modulname, version, datum, kommentar, status) VALUES(?,?,?,?,?,?)");
 					state.setString(1, name);
-					state.setInt(2, neu.getJahrgang());
-					state.setInt(3, version);
-					state.setDate(4, convertToSQLDate(neu.getDatum()));
-					state.setInt(5, typen.get(i).getId());
-					state.setString(6, user);
+					state.setInt(2, version);
+					state.setDate(3, convertToSQLDate(neu.getDatum()));
+					state.setString(4, neu.getKommentar());
+					state.setInt(5, neu.getStatus());
 					state.executeUpdate();
-				}
-				state = con.prepareStatement("INSERT INTO text (name,version, label, text, dezernat2) VALUES(?,?,?,?,?)");
+				
+				state = con.prepareStatement("INSERT INTO text (name, version, label, text, dezernat2) VALUES(?,?,?,?,?)");
 				for (int i = 0; i < felder.size(); i++) {
 					Feld f = felder.get(i);
 					state.setString(1, name);
@@ -494,13 +491,13 @@ public class sql {
 	 *            Name des Studienganges
 	 * @return efolgreich oder nicht
 	 */
-	public int setStudiengang(String name) {
+	public int setStudiengang(String name, String abschluss) {
 		Statement state = null;
 		int status = FAILED;
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				state.executeUpdate("INSERT INTO studiengang (name) VALUES ('" + name + "');");
+				state.executeUpdate("INSERT INTO studiengang (name, abschluss) VALUES ('" + name + "', '"+abschluss+ "');");
 				status = SUCCES;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
@@ -528,11 +525,11 @@ public class sql {
 			try {
 				state = con.createStatement();
 				res = state
-						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,frei FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email!='gast@gast.gast';");
+						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,redaktion FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email!='gast@gast.gast';");
 				while (res.next()) {
 					zws = new User(res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
 							res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"),
-							res.getBoolean("manage"), res.getBoolean("frei"));
+							res.getBoolean("manage"), res.getBoolean("redaktion"), res.getBoolean("frei"));
 					list.add(zws);
 				}
 				res.close();
@@ -585,12 +582,13 @@ public class sql {
 			}
 			if (id != -1) {
 				try {
-					state = con.prepareStatement("INSERT INTO rights (id,userchange,modcreate,modacc,manage) VALUES (?,?,?,?,?)");
+					state = con.prepareStatement("INSERT INTO rights (id,userchange,modcreate,modacc,manage, redaktion) VALUES (?,?,?,?,?,?)");
 					state.setInt(1, id);
 					state.setBoolean(2, user.getManageUsers());
 					state.setBoolean(3, user.getCreateModule());
 					state.setBoolean(4, user.getAcceptModule());
-					state.setBoolean(5, user.getReadModule());
+					state.setBoolean(5, user.getmanageSystem());
+					state.setBoolean(6, user.getRedaktion());
 					state.executeUpdate();
 					con.commit();
 					state.close();
@@ -670,12 +668,13 @@ public class sql {
 							state.close();
 						}
 
-						state = con.prepareStatement("UPDATE rights SET userchange = ?, modcreate =?, modacc =?, manage =? WHERE id = ?;");
+						state = con.prepareStatement("UPDATE rights SET userchange = ?, modcreate =?, modacc =?, manage =?, redaktion =? WHERE id = ?;");
 						state.setBoolean(1, user.getManageUsers());
 						state.setBoolean(2, user.getCreateModule());
 						state.setBoolean(3, user.getAcceptModule());
-						state.setBoolean(4, user.getReadModule());
-						state.setInt(5, id);
+						state.setBoolean(4, user.getmanageSystem());
+						state.setBoolean(5, user.getRedaktion());
+						state.setInt(6, id);
 						state.executeUpdate();
 						con.commit();
 						state.close();
@@ -711,14 +710,14 @@ public class sql {
 	 *            Name des Studienganges
 	 * @return ID des Studienganges
 	 */
-	public int getStudiengangID(String name) {
+	public int getStudiengangID(String name, String abschluss) {
 		ResultSet res = null;
 		Statement state = null;
 		int id = 0;
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				res = state.executeQuery("SELECT id FROM studiengang WHERE name ='" + name + "';");
+				res = state.executeQuery("SELECT id FROM studiengang WHERE name ='" + name + "'and abschluss = '" + abschluss + "';");
 				// verarbeitung der resultset
 				if (res.next()) {
 					id = res.getInt("id");

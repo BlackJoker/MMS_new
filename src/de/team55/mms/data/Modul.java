@@ -13,41 +13,25 @@ import javax.xml.bind.annotation.XmlType;
 public class Modul {
 
 	private String name;
-	private int jahrgang;
 	private int version;
 	private Date datum;
-	private boolean akzeptiert = false;
+	private int status;
 	private boolean inbearbeitung = false;
-	private String user;
-//	private ArrayList<Zuordnung> zuordnungen = new ArrayList<Zuordnung>();
+	private ArrayList<String> user = new ArrayList<String>();
 	private ArrayList<Feld> felder = new ArrayList<Feld>();
-//	private User owner;  soll man den User mituebergeben
+	private String kommentar;
 
-	public Modul(String name2, ArrayList<Zuordnung> zs, int jahrgang2,
+	public Modul(String name2,
 			ArrayList<Feld> felder, int version2, Date datum2,
-			boolean akzeptiert2, boolean inbearbeitung2, String user2) {
+			int status, boolean inbearbeitung2, ArrayList<String> user2, String kommentar) {
 		this.name = name2;
-//		this.zuordnungen = zs;
-		this.jahrgang = jahrgang2;
 		this.felder = felder;
 		this.version = version2;
 		this.datum = datum2;
-		this.akzeptiert = akzeptiert2;
+		this.setStatus(status);
 		this.inbearbeitung = inbearbeitung2;
 		this.user = user2;
-	}
-	
-	public Modul(String name2, int jahrgang2,
-			ArrayList<Feld> felder, int version2, Date datum2,
-			boolean akzeptiert2, boolean inbearbeitung2, String user2) {
-		this.name = name2;
-		this.jahrgang = jahrgang2;
-		this.felder = felder;
-		this.version = version2;
-		this.datum = datum2;
-		this.akzeptiert = akzeptiert2;
-		this.inbearbeitung = inbearbeitung2;
-		this.user = user2;
+		this.kommentar = kommentar;
 	}
 	
 	public Modul() {
@@ -62,16 +46,12 @@ public class Modul {
 		if (getClass() != obj.getClass())
 			return false;
 		Modul other = (Modul) obj;
-		if (akzeptiert != other.akzeptiert)
-			return false;
 		if (felder == null) {
 			if (other.felder != null)
 				return false;
 		} else if (!felder.equals(other.felder))
 			return false;
 		if (inbearbeitung != other.inbearbeitung)
-			return false;
-		if (jahrgang != other.jahrgang)
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -83,11 +63,6 @@ public class Modul {
 				return false;
 		} else if (!user.equals(other.user))
 			return false;
-//		if (zuordnungen == null) {
-//			if (other.zuordnungen != null)
-//				return false;
-//		} else if (!zuordnungen.equals(other.zuordnungen))
-//			return false;
 		return true;
 	} 
 
@@ -101,17 +76,10 @@ public class Modul {
 		return felder;
 	}
 
-	public int getJahrgang() {
-		return jahrgang;
-	}
 
 	@XmlElement(name = "modulname")
 	public String getName() {
 		return name;
-	}
-
-	public String getUser() {
-		return user;
 	}
 
 	public int getVersion() {
@@ -128,27 +96,20 @@ public class Modul {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (akzeptiert ? 1231 : 1237);
 		result = prime * result + ((felder == null) ? 0 : felder.hashCode());
 		result = prime * result + (inbearbeitung ? 1231 : 1237);
-		result = prime * result + jahrgang;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
-//		result = prime * result + ((zuordnungen == null) ? 0 : zuordnungen.hashCode());
 		return result;
 	}
 
-	public boolean isAkzeptiert() {
-		return akzeptiert;
-	}
+
 
 	public boolean isInbearbeitung() {
 		return inbearbeitung;
 	}
 
-	public void setAkzeptiert(boolean akzeptiert) {
-		this.akzeptiert = akzeptiert;
-	}
+
 
 	public void setDatum(Date datum) {
 		this.datum = datum;
@@ -162,29 +123,44 @@ public class Modul {
 		this.inbearbeitung = inbearbeitung;
 	}
 
-	public void setJahrgang(int jahrgang) {
-		this.jahrgang = jahrgang;
-	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
 	}
 
 	public void setVersion(int version) {
 		this.version = version;
 	}
 
-//	public void setZuordnungen(ArrayList<Zuordnung> zuordnungen) {
-//		this.zuordnungen = zuordnungen;
-//	}
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+ 
+	public ArrayList<String> getUser(){
+		return user;
+	}
+	
+	public void setUser(ArrayList<String> user){
+		this.user = user;
+	}
+	
 
 	@Override
 	public String toString() {
 		return name+", erstellt von: "+user;
 	}
 
+	public String getKommentar() {
+		return kommentar;
+	}
+
+	public void setKommentar(String kommentar) {
+		this.kommentar = kommentar;
+	}
+
+	
 }

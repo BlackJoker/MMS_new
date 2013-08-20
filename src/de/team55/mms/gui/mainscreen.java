@@ -957,8 +957,9 @@ public class mainscreen {
 								int version = serverConnection.getModulVersion(Name) + 1;
 
 								Date d = new Date();
-
-								Modul neu = new Modul(Name, zlist, jahrgang, felder, version, d, false, false, current.geteMail());
+								ArrayList<String> user = new ArrayList<String>();
+								user.add(current.geteMail());
+								Modul neu = new Modul(Name, felder, version, d, 0, false, user, "");
 								int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
 										"Bestätigung", JOptionPane.YES_NO_OPTION);
 								if (n == 0) {

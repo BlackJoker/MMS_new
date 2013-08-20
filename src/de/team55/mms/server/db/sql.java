@@ -19,7 +19,7 @@ import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.StellvertreterList;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
-import de.team55.mms.data.Zuordnung;
+//import de.team55.mms.data.Zuordnung;
 import de.team55.mms.gui.mainscreen;
 
 public class sql {
@@ -236,23 +236,21 @@ public class sql {
 		boolean akzeptiert = false;
 		boolean inbearbeitung = false;
 		ArrayList<Feld> felder = new ArrayList<Feld>();
-		ArrayList<Zuordnung> zs = new ArrayList<Zuordnung>();
 		String user = "";
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
-				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE Modulname = '" + name + "';";
+				String sql = "SELECT IFNULL(MAX(Version),0) as version FROM module WHERE modulname = '" + name + "';";
 				res = state.executeQuery(sql);
 				if (res.first()) {
 					version = res.getInt("version");
 				}
 
 				if (version != 0) {
-					sql = "SELECT *,m.modulname AS mname, s.name AS sname FROM module AS m JOIN typ AS t ON m.typid=t.tid JOIN studiengang AS s ON t.sid=s.id WHERE m.modulname = '"
+					sql = "SELECT * FROM module WHERE m.modulname = '"
 							+ name + "'AND version =" + version + ";";
 					res = state.executeQuery(sql);
 					if (res.first()) {
-						jahrgang = res.getInt("jahrgang");
 						datum = res.getDate("Datum");
 						akzeptiert = res.getBoolean("akzeptiert");
 						inbearbeitung = res.getBoolean("inbearbeitung");
@@ -289,7 +287,7 @@ public class sql {
 		}
 
 		if (version != 0) {
-			return new Modul(name, zs, jahrgang, felder, version, datum, akzeptiert, inbearbeitung, user);
+			return new Modul(name, felder, version, datum, akzeptiert, inbearbeitung, user);
 		} else
 			return new Modul();
 

@@ -9,7 +9,6 @@ public class Modulhandbuch {
 
 	private String name;
 	private String prosa;
-	//private String studiengang;
 	private String jahrgang;
 	private int pruefungsordnungsjahr;
 	private int studiengangID;

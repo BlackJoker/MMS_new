@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
+import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
@@ -1228,6 +1229,9 @@ public class sql {
 		Statement state = null;
 		ArrayList<Studiengang> alldata = new ArrayList<Studiengang>();
 		ArrayList<Modulhandbuch> mhb = new ArrayList<Modulhandbuch>();
+		ArrayList<Fach> fach = new ArrayList<Fach>();
+		ArrayList<Modul> modul = new ArrayList<Modul>();
+		ArrayList<Feld> felder = new ArrayList<Feld>();
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
@@ -1242,7 +1246,7 @@ public class sql {
 				for(int i = 0; i < alldata.size(); i++){
 					sql = "SELECT po.jahr as pojahr, mhb.* "
 						+ "FROM pordnung as po JOIN studiengang as s on s.id = po.sID join modulhandbuch as mhb on po.id = mhb.poID "
-						+ "WHERE s.name = '"+alldata.get(i).getName()+"' and s.abschluss = '"+alldata.get(i).getAbschluss()+"';";
+						+ "WHERE s.name = '"+alldata.get(i).getName()+"' and s.abschluss = '"+alldata.get(i).getAbschluss()+"' and mhb.akzeptiert = 1;";
 					res = state.executeQuery(sql);
 					while (res.next()) {
 						int pojahr = res.getInt("pojahr");
@@ -1252,9 +1256,41 @@ public class sql {
 						String jahr = res.getString("jahr");
 						mhb.add(new Modulhandbuch(id, semester+" "+jahr, prosa, pojahr));
 					}
+					for(int j = 0; j < mhb.size(); j++ ){
+						sql = "SELECT Name FROM Fach WHERE buchid = "+mhb.get(j).getId()+";";
+						res = state.executeQuery(sql);
+						while(res.next()){
+							String name = res.getString("Name");
+							fach.add(new Fach(name));
+						}
+						for(int k = 0; k < fach.size(); k++){
+							sql = "SELECT m.* "
+								+ "FROM module as m JOIN Fach as f on f.modID = m.modID"
+								+ "WHERE f.Name = '"+fach.get(k).getName()+"' AND buchid = "+mhb.get(j).getId()+" AND m.modbuchID = "+mhb.get(j).getId()+";";
+							res = state.executeQuery(sql);
+							while(res.next()){
+								String name = res.getString("modulname");
+								int version = res.getInt("Version");
+								modul.add(new Modul(name, version));
+							}
+							for(int l = 0; l < modul.size(); l++){
+								res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + modul.get(l).getName() + "' AND version = " + modul.get(l).getVersion()
+										+ ";");
+
+								while (res.next()) {
+									felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
+								}
+								modul.get(l).setFelder(felder);
+								felder = new ArrayList<Feld>();
+							}
+							fach.get(k).setModlist(modul);
+							modul = new ArrayList<Modul>();
+						}
+						mhb.get(j).setFach(fach);
+						fach = new ArrayList<Fach>();
+					}
 					alldata.get(i).setModbuch(mhb);
 					mhb = new ArrayList<Modulhandbuch>();
-					
 				
 				}
 				

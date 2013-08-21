@@ -12,6 +12,10 @@ public class Fach {
 	
 	public Fach(){}
 	
+	public Fach(String name){
+		this.name = name;
+	}
+	
 	public Fach(String name, ArrayList<Modul> modlist){
 		
 		this.name = name;

@@ -21,6 +21,25 @@ public class Modul {
 	private ArrayList<Feld> felder = new ArrayList<Feld>();
 	private String kommentar;
 
+	
+	public Modul(String name, int version){
+		this.name = name;
+		this.version = version;
+	}
+	
+	
+	public Modul(String name2,
+			int version2, Date datum2,
+			int status, boolean inbearbeitung2, ArrayList<String> user2, String kommentar) {
+		this.name = name2;
+		this.version = version2;
+		this.datum = datum2;
+		this.setStatus(status);
+		this.inbearbeitung = inbearbeitung2;
+		this.user = user2;
+		this.kommentar = kommentar;
+	}
+	
 	public Modul(String name2,
 			ArrayList<Feld> felder, int version2, Date datum2,
 			int status, boolean inbearbeitung2, ArrayList<String> user2, String kommentar) {

@@ -34,12 +34,6 @@ public class Modulhandbuch {
 		
 	}
 
-//	public Modulhandbuch(String name, String studiengang, String jahrgang) {
-//		this.name = name;
-//		this.studiengang = studiengang;
-//		this.jahrgang = jahrgang;
-//		this.akzeptiert = false;
-//	}
 	
 	@Override
 	public String toString() {

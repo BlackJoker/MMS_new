@@ -1143,7 +1143,7 @@ public class sql {
 	 * @param versionm Version des Moduls
 	 * @return Erfolgsstatus
 	 */
-	public int acceptModul(String name, int version) {
+	public int acceptModulHandBuch(String jahrgang, int version) {
 		int ok = FAILED;
 		PreparedStatement state = null;
 		if (connect() == true) {
@@ -1266,7 +1266,7 @@ public class sql {
 						for(int k = 0; k < fach.size(); k++){
 							sql = "SELECT m.* "
 								+ "FROM module as m JOIN Fach as f on f.modID = m.modID"
-								+ "WHERE f.Name = '"+fach.get(k).getName()+"' AND buchid = "+mhb.get(j).getId()+" AND m.modbuchID = "+mhb.get(j).getId()+";";
+								+ "WHERE f.Name = '"+fach.get(k).getName()+"' AND buchid = "+mhb.get(j).getId()+";";
 							res = state.executeQuery(sql);
 							while(res.next()){
 								String name = res.getString("modulname");

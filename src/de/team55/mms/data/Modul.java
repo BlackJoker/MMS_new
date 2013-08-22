@@ -41,6 +41,30 @@ public class Modul {
 	}
 	
 	public Modul(String name2,
+			int version2, Date datum2,
+			int status, boolean inbearbeitung2, String kommentar) {
+		this.name = name2;
+		this.version = version2;
+		this.datum = datum2;
+		this.setStatus(status);
+		this.inbearbeitung = inbearbeitung2;
+		this.kommentar = kommentar;
+	}
+	
+	public Modul(String name2,
+			ArrayList<Feld> felder, int version2, Date datum2,
+			int status, boolean inbearbeitung2, String kommentar) {
+		this.name = name2;
+		this.felder = felder;
+		this.version = version2;
+		this.datum = datum2;
+		this.setStatus(status);
+		this.inbearbeitung = inbearbeitung2;
+		this.kommentar = kommentar;
+	}
+	
+	
+	public Modul(String name2,
 			ArrayList<Feld> felder, int version2, Date datum2,
 			int status, boolean inbearbeitung2, ArrayList<String> user2, String kommentar) {
 		this.name = name2;

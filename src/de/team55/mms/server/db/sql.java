@@ -1337,6 +1337,102 @@ public class sql {
 		return alldata;
 
 	}
+	
+	/**
+	 * Gibt eine Liste von Modulen zurueck die ein User bearbeiten kann
+	 * @param email
+	 * @return Liste von Modulen 
+	 * 						die der User Bearbeiten darf
+	 */
+	
+	public ArrayList<Modul> getworkModul(String email){
+		ArrayList<Modul> module = new ArrayList<Modul>();
+		ArrayList<Feld> felder = new ArrayList<Feld>();
+		ResultSet res = null;
+		Statement state = null;
+		String sql;
+		if (connect() == true) {
+			try {
+				state = this.con.createStatement();
+				sql = "SELECT m.* " 
+						+ "FROM module as m JOIN mod_user_relation as rel on f.modID = m.modID JOIN user on user.id = rel.userID JOIN fach on m.modID = fach.modID JOIN modulhandbuch as mhb on fach.buchid = mhb.ID"
+						+ "WHERE user.email = '"+email+"' and mhb.akzeptiert = 0";
+						
+				res = state.executeQuery(sql);
+				while (res.next()) {
+					String name = res.getString("modulname");
+					int version = res.getInt("Version");
+					module.add(new Modul(name, version));
+				}
+				for (int i = 0; i < module.size(); i++) {
+					//get Felder
+					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + module.get(i).getName()
+							+ "' AND version = " + module.get(i).getVersion() + ";");
+
+					while (res.next()) {
+						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
+					}
+					module.get(i).setFelder(felder);
+					felder = new ArrayList<Feld>();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		
+		return module; 
+	}
+	
+	/**
+	 * gibt alle Module zurück die den Bearbeitungsstatus haben der als Paramenter uebergeben wird
+	 * soll verwendet werden damit Redaktion und Dekan die Modullisten bekommen
+	 * @param status
+	 * @return Modulliste
+	 */
+	
+	public ArrayList<Modul> getStatusModul(int status){
+		ArrayList<Modul> module = new ArrayList<Modul>();
+		ArrayList<Feld> felder = new ArrayList<Feld>();
+		ResultSet res = null;
+		Statement state = null;
+		String sql;
+		if (connect() == true) {
+			try {
+				state = this.con.createStatement();
+				sql = "SELECT m.* " 
+						+ "FROM module as m JOIN mod_user_relation as rel on f.modID = m.modID JOIN fach on m.modID = fach.modID JOIN modulhandbuch as mhb on fach.buchid = mhb.ID"
+						+ "WHERE mhb.akzeptiert = 0 and m.status = '"+status+"';";
+						
+				res = state.executeQuery(sql);
+				while (res.next()) {
+					String name = res.getString("modulname");
+					int version = res.getInt("Version");
+					module.add(new Modul(name, version));
+				}
+				for (int i = 0; i < module.size(); i++) {
+					//get Felder
+					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + module.get(i).getName()
+							+ "' AND version = " + module.get(i).getVersion() + ";");
+
+					while (res.next()) {
+						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
+					}
+					module.get(i).setFelder(felder);
+					felder = new ArrayList<Feld>();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		
+		return module; 
+	}
+	
+
+	
+	
 
 	/**
 	 * @param n Nachricht

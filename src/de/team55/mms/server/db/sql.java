@@ -490,7 +490,7 @@ public class sql {
 				state = con.prepareStatement("INSERT INTO module (modulname, version, datum, kommentar, status) VALUES(?,?,?,?,?,?)");
 				state.setString(1, name);
 				state.setInt(2, version);
-				state.setDate(3, convertToSQLDate(neu.getDatum()));
+				state.setDate(3, dateConverter(neu.getDatum()));
 				state.setString(4, neu.getKommentar());
 				state.setInt(5, neu.getStatus());
 				state.executeUpdate();
@@ -520,8 +520,8 @@ public class sql {
 	/**
 	 * Neuen Studiengang anlegen
 	 * 
-	 * @param name
-	 *            Name des Studienganges
+	 * @param name Name des Studienganges
+	 * @param abschluss Abschluss des Studienganges
 	 * @return efolgreich oder nicht
 	 */
 	public int setStudiengang(String name, String abschluss) {
@@ -725,17 +725,6 @@ public class sql {
 			disconnect();
 		}
 		return ok;
-	}
-
-	/**
-	 * Konvertiert ein java.util.Date zu einem java.sql.Date
-	 * 
-	 * @param utilDate
-	 *            Das java.util.Date
-	 * @return Datum als java.sql.Date
-	 */
-	private java.sql.Date convertToSQLDate(java.util.Date utilDate) {
-		return new java.sql.Date(utilDate.getTime());
 	}
 
 	/**
@@ -1060,6 +1049,7 @@ public class sql {
 				// TODO fehler fenster aufrufen
 				e.printStackTrace();
 			}
+			disconnect();
 		}
 		return module;
 	}
@@ -1195,8 +1185,7 @@ public class sql {
 	/**
 	 * Gibt aus, ob ein Modul in Bearbeitung ist
 	 * 
-	 * @param name
-	 *            Name des Moduls
+	 * @param name  Name des Moduls
 	 * @return status
 	 */
 	public boolean getModulInEdit(String name) {
@@ -1232,8 +1221,7 @@ public class sql {
 	/**
 	 * Setzt ein Modul als in Bearbeitung
 	 * 
-	 * @param m
-	 *            Das Modul
+	 * @param m Das Modul
 	 * @return Erfolgsstatus
 	 */
 	public int setInEdit(Modul m) {
@@ -1262,8 +1250,6 @@ public class sql {
 	 * gibt eine Liste aller freigegebenen Module aus von Studiengang -> PO -> Modbuch -> Fach -> Modul
 	 * @return Liste von Studiengaengen
 	 */
-	
-	
 	public ArrayList<Studiengang> getAllActiveData() {
 		ResultSet res = null;
 		Statement state = null;
@@ -1353,8 +1339,6 @@ public class sql {
 	}
 
 	/**
-	 * 
-	 * 
 	 * @param n Nachricht
 	 * @return Erfolgsstatus
 	 */
@@ -1363,7 +1347,6 @@ public class sql {
 		int status = FAILED;
 		if (connect() == true) {
 			try {
-
 				state = con
 						.prepareStatement("INSERT INTO nachrichten (absender_id, empfaenger_id, betreff, text, gelesen, datum) VALUES(?,?,?,?,?,?)");
 				state.setInt(1, n.getAbsenderID());

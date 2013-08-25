@@ -7,31 +7,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Stellvertreter")
 public class StellvertreterList {
 
-	private String eMail;
-	private ArrayList<String> usr;
-
-	public StellvertreterList() {
+	private String modul;
+	private ArrayList<User> usr;
+	
+	public StellvertreterList(){
 	}
-
-	public String geteMail() {
-		return eMail;
+	
+	public String getModul() {
+		return modul;
 	}
-
-	public void seteMail(String eMail) {
-		this.eMail = eMail;
+	public void setModul(String modul) {
+		this.modul = modul;
 	}
-
-	public ArrayList<String> getUsr() {
+	public ArrayList<User> getUsr() {
 		return usr;
 	}
-
-	public void setUsr(ArrayList<String> usr) {
+	public void setUsr(ArrayList<User> usr) {
 		this.usr = usr;
 	}
 
-	public StellvertreterList(String eMail, ArrayList<String> usr) {
-		this.eMail = eMail;
-		this.usr = usr;
-	}
+	
 
 }

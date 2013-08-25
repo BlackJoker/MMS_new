@@ -19,7 +19,7 @@ import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
 import de.team55.mms.data.UserRelation;
 import de.team55.mms.data.UserUpdateContainer;
-import de.team55.mms.data.Zuordnung;
+//import de.team55.mms.data.Zuordnung;
 import de.team55.mms.server.db.sql;
 
 @Path("")

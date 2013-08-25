@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 //
 @XmlRootElement(name = "User")
-@XmlType(propOrder = { "eMail", "titel", "vorname", "nachname", "password",
+@XmlType(propOrder = { "id", "eMail", "titel", "vorname", "nachname", "password",
 		"manageUsers", "acceptModule", "createModule", "manageSystem", "redaktion" ,"freigeschaltet"})
 public class User {
 	private String Vorname;
@@ -12,6 +12,28 @@ public class User {
 	private String eMail;
 	private String Password;
 	private String Titel;
+	private int id;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public boolean isManageSystem() {
+		return manageSystem;
+	}
+
+	public void setManageSystem(boolean manageSystem) {
+		this.manageSystem = manageSystem;
+	}
+
+	public void setRedaktion(boolean redaktion) {
+		this.redaktion = redaktion;
+	}
+
 	private boolean manageUsers;
 	private boolean manageSystem;
 	private boolean createModule;
@@ -42,10 +64,10 @@ public class User {
 		this.freigeschaltet=false;
 	}
 
-	public User(String Vorname, String Nachname, String Titel, String eMail,
+	public User(int id, String Vorname, String Nachname, String Titel, String eMail,
 			String Password, boolean manageUsers, boolean createModule,
 			boolean acceptModule, boolean manageSystem, boolean redaktion, boolean freigeschaltet) {
-
+		this.id=id;
 		this.Vorname = Vorname;
 		this.Nachname = Nachname;
 		this.Titel = Titel;

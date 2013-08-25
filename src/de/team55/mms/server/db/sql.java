@@ -470,6 +470,8 @@ public class sql {
 		return connected;
 	}
 
+	
+	//TODO erneuter check ob Module richtig
 	/**
 	 * Trägt ein Modul ein
 	 * 
@@ -549,8 +551,8 @@ public class sql {
 		User zws = null;
 		ResultSet res = null;
 		Statement state = null;
-		int i = 0;
-		int j = 0;
+//		int i = 0;
+//		int j = 0;
 		ArrayList<User> list = new ArrayList<User>();
 		if (connect() == true) {
 			try {
@@ -892,10 +894,13 @@ public class sql {
 	}
 
 	/**
-	 * Reicht eine Stellvertreter Liste ein
+	 * Reicht eine Modulverwalter Liste ein fuer ein bestimmtes Modul
 	 * 
-	 * @param sl
-	 *            Liste von Stellvertretern
+	 * @param userlis
+	 *            Liste von Verwalter
+	 *           
+	 * @param modul         
+	 *            ein bestimmtes Modul
 	 * @return Erfolgsstatus
 	 */
 	public int setStellvertreter(ArrayList<User> userlis, String modul) {
@@ -926,7 +931,7 @@ public class sql {
 	}
 
 	/**
-	 * Liefert eine Liste von Stellvertretern
+	 * Liefert eine Liste von Modulverwalter fuer ein bestimmtes Modul aus
 	 * 
 	 * @param modul
 	 *            modul name von dem man die Verwalter haben möchte
@@ -1005,7 +1010,7 @@ public class sql {
 	// }
 
 	/**
-	 * Gibt eine UserRelation aus
+	 * Gibt eine User Modul Relation aus aus
 	 * 
 	 * @param email
 	 *            e-Mail des Benutzers
@@ -1163,12 +1168,9 @@ public class sql {
 	}
 
 	/**
-	 * akzeptiert ein Modul
+	 * akzeptiert ein Modulhandbuch
 	 * 
-	 * @param name
-	 *            name des Moduls
-	 * @param versionm
-	 *            Version des Moduls
+	 * @param id des Modulhandbuchs
 	 * @return Erfolgsstatus
 	 */
 	public int acceptModulHandBuch(int id) {
@@ -1255,6 +1257,13 @@ public class sql {
 		return ok;
 	}
 
+	
+	/**
+	 * gibt eine Liste aller freigegebenen Module aus von Studiengang -> PO -> Modbuch -> Fach -> Modul
+	 * @return Liste von Studiengaengen
+	 */
+	
+	
 	public ArrayList<Studiengang> getAllActiveData() {
 		ResultSet res = null;
 		Statement state = null;
@@ -1266,6 +1275,7 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
+				//get Studiengang
 				String sql = "SELECT * FROM studiengang;";
 				res = state.executeQuery(sql);
 				while (res.next()) {
@@ -1275,6 +1285,7 @@ public class sql {
 					alldata.add(new Studiengang(sid, sname, abschluss));
 				}
 				for (int i = 0; i < alldata.size(); i++) {
+					//get modbuch mit PO
 					sql = "SELECT po.jahr as pojahr, mhb.* "
 							+ "FROM pordnung as po JOIN studiengang as s on s.id = po.sID join modulhandbuch as mhb on po.id = mhb.poID "
 							+ "WHERE s.name = '" + alldata.get(i).getName() + "' and s.abschluss = '" + alldata.get(i).getAbschluss()
@@ -1289,13 +1300,15 @@ public class sql {
 						mhb.add(new Modulhandbuch(id, semester + " " + jahr, prosa, pojahr));
 					}
 					for (int j = 0; j < mhb.size(); j++) {
+						//get Fach
 						sql = "SELECT Name FROM Fach WHERE buchid = " + mhb.get(j).getId() + ";";
 						res = state.executeQuery(sql);
 						while (res.next()) {
 							String name = res.getString("Name");
 							fach.add(new Fach(name));
 						}
-						for (int k = 0; k < fach.size(); k++) {
+						for (int k = 0; k < fach.size(); k++){ 
+						//get Module
 							sql = "SELECT m.* " + "FROM module as m JOIN Fach as f on f.modID = m.modID" + "WHERE f.Name = '"
 									+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
 							res = state.executeQuery(sql);
@@ -1305,6 +1318,7 @@ public class sql {
 								modul.add(new Modul(name, version));
 							}
 							for (int l = 0; l < modul.size(); l++) {
+								//get Felder
 								res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + modul.get(l).getName()
 										+ "' AND version = " + modul.get(l).getVersion() + ";");
 
@@ -1339,7 +1353,7 @@ public class sql {
 	}
 
 	/**
-	 * Reicht eine Stellvertreter Liste ein
+	 * 
 	 * 
 	 * @param n Nachricht
 	 * @return Erfolgsstatus

@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -43,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.transform.TransformerConfigurationException;
@@ -126,6 +128,60 @@ public class mainscreen {
 	private static JPanel mod = new JPanel();
 	private JTable tblmessages;
 
+	
+	//zum testen von drag and drop und für die Verwaltung der Modulverantwortlichen
+	DefaultTableModel userstuff = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
+		@SuppressWarnings("rawtypes")
+		Class[] columnTypes = new Class[] { String.class };
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+		public Class getColumnClass(int columnIndex) {
+			return columnTypes[columnIndex];
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
+	DefaultTableModel userstuff2 = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
+		@SuppressWarnings("rawtypes")
+		Class[] columnTypes = new Class[] { String.class };
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+		public Class getColumnClass(int columnIndex) {
+			return columnTypes[columnIndex];
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
+	DefaultTableModel modstuff = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
+		@SuppressWarnings("rawtypes")
+		Class[] columnTypes = new Class[] { String.class };
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Override
+		public Class getColumnClass(int columnIndex) {
+			return columnTypes[columnIndex];
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
+	
+	
+	
+	
+	
+	
+	
 	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
@@ -268,64 +324,65 @@ public class mainscreen {
 		pnl_zuordnungen.add(buttons1, BorderLayout.SOUTH);
 
 		// Anlegen einer neuen Zuordnung
-		JButton btnNeueZuordnung = new JButton("Neue Zuordnung");
+		JButton btnNeueZuordnung = new JButton("Modul Verwalter");
 		btnNeueZuordnung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-
-					JTextField neu_Name = new JTextField();
-					JTextField neu_Abschluss = new JTextField();
-					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
-
-					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
-
-					// Dialog anzeigen, in dem Daten eingetragen werden
-					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-					if (option == JOptionPane.OK_OPTION) {
-
-						// Teste, ob alle Felder ausgefüllt werden
-						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss.getText().isEmpty())
-								&& (option == JOptionPane.OK_OPTION)) {
-							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name, "Abschluss:",
-									neu_Abschluss, "Studiengang:", neu_sgbox };
-							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-						}
-						// Wenn ok gedrückt wird
-						if (option == JOptionPane.OK_OPTION) {
-							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
-							// Zuordnung z = new Zuordnung(neu_Name.getText(),
-							// s.getName(), s.getId(), neu_Abschluss.getText());
-
-							// Teste, ob Zuordnung schon vorhanden
-							boolean neu = true;
-							// for (int i = 0; i < typen.size(); i++) {
-							// if (typen.get(i).equals(z)) {
-							// neu = false;
-							// break;
-							// }
-							// }
-
-							// Falls neu, in Datenbank eintragen und Liste und
-							// Model aktualisieren
-							if (neu) {
-								// serverConnection.setZuordnung(z);
-								// typen = serverConnection.getZuordnungen();
-								// typenmodel.removeAllElements();
-								// for (int i = 0; i < typen.size(); i++) {
-								// typenmodel.addElement(typen.get(i));
-								// }
-							}
-							// Ansonsten Fehler ausgeben
-							else {
-								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler", JOptionPane.ERROR_MESSAGE);
-							}
-						}
-					}
-
-				} catch (NullPointerException np) {
-					// Bei abbruch nichts tuen
-				}
+//				try {
+				modverwaltung();
+					showCard("modverwaltung");
+//					JTextField neu_Name = new JTextField();
+//					JTextField neu_Abschluss = new JTextField();
+//					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
+//
+//					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
+//
+//					// Dialog anzeigen, in dem Daten eingetragen werden
+//					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+//					if (option == JOptionPane.OK_OPTION) {
+//
+//						// Teste, ob alle Felder ausgefüllt werden
+//						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss.getText().isEmpty())
+//								&& (option == JOptionPane.OK_OPTION)) {
+//							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name, "Abschluss:",
+//									neu_Abschluss, "Studiengang:", neu_sgbox };
+//							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+//						}
+//						// Wenn ok gedrückt wird
+//						if (option == JOptionPane.OK_OPTION) {
+//							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
+//							// Zuordnung z = new Zuordnung(neu_Name.getText(),
+//							// s.getName(), s.getId(), neu_Abschluss.getText());
+//
+//							// Teste, ob Zuordnung schon vorhanden
+//							boolean neu = true;
+//							// for (int i = 0; i < typen.size(); i++) {
+//							// if (typen.get(i).equals(z)) {
+//							// neu = false;
+//							// break;
+//							// }
+//							// }
+//
+//							// Falls neu, in Datenbank eintragen und Liste und
+//							// Model aktualisieren
+//							if (neu) {
+//								// serverConnection.setZuordnung(z);
+//								// typen = serverConnection.getZuordnungen();
+//								// typenmodel.removeAllElements();
+//								// for (int i = 0; i < typen.size(); i++) {
+//								// typenmodel.addElement(typen.get(i));
+//								// }
+//							}
+//							// Ansonsten Fehler ausgeben
+//							else {
+//								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler", JOptionPane.ERROR_MESSAGE);
+//							}
+//						}
+//					}
+//
+//				} catch (NullPointerException np) {
+//					// Bei abbruch nichts tuen
+//				}
 			}
 
 		});
@@ -361,6 +418,43 @@ public class mainscreen {
 //						 
 	}
 
+	private void modverwaltung(){
+		JPanel mv = new JPanel();
+		cards.add(mv,"modverwaltung");
+		JTable mods = new JTable();
+		JTable allverwalter = new JTable();
+		JTable verwalter = new JTable();
+		
+		ScrollPane scp_1 = new ScrollPane();
+		ScrollPane scp_2 = new ScrollPane();
+		ScrollPane scp_3 = new ScrollPane();
+		
+		scp_1.add(mods);
+		scp_2.add(allverwalter);
+		scp_3.add(verwalter);
+
+		mv.add(scp_1);
+		mv.add(scp_2);
+		mv.add(scp_3);
+		
+		allverwalter.setDragEnabled(true);
+		verwalter.setDragEnabled(true);
+				
+		mods.setModel(modstuff);
+		allverwalter.setModel(userstuff);
+		verwalter.setModel(userstuff2);
+		
+		userstuff.setRowCount(0);
+		userstuff2.setRowCount(0);
+		modstuff.setRowCount(0);
+		
+		
+	}
+	
+	
+	
+	
+	
 	/**
 	 * Erstellt den oberen Teil der GUI
 	 */

@@ -442,7 +442,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,frei FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email='"
+						.executeQuery("SELECT * FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email='"
 								+ email + "' and password='" + pass + "' AND frei=1;");
 				if (res.first()) {
 					zws = new User(res.getInt("id"), res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
@@ -621,7 +621,7 @@ public class sql {
 					state.setBoolean(2, user.getManageUsers());
 					state.setBoolean(3, user.getCreateModule());
 					state.setBoolean(4, user.getAcceptModule());
-					state.setBoolean(5, user.getmanageSystem());
+					state.setBoolean(5, user.getManageSystem());
 					state.setBoolean(6, user.getRedaktion());
 					state.executeUpdate();
 					con.commit();
@@ -707,7 +707,7 @@ public class sql {
 						state.setBoolean(1, user.getManageUsers());
 						state.setBoolean(2, user.getCreateModule());
 						state.setBoolean(3, user.getAcceptModule());
-						state.setBoolean(4, user.getmanageSystem());
+						state.setBoolean(4, user.getManageSystem());
 						state.setBoolean(5, user.getRedaktion());
 						state.setInt(6, id);
 						state.executeUpdate();

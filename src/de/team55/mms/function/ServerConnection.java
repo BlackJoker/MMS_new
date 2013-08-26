@@ -89,7 +89,6 @@ public class ServerConnection {
 		} catch (com.sun.jersey.api.client.ClientHandlerException e) {
 			connected = NOCONNECTION;
 		}
-		System.out.println(connected);
 		return connected;
 	}
 

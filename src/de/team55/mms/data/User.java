@@ -14,26 +14,6 @@ public class User {
 	private String Titel;
 	private int id;
 	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public boolean isManageSystem() {
-		return manageSystem;
-	}
-
-	public void setManageSystem(boolean manageSystem) {
-		this.manageSystem = manageSystem;
-	}
-
-	public void setRedaktion(boolean redaktion) {
-		this.redaktion = redaktion;
-	}
-
 	private boolean manageUsers;
 	private boolean manageSystem;
 	private boolean createModule;
@@ -41,15 +21,6 @@ public class User {
 	private boolean redaktion;
 	private boolean freigeschaltet=false;
 	
-	
-	public boolean isFreigeschaltet() {
-		return freigeschaltet;
-	}
-
-	public void setFreigeschaltet(boolean freigeschaltet) {
-		this.freigeschaltet = freigeschaltet;
-	}
-
 	public User() {
 		this.Vorname = "null";
 		this.Nachname = "null";
@@ -63,7 +34,7 @@ public class User {
 		this.redaktion = false;
 		this.freigeschaltet=false;
 	}
-
+	
 	public User(int id, String Vorname, String Nachname, String Titel, String eMail,
 			String Password, boolean manageUsers, boolean createModule,
 			boolean acceptModule, boolean manageSystem, boolean redaktion, boolean freigeschaltet) {
@@ -79,7 +50,6 @@ public class User {
 		this.acceptModule = acceptModule;
 		this.redaktion = redaktion;
 		this.freigeschaltet=freigeschaltet;
-
 	}
 	
 	public User(String Vorname, String Nachname, String Titel, String eMail,
@@ -96,17 +66,8 @@ public class User {
 		this.acceptModule = acceptModule;
 		this.redaktion = redaktion;
 		this.freigeschaltet=freigeschaltet;
-
 	}
-
-	public String getTitel() {
-		return Titel;
-	}
-
-	public void setTitel(String titel) {
-		Titel = titel;
-	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -151,11 +112,11 @@ public class User {
 			return false;
 		return true;
 	}
-
 	public boolean getAcceptModule() {
 		return acceptModule;
 	}
-
+	
+	
 	public boolean getCreateModule() {
 		return createModule;
 	}
@@ -164,6 +125,14 @@ public class User {
 		return eMail;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public boolean getManageSystem() {
+		return manageSystem;
+	}
+	
 	public boolean getManageUsers() {
 		return manageUsers;
 	}
@@ -177,16 +146,16 @@ public class User {
 		return Password;
 	}
 
-	public boolean getmanageSystem() {
-		return manageSystem;
+	public boolean getRedaktion(){
+		return redaktion;
+	}
+
+	public String getTitel() {
+		return Titel;
 	}
 
 	public String getVorname() {
 		return Vorname;
-	}
-	
-	public boolean getRedaktion(){
-		return redaktion;
 	}
 
 	@Override
@@ -207,6 +176,14 @@ public class User {
 		return result;
 	}
 
+	public boolean isFreigeschaltet() {
+		return freigeschaltet;
+	}
+
+	public boolean isManageSystem() {
+		return manageSystem;
+	}
+
 	public void setAcceptModule(boolean acceptModule) {
 		this.acceptModule = acceptModule;
 	}
@@ -217,6 +194,22 @@ public class User {
 
 	public void seteMail(String eMail) {
 		this.eMail = eMail;
+	}
+	
+	public void setFreigeschaltet(boolean freigeschaltet) {
+		this.freigeschaltet = freigeschaltet;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setmanageSystem(boolean manageSystem) {
+		this.manageSystem = manageSystem;
+	}
+
+	public void setManageSystem(boolean manageSystem) {
+		this.manageSystem = manageSystem;
 	}
 
 	public void setManageUsers(boolean manageUsers) {
@@ -231,16 +224,20 @@ public class User {
 		Password = password;
 	}
 
-	public void setmanageSystem(boolean manageSystem) {
-		this.manageSystem = manageSystem;
-	}
-
-	public void setVorname(String vorname) {
-		Vorname = vorname;
+	public void setRedaktion(boolean redaktion) {
+		this.redaktion = redaktion;
 	}
 
 	public void setRedaktion(Boolean redaktion) {
 		this.redaktion = redaktion;
+	}
+
+	public void setTitel(String titel) {
+		Titel = titel;
+	}
+
+	public void setVorname(String vorname) {
+		Vorname = vorname;
 	}
 	
 	@Override

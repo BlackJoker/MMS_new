@@ -340,15 +340,25 @@ public class mainscreen {
 			}
 		});
 		buttons1.add(btnZurck_1);
-
+		worklist = serverConnection.userload();
 		JLabel lblZuordnungen = new JLabel("Zuordnungen");
 		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
-
-		// JScrollPane scrollPane_1 = new JScrollPane(list1,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
-
+		
+//		JScrollPane scrollPane_1 = new JScrollPane(x,
+//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
+//		 
+//		JScrollPane scrollPane_2 = new JScrollPane(y,
+//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
+//				 
+//		JScrollPane scrollPane_3 = new JScrollPane(z,
+//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
+//						 
 	}
 
 	/**
@@ -529,14 +539,14 @@ public class mainscreen {
 				return columnEditables[column];
 			}
 		};
-
-		String von = "Mr. XYZ";
-		String an = "mich";
+		int x = -1;
+		int von = 1;
+		int an = 2;
 		String betreff = "Test";
 		Date datum = new Date();
 		boolean gelesen = true;
 		String nachricht = "folb fooooooooo";
-		Nachricht neu = new Nachricht(von, an, betreff, datum, gelesen, nachricht);
+		Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
 		nachrichten.add(neu);
 
 		refreshMessageTable();
@@ -567,13 +577,14 @@ public class mainscreen {
 		JButton btnNeu = new JButton("Neu");
 		btnNeu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String von = "Mr. X";
-				String an = "mich";
+				int x = -1;
+				int von = 1;
+				int an = 2;
 				String betreff = "Neuer Test";
 				Date datum = new Date();
 				boolean gelesen = false;
 				String nachricht = "foooooooooooo blabulb fooooooooo";
-				Nachricht neu = new Nachricht(von, an, betreff, datum, gelesen, nachricht);
+				Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
 				nachrichten.add(neu);
 				refreshMessageTable();
 			}

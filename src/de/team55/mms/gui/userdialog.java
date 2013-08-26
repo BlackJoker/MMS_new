@@ -338,8 +338,8 @@ public class userdialog extends JDialog {
 							usr.add(lm.get(i).geteMail());
 						}
 						// Liste mit Stellvertretern einreichen
-						StellvertreterList sl = new StellvertreterList(textMail.getText(), usr);
-						serverConnection.setStellvertreter(sl);
+//						StellvertreterList sl = new StellvertreterList(textMail.getText(), usr);
+//						serverConnection.setStellvertreter(sl);
 						hide();
 					} else
 						JOptionPane.showMessageDialog(owner, "Geben Sie eine gültige e-Mail-Adresse ein!", "Fehler",

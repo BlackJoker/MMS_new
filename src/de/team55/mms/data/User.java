@@ -81,6 +81,23 @@ public class User {
 		this.freigeschaltet=freigeschaltet;
 
 	}
+	
+	public User(String Vorname, String Nachname, String Titel, String eMail,
+			String Password, boolean manageUsers, boolean createModule,
+			boolean acceptModule, boolean manageSystem, boolean redaktion, boolean freigeschaltet) {
+		this.Vorname = Vorname;
+		this.Nachname = Nachname;
+		this.Titel = Titel;
+		this.eMail = eMail;
+		this.Password = Password;
+		this.manageUsers = manageUsers;
+		this.manageSystem = manageSystem;
+		this.createModule = createModule;
+		this.acceptModule = acceptModule;
+		this.redaktion = redaktion;
+		this.freigeschaltet=freigeschaltet;
+
+	}
 
 	public String getTitel() {
 		return Titel;

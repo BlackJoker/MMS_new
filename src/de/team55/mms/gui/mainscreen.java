@@ -47,6 +47,7 @@ import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -422,27 +423,46 @@ public class mainscreen {
 		JPanel mv = new JPanel();
 		cards.add(mv,"modverwaltung");
 		JTable mods = new JTable();
-		JTable allverwalter = new JTable();
-		JTable verwalter = new JTable();
+		JTable aktverwalter = new JTable();
+		JTable user = new JTable();	
+				
+		JPanel tabellen = new JPanel();
+		tabellen.setLayout(new GridLayout(2,3));
+		
+		JLabel modules = new JLabel("Module");
+		JLabel aktuelle = new JLabel("Aktuelle Verwalter");
+		JLabel rest = new JLabel("Userlist");
+
+				
+		mv.setLayout(new GridLayout(2,1));
+		mv.add(tabellen);
 		
 		ScrollPane scp_1 = new ScrollPane();
 		ScrollPane scp_2 = new ScrollPane();
 		ScrollPane scp_3 = new ScrollPane();
 		
 		scp_1.add(mods);
-		scp_2.add(allverwalter);
-		scp_3.add(verwalter);
-
-		mv.add(scp_1);
-		mv.add(scp_2);
-		mv.add(scp_3);
+		scp_2.add(aktverwalter);
+		scp_3.add(user);
 		
-		allverwalter.setDragEnabled(true);
-		verwalter.setDragEnabled(true);
+		tabellen.add(modules);
+		tabellen.add(aktuelle);
+		tabellen.add(rest);
+		
+		tabellen.add(scp_1);
+		tabellen.add(scp_2);
+		tabellen.add(scp_3);
+
+//		mv.add(scp_1);
+//		mv.add(scp_2);
+//		mv.add(scp_3);
+		
+		aktverwalter.setDragEnabled(true);
+		user.setDragEnabled(true);
 				
 		mods.setModel(modstuff);
-		allverwalter.setModel(userstuff);
-		verwalter.setModel(userstuff2);
+		aktverwalter.setModel(userstuff);
+		user.setModel(userstuff2);
 		
 		userstuff.setRowCount(0);
 		userstuff2.setRowCount(0);

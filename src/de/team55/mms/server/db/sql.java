@@ -1439,7 +1439,45 @@ public class sql {
 		return module; 
 	}
 	
-
+	/**
+	 * 
+	 */
+	
+	public int setDefaultFelder(Feld feld){
+		int status = FAILED;
+		
+		
+		
+		return status;
+	}
+	
+	/**
+	 * 
+	 */
+	
+	public ArrayList<Feld> getDefaultFelder(){
+		ArrayList<Feld> felder = new ArrayList<Feld>();
+		
+		
+		
+		return felder;
+	}
+	
+	
+	/**
+	 * 
+	 */
+	
+	public int deleteDefaultFelder(int id){
+		int status = FAILED;
+		
+		
+		
+		return status;
+	}
+	
+	
+	
 	
 	
 

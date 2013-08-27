@@ -1014,7 +1014,7 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = this.con
-						.prepareStatement("SELECT * FROM module AS m JOIN modul_user_relation AS rel ON m.modID = rel.modID JOIN user ON rel.userID = user.id WHERE user.email =? ;");
+						.prepareStatement("SELECT * FROM module AS m JOIN mod_user_relation AS rel ON m.modulname = rel.modname JOIN user ON rel.userID = user.id WHERE user.email =? ;");
 				state.setString(1, email);
 				res = state.executeQuery();
 				if (res.first()) {
@@ -1355,7 +1355,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				sql = "SELECT m.* " 
-						+ "FROM module as m JOIN mod_user_relation as rel on f.modID = m.modID JOIN user on user.id = rel.userID JOIN fach on m.modID = fach.modID JOIN modulhandbuch as mhb on fach.buchid = mhb.ID"
+						+ "FROM module as m JOIN mod_user_relation as rel on rel.modname = m.modulname JOIN user on user.id = rel.userID JOIN Fach on m.modID = Fach.modID JOIN modulhandbuch as mhb on Fach.buchid = mhb.ID"
 						+ "WHERE user.email = '"+email+"' and mhb.akzeptiert = 0";
 						
 				res = state.executeQuery(sql);

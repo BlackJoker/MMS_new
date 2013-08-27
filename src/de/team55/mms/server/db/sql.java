@@ -495,7 +495,7 @@ public class sql {
 				state.setInt(5, neu.getStatus());
 				state.executeUpdate();
 
-				state = con.prepareStatement("INSERT INTO text (name, version, label, text, dezernat2) VALUES(?,?,?,?,?)");
+				state = con.prepareStatement("INSERT INTO text (mid, version, label, text, dezernat2) VALUES((select modID from module where modulname =?),?,?,?,?)");
 				for (int i = 0; i < felder.size(); i++) {
 					Feld f = felder.get(i);
 					state.setString(1, name);
@@ -1036,8 +1036,8 @@ public class sql {
 					module.add(new Modul(name, version, datum, status, inbearbeitung, kommentar));
 				}
 				for (int i = 0; i < module.size(); i++) {
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + module.get(i).getName()
-							+ "' AND version = " + module.get(i).getVersion() + ";");
+					res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on m.modid = txt.mid WHERE m.modulname = '" + module.get(i).getName()
+							+ "' AND txt.version = " + module.get(i).getVersion() + ";");
 
 					while (res.next()) {
 						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
@@ -1090,7 +1090,7 @@ public class sql {
 						status = res.getInt("status");
 						kommentar = res.getString("kommentar");
 					}
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + name + "' AND version = " + version
+					res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on m.modid = txt.mid WHERE m.modulname = '" + name + "' AND txt.version = " + version
 							+ ";");
 
 					while (res.next()) {
@@ -1137,8 +1137,8 @@ public class sql {
 				}
 
 				for (int i = 0; i < module.size(); i++) {
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + module.get(i).getName()
-							+ "' AND version = " + module.get(i).getVersion() + ";");
+					res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on m.modid = txt.mid WHERE m.modulname = '" + module.get(i).getName()
+							+ "' AND txt.version = " + module.get(i).getVersion() + ";");
 
 					while (res.next()) {
 						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
@@ -1305,8 +1305,8 @@ public class sql {
 							}
 							for (int l = 0; l < modul.size(); l++) {
 								//get Felder
-								res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + modul.get(l).getName()
-										+ "' AND version = " + modul.get(l).getVersion() + ";");
+								res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on txt.mID = m.modID WHERE m.modulname = '" + modul.get(l).getName()
+										+ "' AND txt.version = " + modul.get(l).getVersion() + ";");
 
 								while (res.next()) {
 									felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
@@ -1366,8 +1366,8 @@ public class sql {
 				}
 				for (int i = 0; i < module.size(); i++) {
 					//get Felder
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + module.get(i).getName()
-							+ "' AND version = " + module.get(i).getVersion() + ";");
+					res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on txt.mid = m.modid WHERE m.modulname = '" + module.get(i).getName()
+							+ "' AND txt.version = " + module.get(i).getVersion() + ";");
 
 					while (res.next()) {
 						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));
@@ -1412,8 +1412,8 @@ public class sql {
 				}
 				for (int i = 0; i < module.size(); i++) {
 					//get Felder
-					res = state.executeQuery("SELECT label, text, dezernat2 FROM text WHERE name = '" + module.get(i).getName()
-							+ "' AND version = " + module.get(i).getVersion() + ";");
+					res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on txt.mid = m.modid WHERE m.modulname = '" + module.get(i).getName()
+							+ "' AND txt.version = " + module.get(i).getVersion() + ";");
 
 					while (res.next()) {
 						felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));

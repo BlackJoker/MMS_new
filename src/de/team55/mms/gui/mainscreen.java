@@ -71,8 +71,8 @@ public class mainscreen {
 	public ServerConnection serverConnection = new ServerConnection();
 
 	// Variablen
-	private static User current = new User(2, "gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false,
-			false, false, false, true); // Gast
+	private static User current = new User("gast", "gast", "", "gast@gast.gast", "d4061b1486fe2da19dd578e8d970f7eb", false, false, false,
+			false, false, true); // Gast
 	String studtransferstring = ""; // uebergabe String fuer Tabellen -
 									// studiengang
 	String modbuchtransferstring = ""; // uebergabe String fuer Tabellen -
@@ -81,7 +81,6 @@ public class mainscreen {
 										// modultyp
 	String modulselectionstring = ""; // ubergabe String des ausgewaehlten
 										// Moduls
-	private static boolean canReadMessages = false;
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
@@ -119,8 +118,6 @@ public class mainscreen {
 	private static JPanel cards = new JPanel();
 	private static JPanel modul_panel = new JPanel();
 	private static JPanel modul_panel_edit = new JPanel();
-	private static JPanel welcome = new JPanel();
-	private static JPanel pnl_content = new JPanel();
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
 	private static JButton btnVerwaltung = new JButton("Verwaltung");
 	private static JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
@@ -131,8 +128,8 @@ public class mainscreen {
 	private static JPanel mod = new JPanel();
 	private JTable tblmessages;
 
-	// zum testen von drag and drop und für die Verwaltung der
-	// Modulverantwortlichen
+	
+	//zum testen von drag and drop und für die Verwaltung der Modulverantwortlichen
 	DefaultTableModel userstuff = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
 		@SuppressWarnings("rawtypes")
 		Class[] columnTypes = new Class[] { String.class };
@@ -178,7 +175,13 @@ public class mainscreen {
 			return false;
 		}
 	};
-
+	
+	
+	
+	
+	
+	
+	
 	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
@@ -325,71 +328,61 @@ public class mainscreen {
 		btnNeueZuordnung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// try {
+//				try {
 				modverwaltung();
-				showCard("modverwaltung");
-				// JTextField neu_Name = new JTextField();
-				// JTextField neu_Abschluss = new JTextField();
-				// JComboBox<Studiengang> neu_sgbox = new
-				// JComboBox<Studiengang>(cbmodel);
-				//
-				// Object[] message = { "Name des Types:", neu_Name,
-				// "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
-				//
-				// // Dialog anzeigen, in dem Daten eingetragen werden
-				// int option = JOptionPane.showConfirmDialog(frame, message,
-				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-				// if (option == JOptionPane.OK_OPTION) {
-				//
-				// // Teste, ob alle Felder ausgefüllt werden
-				// while ((neu_Name.getText().isEmpty() ||
-				// (neu_sgbox.getSelectedItem() == null) ||
-				// neu_Abschluss.getText().isEmpty())
-				// && (option == JOptionPane.OK_OPTION)) {
-				// Object[] messageEmpty = {
-				// "Bitte alle Felder ausf\u00fcllen!", "Name des Types:",
-				// neu_Name, "Abschluss:",
-				// neu_Abschluss, "Studiengang:", neu_sgbox };
-				// option = JOptionPane.showConfirmDialog(frame, messageEmpty,
-				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-				// }
-				// // Wenn ok gedrückt wird
-				// if (option == JOptionPane.OK_OPTION) {
-				// Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
-				// // Zuordnung z = new Zuordnung(neu_Name.getText(),
-				// // s.getName(), s.getId(), neu_Abschluss.getText());
-				//
-				// // Teste, ob Zuordnung schon vorhanden
-				// boolean neu = true;
-				// // for (int i = 0; i < typen.size(); i++) {
-				// // if (typen.get(i).equals(z)) {
-				// // neu = false;
-				// // break;
-				// // }
-				// // }
-				//
-				// // Falls neu, in Datenbank eintragen und Liste und
-				// // Model aktualisieren
-				// if (neu) {
-				// // serverConnection.setZuordnung(z);
-				// // typen = serverConnection.getZuordnungen();
-				// // typenmodel.removeAllElements();
-				// // for (int i = 0; i < typen.size(); i++) {
-				// // typenmodel.addElement(typen.get(i));
-				// // }
-				// }
-				// // Ansonsten Fehler ausgeben
-				// else {
-				// JOptionPane.showMessageDialog(frame,
-				// "Zuordnung ist schon vorhanden", "Fehler",
-				// JOptionPane.ERROR_MESSAGE);
-				// }
-				// }
-				// }
-				//
-				// } catch (NullPointerException np) {
-				// // Bei abbruch nichts tuen
-				// }
+					showCard("modverwaltung");
+//					JTextField neu_Name = new JTextField();
+//					JTextField neu_Abschluss = new JTextField();
+//					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
+//
+//					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
+//
+//					// Dialog anzeigen, in dem Daten eingetragen werden
+//					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+//					if (option == JOptionPane.OK_OPTION) {
+//
+//						// Teste, ob alle Felder ausgefüllt werden
+//						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss.getText().isEmpty())
+//								&& (option == JOptionPane.OK_OPTION)) {
+//							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name, "Abschluss:",
+//									neu_Abschluss, "Studiengang:", neu_sgbox };
+//							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+//						}
+//						// Wenn ok gedrückt wird
+//						if (option == JOptionPane.OK_OPTION) {
+//							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
+//							// Zuordnung z = new Zuordnung(neu_Name.getText(),
+//							// s.getName(), s.getId(), neu_Abschluss.getText());
+//
+//							// Teste, ob Zuordnung schon vorhanden
+//							boolean neu = true;
+//							// for (int i = 0; i < typen.size(); i++) {
+//							// if (typen.get(i).equals(z)) {
+//							// neu = false;
+//							// break;
+//							// }
+//							// }
+//
+//							// Falls neu, in Datenbank eintragen und Liste und
+//							// Model aktualisieren
+//							if (neu) {
+//								// serverConnection.setZuordnung(z);
+//								// typen = serverConnection.getZuordnungen();
+//								// typenmodel.removeAllElements();
+//								// for (int i = 0; i < typen.size(); i++) {
+//								// typenmodel.addElement(typen.get(i));
+//								// }
+//							}
+//							// Ansonsten Fehler ausgeben
+//							else {
+//								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler", JOptionPane.ERROR_MESSAGE);
+//							}
+//						}
+//					}
+//
+//				} catch (NullPointerException np) {
+//					// Bei abbruch nichts tuen
+//				}
 			}
 
 		});
@@ -404,43 +397,38 @@ public class mainscreen {
 			}
 		});
 		buttons1.add(btnZurck_1);
-		current = serverConnection.login(current.geteMail(), current.getPassword());
-		if (current != null) {
-			worklist = serverConnection.userload();
-		} else {
-			noConnection();
-		}
+		worklist = serverConnection.userload();
 		JLabel lblZuordnungen = new JLabel("Zuordnungen");
 		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
-
-		// JScrollPane scrollPane_1 = new JScrollPane(x,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
-		//
-		// JScrollPane scrollPane_2 = new JScrollPane(y,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
-		//
-		// JScrollPane scrollPane_3 = new JScrollPane(z,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
-		//
+		
+//		JScrollPane scrollPane_1 = new JScrollPane(x,
+//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
+//		 
+//		JScrollPane scrollPane_2 = new JScrollPane(y,
+//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
+//				 
+//		JScrollPane scrollPane_3 = new JScrollPane(z,
+//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//		pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
+//						 
 	}
 
-	private void modverwaltung() {
+	private void modverwaltung(){
 		JPanel mv = new JPanel();
-		cards.add(mv, "modverwaltung");
+		cards.add(mv,"modverwaltung");
 		JTable mods = new JTable();
 		JTable allverwalter = new JTable();
 		JTable verwalter = new JTable();
-
+		
 		ScrollPane scp_1 = new ScrollPane();
 		ScrollPane scp_2 = new ScrollPane();
 		ScrollPane scp_3 = new ScrollPane();
-
+		
 		scp_1.add(mods);
 		scp_2.add(allverwalter);
 		scp_3.add(verwalter);
@@ -448,20 +436,25 @@ public class mainscreen {
 		mv.add(scp_1);
 		mv.add(scp_2);
 		mv.add(scp_3);
-
+		
 		allverwalter.setDragEnabled(true);
 		verwalter.setDragEnabled(true);
-
+				
 		mods.setModel(modstuff);
 		allverwalter.setModel(userstuff);
 		verwalter.setModel(userstuff2);
-
+		
 		userstuff.setRowCount(0);
 		userstuff2.setRowCount(0);
 		modstuff.setRowCount(0);
-
+		
+		
 	}
-
+	
+	
+	
+	
+	
 	/**
 	 * Erstellt den oberen Teil der GUI
 	 */
@@ -592,9 +585,12 @@ public class mainscreen {
 	 * 
 	 */
 	private void homecard() {
+		JPanel welcome = new JPanel();
 		cards.add(welcome, "welcome page");
 		welcome.setLayout(new BorderLayout(0, 0));
 
+		JPanel pnl_content = new JPanel();
+		welcome.add(pnl_content, BorderLayout.CENTER);
 		pnl_content.setLayout(new BoxLayout(pnl_content, BoxLayout.Y_AXIS));
 
 		JPanel pnl_day = new JPanel();
@@ -615,7 +611,7 @@ public class mainscreen {
 		pnl_messages.add(pnl_mestop);
 		pnl_mestop.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
-		JLabel lblNachrichten = new JLabel("Benachrichtigungen:");
+		JLabel lblNachrichten = new JLabel("Nachrichten:");
 		pnl_mestop.add(lblNachrichten);
 		lblNachrichten.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblNachrichten.setHorizontalAlignment(SwingConstants.CENTER);
@@ -644,12 +640,7 @@ public class mainscreen {
 		Date datum = new Date();
 		boolean gelesen = true;
 		String nachricht = "folb fooooooooo";
-		Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); // abgeändert
-																						// damit
-																						// das
-																						// prog
-																						// wieder
-																						// startet
+		Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
 		nachrichten.add(neu);
 
 		refreshMessageTable();
@@ -667,6 +658,7 @@ public class mainscreen {
 					Nachricht n = nachrichten.get(row);
 					nachrichten.remove(row);
 					n.setGelesen(true);
+					System.out.println(n);
 					nachrichten.add(n);
 					refreshMessageTable();
 				}
@@ -686,12 +678,7 @@ public class mainscreen {
 				Date datum = new Date();
 				boolean gelesen = false;
 				String nachricht = "foooooooooooo blabulb fooooooooo";
-				Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); // abgeändert
-																								// damit
-																								// das
-																								// prog
-																								// wieder
-																								// startet
+				Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
 				nachrichten.add(neu);
 				refreshMessageTable();
 			}
@@ -851,7 +838,6 @@ public class mainscreen {
 							btnLogin.setText("Ausloggen");
 							// Auf Rechte prüfen
 							checkRights();
-							showCard("welcome page");
 						}
 					}
 					// Wenn bereits eingeloggt, ausloggen
@@ -1308,9 +1294,6 @@ public class mainscreen {
 	 *            Die Bezeichnung der Card, zu der gewechselt werden soll
 	 */
 	private static void showCard(String card) {
-		if (canReadMessages) {
-			welcome.add(pnl_content, BorderLayout.CENTER);
-		}
 		((CardLayout) cards.getLayout()).show(cards, card);
 	}
 
@@ -1485,26 +1468,21 @@ public class mainscreen {
 		btnModulBearbeiten.setEnabled(false);
 		btnUserVerwaltung.setEnabled(false);
 		btnModulAkzeptieren.setEnabled(false);
-		welcome.remove(pnl_content);
 
 		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
 			btnModulBearbeiten.setEnabled(true);
-			canReadMessages = true;
 		}
 		if (current.getAcceptModule()) {
 			btnModulBearbeiten.setEnabled(true);
 			btnModulAkzeptieren.setEnabled(true);
-			canReadMessages = true;
 		}
 		if (current.getManageSystem()) {
 			btnVerwaltung.setEnabled(true);
-			canReadMessages = true;
 		}
 		if (current.getManageUsers()) {
 			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("User Verwaltung");
-			canReadMessages = true;
 		} else {
 			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("Account bearbeiten");

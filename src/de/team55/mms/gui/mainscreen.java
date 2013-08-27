@@ -398,7 +398,7 @@ public class mainscreen {
 			}
 		});
 		buttons1.add(btnZurck_1);
-		worklist = serverConnection.userload();
+//		worklist = serverConnection.userload();
 		JLabel lblZuordnungen = new JLabel("Zuordnungen");
 		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
 		

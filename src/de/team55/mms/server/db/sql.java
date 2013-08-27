@@ -505,6 +505,11 @@ public class sql {
 					state.setBoolean(5, f.isDezernat());
 					state.executeUpdate();
 				}
+				state = con.prepareStatement("UPDATE Fach SET modID=(SELECT modID FROM module WHERE modulname =? and version =?) WHERE modID = (SELECT modID FROM module where modulname =? and version =?);");
+				state.setString(1, name);
+				state.setInt(2, version);
+				state.setString(3, name);
+				state.setInt(4, (version-1));
 				state.close();
 				ok = SUCCES;
 			} catch (SQLException e) {
@@ -1250,7 +1255,7 @@ public class sql {
 	 * gibt eine Liste aller freigegebenen Module aus von Studiengang -> PO -> Modbuch -> Fach -> Modul
 	 * @return Liste von Studiengaengen
 	 */
-	public ArrayList<Studiengang> getAllActiveData() {
+	public ArrayList<Studiengang> getAllActiveData(Boolean b) {
 		ResultSet res = null;
 		Statement state = null;
 		ArrayList<Studiengang> alldata = new ArrayList<Studiengang>();
@@ -1258,6 +1263,7 @@ public class sql {
 		ArrayList<Fach> fach = new ArrayList<Fach>();
 		ArrayList<Modul> modul = new ArrayList<Modul>();
 		ArrayList<Feld> felder = new ArrayList<Feld>();
+		int akzeptiert = 0;
 		if (connect() == true) {
 			try {
 				state = this.con.createStatement();
@@ -1270,12 +1276,15 @@ public class sql {
 					String sname = res.getString("name");
 					alldata.add(new Studiengang(sid, sname, abschluss));
 				}
+				if(b){
+					akzeptiert = 1;
+				}
 				for (int i = 0; i < alldata.size(); i++) {
 					//get modbuch mit PO
 					sql = "SELECT po.jahr as pojahr, mhb.* "
 							+ "FROM pordnung as po JOIN studiengang as s on s.id = po.sID join modulhandbuch as mhb on po.id = mhb.poID "
 							+ "WHERE s.name = '" + alldata.get(i).getName() + "' and s.abschluss = '" + alldata.get(i).getAbschluss()
-							+ "' and mhb.akzeptiert = 1;";
+							+ "' and mhb.akzeptiert = "+akzeptiert+";";
 					res = state.executeQuery(sql);
 					while (res.next()) {
 						int pojahr = res.getInt("pojahr");

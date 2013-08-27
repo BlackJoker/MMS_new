@@ -151,7 +151,7 @@ public class MessageResource {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/modul/get/List/{accepted}")
-	public ArrayList<Modul> getModulList(@PathParam("accepted") String a) {
+	public ArrayList<Studiengang> getModulList(@PathParam("accepted") String a) {
 		boolean b = false;
 		if (a.equals("true")) {
 			b = true;
@@ -159,7 +159,7 @@ public class MessageResource {
 		} else {
 			System.out.println("Alle nicht akzeptierten Module abfragen");
 		}
-		return new sql().getModule(b);
+		return new sql().getAllActiveData(b);
 	}
 	
 	@GET
@@ -271,8 +271,8 @@ public class MessageResource {
 	@POST
 	@Path("/modul/post/accept/")
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response modulAccept(Modul m) {
-		int status = new sql().acceptModul(m.getName(), m.getVersion());
+	public Response modulAccept(Modulhandbuch m) {
+		int status = new sql().acceptModulHandBuch(m.getId());
 		if (status == 1) {
 			System.out.println("Modul " + m.getName() + " akzeptiert");
 			return Response.status(201).build();

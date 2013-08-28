@@ -1455,9 +1455,27 @@ public class sql {
 	 * 
 	 */
 	
+	@SuppressWarnings("null")
 	public ArrayList<Feld> getDefaultFelder(){
 		ArrayList<Feld> felder = new ArrayList<Feld>();
+		String sql;
+		ResultSet res = null;
+		Statement state = null;
 		
+		try {
+			state = this.con.createStatement();
+			sql = "SELECT * FROM default_felder where default = 1;";
+			res = state.executeQuery(sql);
+			while (res.next()) {
+				String label = res.getString("label");
+				Boolean dezernat = res.getBoolean("dezernat");
+				felder.add(new Feld(label, "", dezernat));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		return felder;
@@ -1470,7 +1488,18 @@ public class sql {
 	
 	public int deleteDefaultFelder(int id){
 		int status = FAILED;
+		String sql;
+		Statement state = null;
 		
+		try {
+			state = this.con.createStatement();
+			sql = "DELETE FROM default_felder WHERE id ="+id+";";
+			state.executeQuery(sql);
+			status = SUCCES;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		return status;

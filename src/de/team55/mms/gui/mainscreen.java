@@ -82,6 +82,7 @@ public class mainscreen {
 										// modultyp
 	String modulselectionstring = ""; // ubergabe String des ausgewaehlten
 										// Moduls
+	private boolean canReadMessages=false;
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
@@ -128,6 +129,8 @@ public class mainscreen {
 	private static JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
 	private static JPanel mod = new JPanel();
 	private JTable tblmessages;
+	private static JPanel welcome = new JPanel();
+	private static JPanel pnl_content = new JPanel();
 
 	
 	//zum testen von drag and drop und für die Verwaltung der Modulverantwortlichen
@@ -604,13 +607,11 @@ public class mainscreen {
 	 * Erstellt den Startbildschirm der GUI
 	 * 
 	 */
-	private void homecard() {
-		JPanel welcome = new JPanel();
+	private void homecard() {		
 		cards.add(welcome, "welcome page");
 		welcome.setLayout(new BorderLayout(0, 0));
 
-		JPanel pnl_content = new JPanel();
-		welcome.add(pnl_content, BorderLayout.CENTER);
+		
 		pnl_content.setLayout(new BoxLayout(pnl_content, BoxLayout.Y_AXIS));
 
 		JPanel pnl_day = new JPanel();
@@ -1488,26 +1489,36 @@ public class mainscreen {
 		btnModulBearbeiten.setEnabled(false);
 		btnUserVerwaltung.setEnabled(false);
 		btnModulAkzeptieren.setEnabled(false);
-
+		canReadMessages=false;
+		welcome.remove(pnl_content);
+		welcome.repaint();
 		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
 			btnModulBearbeiten.setEnabled(true);
+			canReadMessages=true;
 		}
 		if (current.getAcceptModule()) {
 			btnModulBearbeiten.setEnabled(true);
 			btnModulAkzeptieren.setEnabled(true);
+			canReadMessages=true;
 		}
 		if (current.getManageSystem()) {
 			btnVerwaltung.setEnabled(true);
+			canReadMessages=true;
 		}
 		if (current.getManageUsers()) {
 			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("User Verwaltung");
+			canReadMessages=true;
 		} else {
 			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("Account bearbeiten");
-			showCard("welcome page");
 		}
+		if(canReadMessages){
+			welcome.add(pnl_content, BorderLayout.CENTER);
+		}
+		System.out.println("checked:"+canReadMessages);
+		showCard("welcome page");
 	}
 
 	/**

@@ -38,6 +38,7 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
+import de.team55.mms.data.Nachricht;
 import de.team55.mms.data.StellvertreterList;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
@@ -608,5 +609,23 @@ public class ServerConnection {
 			return null;
 		}
 	}
+	
+	public ClientResponse setNachricht(Nachricht n) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("nachrichten/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, n);
+		} else {
+			return null;
+		}
+	}
+	
+	public ArrayList<Nachricht> getNachrichten(String mail) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("/nachrichten/get").path(mail)
+					.accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Nachricht>>() {
+					});
+		}
+		return null;
+	}
+	
 
 }

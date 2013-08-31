@@ -2,6 +2,9 @@ package de.team55.mms.data;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "Nachricht")
 public class Nachricht {
 
 	private int id;
@@ -13,15 +16,19 @@ public class Nachricht {
 	private String empfaenger;
 	private int empfaengerID;
 	private String nachricht;
-	
-	public Nachricht(int id,int absenderID, int empfaengerID, String betreff, Date datum, boolean gelesen, String nachricht) {
-		this.id=id;
+
+	public Nachricht(int id, int absenderID, int empfaengerID, String betreff, Date datum, boolean gelesen, String nachricht) {
+		this.id = id;
 		this.absenderID = absenderID;
-		this.empfaengerID=empfaengerID;
+		this.empfaengerID = empfaengerID;
 		this.betreff = betreff;
 		this.datum = datum;
 		this.gelesen = gelesen;
 		this.nachricht = nachricht;
+	}
+
+	public Nachricht() {
+
 	}
 
 	public int getId() {
@@ -33,11 +40,7 @@ public class Nachricht {
 	}
 
 	public String getAbsender() {
-		if (gelesen) {
-			return absender;
-		} else {
-			return "<html><b>" + absender + "</b></html>";
-		}
+		return absender;
 	}
 
 	public int getAbsenderID() {
@@ -45,23 +48,15 @@ public class Nachricht {
 	}
 
 	public String getBetreff() {
-		if (gelesen) {
-			return betreff;
-		} else {
-			return "<html><b>" + betreff + "</b></html>";
-		}
+		return betreff;
 	}
 
-	public Date getDatum(){
+	public Date getDatum() {
 		return datum;
 	}
 
 	public String getDatumString() {
-		if (gelesen) {
-			return datum.toString();
-		} else {
-			return "<html><b>" + datum.toString() + "</b></html>";
-		}
+		return datum.toString();
 	}
 
 	public String getEmpfaenger() {
@@ -92,10 +87,11 @@ public class Nachricht {
 	public void setBetreff(String betreff) {
 		this.betreff = betreff;
 	}
-	
+
 	public void setDatum(Date datum) {
 		this.datum = datum;
 	}
+
 	public void setEmpfaenger(String empfaenger) {
 		this.empfaenger = empfaenger;
 	}

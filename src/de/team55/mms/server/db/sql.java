@@ -886,6 +886,28 @@ public class sql {
 		}
 		return status;
 	}
+	
+	public int getUserID(String email){
+		ResultSet res = null;
+		Statement state = null;
+		int id=0;
+		if (connect() == true) {
+			try {
+				state = this.con.createStatement();
+				res = state.executeQuery("SELECT IFNULL(id,0) AS id FROM user WHERE email='" + email + "';");
+				if (res.first()) {
+					id=res.getInt("id");
+				}
+				res.close();
+				state.close();
+			} catch (SQLException e) {
+				// TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return id;
+	}
 
 	/**
 	 * Reicht eine Modulverwalter Liste ein fuer ein bestimmtes Modul
@@ -1549,9 +1571,10 @@ public class sql {
 				res = state.executeQuery();
 				while(res.next()){
 					Nachricht n = new Nachricht(res.getInt("id"),res.getInt("absender_id"),empfaenger_id,res.getString("betreff"),res.getDate("datum"),res.getBoolean("gelesen"),res.getString("text"));
-					n.setAbsender(res.getString("absender"));
-					n.setEmpfaenger(res.getString("empfaenger"));
+					n.setAbsender(res.getString("absender").trim());
+					n.setEmpfaenger(res.getString("empfaenger").trim());
 					liste.add(n);
+					System.out.println(n);
 				}
 				res.close();
 				state.close();

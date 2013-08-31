@@ -662,7 +662,7 @@ public class mainscreen {
 		boolean gelesen = true;
 		String nachricht = "folb fooooooooo";
 		Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
-		nachrichten.add(neu);
+		//nachrichten.add(neu);
 
 		refreshMessageTable();
 
@@ -768,7 +768,11 @@ public class mainscreen {
 	}
 
 	protected void addToTable(Nachricht neu) {
-		messagemodel.addRow(new Object[] { false, neu.getAbsender(), neu.getBetreff(), neu.getDatumString() });
+		if(neu.isGelesen()){
+			messagemodel.addRow(new Object[] { false, neu.getAbsender(), neu.getBetreff(), neu.getDatumString() });
+		} else {
+			messagemodel.addRow(new Object[] { false, "<html><b>" +neu.getAbsender()+ "</b></html>", "<html><b>" +neu.getBetreff()+ "</b></html>", "<html><b>" +neu.getDatumString()+ "</b></html>" });
+		}
 	}
 
 	/**
@@ -1516,8 +1520,9 @@ public class mainscreen {
 		}
 		if(canReadMessages){
 			welcome.add(pnl_content, BorderLayout.CENTER);
+			nachrichten = serverConnection.getNachrichten(current.geteMail());
+			refreshMessageTable();
 		}
-		System.out.println("checked:"+canReadMessages);
 		showCard("welcome page");
 	}
 

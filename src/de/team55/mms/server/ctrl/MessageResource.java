@@ -164,10 +164,25 @@ public class MessageResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	@Path("/nachrihten/get/{User}")
-	public ArrayList<Nachricht> getNachrichten(@PathParam("User") User u){
-		System.out.println("Nachrichten von "+u.geteMail()+" abgefragt");
-		return new sql().readMessages(u.getId());
+	@Path("/nachrichten/get/{User}")
+	public ArrayList<Nachricht> getNachrichten(@PathParam("User") String mail){
+		System.out.println("Nachrichten von "+mail+" abgefragt");
+		int id = new sql().getUserID(mail);
+		return new sql().readMessages(id);
+	}
+	
+	@POST
+	@Path("/nachrichten/post/")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setNachricht(Nachricht n) {
+		int status = new sql().createMessage(n);
+		if (status == 1) {
+			System.out.println("Nachricht von " + n.getAbsender() + " hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Nachricht von " + n.getAbsender() + " nicht hinzugefügt");
+			return Response.status(500).build();
+		}
 	}
 
 	/**

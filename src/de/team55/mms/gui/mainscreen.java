@@ -31,6 +31,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -608,6 +609,7 @@ public class mainscreen {
 	 * 
 	 */
 	private void homecard() {		
+		final ArrayList<String> dialogs = new ArrayList<String>();
 		cards.add(welcome, "welcome page");
 		welcome.setLayout(new BorderLayout(0, 0));
 
@@ -654,16 +656,6 @@ public class mainscreen {
 				return columnEditables[column];
 			}
 		};
-		int x = -1;
-		int von = 1;
-		int an = 2;
-		String betreff = "Test";
-		Date datum = new Date();
-		boolean gelesen = true;
-		String nachricht = "folb fooooooooo";
-		Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
-		//nachrichten.add(neu);
-
 		refreshMessageTable();
 
 		tblmessages = new JTable(messagemodel);
@@ -679,7 +671,12 @@ public class mainscreen {
 					Nachricht n = nachrichten.get(row);
 					nachrichten.remove(row);
 					n.setGelesen(true);
-					System.out.println(n);
+					if(!dialogs.contains(n.toString())){
+						dialogs.add(n.toString());
+						MessageDialog dialog = new MessageDialog(n);
+						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						dialog.setVisible(true);
+					}
 					nachrichten.add(n);
 					refreshMessageTable();
 				}

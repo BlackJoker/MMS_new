@@ -1465,9 +1465,23 @@ public class sql {
 	 * 
 	 */
 	
-	public int setDefaultFelder(Feld feld){
+	public int setDefaultFelder(ArrayList<Feld> felder){
 		int status = FAILED;
-		
+		PreparedStatement state = null;
+
+		try{
+			state = this.con.prepareStatement("TRUNCATE TABLE default_felder;");
+			state.executeUpdate();
+			for(int i = 0; i < felder.size(); i++){
+				state = this.con.prepareStatement("INSERT INTO default_felder VALUES (?, ?);");
+				state.setString(1, felder.get(i).getLabel());
+				state.setBoolean(2, felder.get(i).isDezernat());
+				state.executeUpdate();
+			}
+			status = SUCCES;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		
 		
 		return status;
@@ -1477,7 +1491,7 @@ public class sql {
 	 * 
 	 */
 	
-	@SuppressWarnings("null")
+
 	public ArrayList<Feld> getDefaultFelder(){
 		ArrayList<Feld> felder = new ArrayList<Feld>();
 		String sql;
@@ -1486,7 +1500,7 @@ public class sql {
 		
 		try {
 			state = this.con.createStatement();
-			sql = "SELECT * FROM default_felder where default = 1;";
+			sql = "SELECT * FROM default_felder;";
 			res = state.executeQuery(sql);
 			while (res.next()) {
 				String label = res.getString("label");
@@ -1508,24 +1522,24 @@ public class sql {
 	 * 
 	 */
 	
-	public int deleteDefaultFelder(int id){
-		int status = FAILED;
-		String sql;
-		Statement state = null;
-		
-		try {
-			state = this.con.createStatement();
-			sql = "DELETE FROM default_felder WHERE id ="+id+";";
-			state.executeQuery(sql);
-			status = SUCCES;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		return status;
-	}
+//	public int deleteDefaultFelder(int id){
+//		int status = FAILED;
+//		String sql;
+//		Statement state = null;
+//		
+//		try {
+//			state = this.con.createStatement();
+//			sql = "DELETE FROM default_felder WHERE id ="+id+";";
+//			state.executeQuery(sql);
+//			status = SUCCES;
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		return status;
+//	}
 	
 	
 	

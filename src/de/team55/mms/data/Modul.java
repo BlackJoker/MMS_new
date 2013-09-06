@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "Modul")
-@XmlType(propOrder = { "name", "version", "jahrgang", "user","inbearbeitung","akzeptiert", "datum","zuordnungen","felder" })
+@XmlType(propOrder = { "name", "version", "user","inbearbeitung", "datum", "status", "kommentar", "felder" })
 public class Modul {
 
 	private String name;

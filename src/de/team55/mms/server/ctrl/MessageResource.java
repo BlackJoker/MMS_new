@@ -211,14 +211,14 @@ public class MessageResource {
 	 *            Jahrgang des Moduls
 	 * @return Liste von Modulen
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	@Path("/modul/get/selectedModul/{studiengang}/{modultyp}/{modulhandbuch}")
-	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp,
-			@PathParam("modulhandbuch") String modulhandbuch) {
-		System.out.println("Ausgewählte Module abfragen");
-		return new sql().getselectedModul(studiengang, modultyp, modulhandbuch);
-	}
+//	@GET
+//	@Produces(MediaType.APPLICATION_XML)
+//	@Path("/modul/get/selectedModul/{studiengang}/{modultyp}/{modulhandbuch}")
+//	public ArrayList<Modul> getselectedModul(@PathParam("studiengang") String studiengang, @PathParam("modultyp") String modultyp,
+//			@PathParam("modulhandbuch") String modulhandbuch) {
+//		System.out.println("Ausgewählte Module abfragen");
+//		return new sql().getselectedModul(studiengang, modultyp, modulhandbuch);
+//	}
 
 	/**
 	 * Liefert eine Liste von Stellverteren

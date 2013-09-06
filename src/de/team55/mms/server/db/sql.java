@@ -961,7 +961,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				res = state
-						.executeQuery("SELECT * FROM mod_user_relation as rel JOIN module AS m ON rel.modID = m.modID JOIN user AS u ON rel.userID = u.ID JOIN rights as r on u.id = r.id WHERE m.name='"
+						.executeQuery("SELECT * FROM mod_user_relation as rel JOIN module AS m ON rel.modname = m.modulname JOIN user AS u ON rel.userID = u.ID JOIN rights as r on u.id = r.id WHERE m.modulname='"
 								+ modul + "';");
 				while (res.next()) {
 					stellv.add(new User(res.getInt("id"),res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),

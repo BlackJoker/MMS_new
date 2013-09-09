@@ -462,9 +462,12 @@ public class mainscreen {
 		ScrollPane scp_3 = new ScrollPane();
 
 		
-		scp_1.add(mods);
-		scp_2.add(aktverwalter);
-		scp_3.add(user);
+		scp_1.add(mods, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scp_2.add(aktverwalter, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scp_3.add(user, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				
 		tabellen.add(modules);
 		tabellen.add(aktuelle);
@@ -491,9 +494,10 @@ public class mainscreen {
 		userstuff2.setRowCount(0);
 		modstuff.setRowCount(0);
 		
+		//on construction
 		modstuff.addRow(new Object[] { "BLA" });
-		userstuff.addRow(new Object[] { "BLA1" });
-		userstuff2.addRow(new Object[] { "BLA2" });
+		userstuff.addRow(new Object[] { "BLA1","bla1-1","bla1-2" });
+		userstuff2.addRow(new Object[] { "BLA2","bla2-1","bla2-2" });
 		
 		save.addActionListener(new ActionListener() {
 			

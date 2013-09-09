@@ -328,9 +328,9 @@ public class ServerConnection {
 	 *            Name des Studienganges
 	 * @return Response Code
 	 */
-	public ClientResponse setStudiengang(String name) {
+	public ClientResponse setStudiengang(String name, String abschluss) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("studiengang/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, name);
+			return webResource.path("studiengang/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, new Studiengang(name,abschluss));
 		}
 		return null;
 

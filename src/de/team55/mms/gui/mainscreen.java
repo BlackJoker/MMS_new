@@ -165,7 +165,7 @@ public class mainscreen {
 			return false;
 		}
 	};
-	DefaultTableModel modstuff = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
+	DefaultTableModel modstuff = new DefaultTableModel(new Object[][] {}, new String[] { "Modulname" }) {
 		@SuppressWarnings("rawtypes")
 		Class[] columnTypes = new Class[] { String.class };
 
@@ -279,6 +279,13 @@ public class mainscreen {
 								"neuer Studiengang", JOptionPane.PLAIN_MESSAGE);
 					}
 
+					String abschluss = JOptionPane.showInputDialog(frame, "Abschluss des neuen Studiengangs:", "Abschluss",
+							JOptionPane.PLAIN_MESSAGE);
+
+					while (name.isEmpty()) {
+						name = JOptionPane.showInputDialog(frame, "Bitte g\u00fcltigen Abschluss des neuen Studiengangs eingeben:",
+								"Abschluss", JOptionPane.PLAIN_MESSAGE);
+					}
 					// Vorhanden Studieng‰nge aus der Datenbank abfragen
 					studienlist = serverConnection.getStudiengaenge();
 
@@ -295,7 +302,7 @@ public class mainscreen {
 					// eintragen
 					// Anschlieﬂend Liste und Modelle aktualisieren
 					if (neu) {
-						serverConnection.setStudiengang(name);
+						serverConnection.setStudiengang(name,abschluss);
 						studimodel.removeAllElements();
 						cbmodel.removeAllElements();
 						studienlist = serverConnection.getStudiengaenge();
@@ -429,9 +436,18 @@ public class mainscreen {
 		JTable mods = new JTable();
 		JTable aktverwalter = new JTable();
 		JTable user = new JTable();	
-				
+		
+		JPanel design = new JPanel();
+		design.setLayout(new GridLayout(2,1));
+		
+		JPanel buttons = new JPanel();
+		
+		
 		JPanel tabellen = new JPanel();
 		tabellen.setLayout(new GridLayout(2,3));
+		
+		design.add(tabellen);
+		design.add(buttons);
 		
 		JLabel modules = new JLabel("Module");
 		JLabel aktuelle = new JLabel("Aktuelle Verwalter");
@@ -444,11 +460,12 @@ public class mainscreen {
 		ScrollPane scp_1 = new ScrollPane();
 		ScrollPane scp_2 = new ScrollPane();
 		ScrollPane scp_3 = new ScrollPane();
+
 		
 		scp_1.add(mods);
 		scp_2.add(aktverwalter);
 		scp_3.add(user);
-		
+				
 		tabellen.add(modules);
 		tabellen.add(aktuelle);
 		tabellen.add(rest);
@@ -457,9 +474,11 @@ public class mainscreen {
 		tabellen.add(scp_2);
 		tabellen.add(scp_3);
 
-//		mv.add(scp_1);
-//		mv.add(scp_2);
-//		mv.add(scp_3);
+		JButton back = new JButton("Zur\u00FCck");
+		JButton save = new JButton("Speichern");
+		
+		buttons.add(back);
+		buttons.add(save);
 		
 		aktverwalter.setDragEnabled(true);
 		user.setDragEnabled(true);
@@ -472,6 +491,18 @@ public class mainscreen {
 		userstuff2.setRowCount(0);
 		modstuff.setRowCount(0);
 		
+		modstuff.addRow(new Object[] { "BLA" });
+		userstuff.addRow(new Object[] { "BLA1" });
+		userstuff2.addRow(new Object[] { "BLA2" });
+		
+		save.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				showCard("manage");
+			}
+		});
 		
 	}
 	
@@ -545,6 +576,14 @@ public class mainscreen {
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
 	}
+	
+	private void addToTable(String user, int i) {
+		if(i == 1)
+		userstuff.addRow(new Object[] { user });
+		if(i == 2)
+			userstuff2.addRow(new Object[] { user });
+	}
+
 
 	/**
 	 * Liefert ein Feld mit Label, TextArea und Checkbox

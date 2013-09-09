@@ -14,6 +14,11 @@ public class Studiengang {
 		
 	}
 
+	public Studiengang( String name, String abschluss) {
+		this.name = name;
+		this.abschluss = abschluss;
+	}
+	
 	public Studiengang(int id, String name, String abschluss) {
 		this.id = id;
 		this.name = name;

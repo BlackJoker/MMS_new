@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,6 +54,9 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import com.lowagie.text.DocumentException;
+import com.toedter.calendar.JDateChooser;
+
+
 
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
@@ -137,7 +141,7 @@ public class mainscreen {
 	//zum testen von drag and drop und für die Verwaltung der Modulverantwortlichen
 	DefaultTableModel userstuff = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
 		@SuppressWarnings("rawtypes")
-		Class[] columnTypes = new Class[] { String.class };
+		Class[] columnTypes = new Class[] { String.class, String.class, String.class };
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
@@ -152,7 +156,7 @@ public class mainscreen {
 	};
 	DefaultTableModel userstuff2 = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
 		@SuppressWarnings("rawtypes")
-		Class[] columnTypes = new Class[] { String.class };
+		Class[] columnTypes = new Class[] { String.class, String.class, String.class };
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
@@ -410,8 +414,32 @@ public class mainscreen {
 		});
 		buttons1.add(btnZurck_1);
 //		worklist = serverConnection.userload();
-		JLabel lblZuordnungen = new JLabel("Zuordnungen");
+		JLabel lblZuordnungen = new JLabel("Deadline");
 		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
+		
+		final JDateChooser calender = new JDateChooser();
+		pnl_zuordnungen.add(calender);
+		
+		JButton savedate = new JButton("Datum setzen");
+		buttons1.add(savedate);
+		JButton test = new JButton("test");
+		buttons1.add(test);
+		test.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				calender.setDate(serverConnection.getDate());
+			}
+		});
+		savedate.addActionListener(new ActionListener() {
+		String dateString;	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				serverConnection.savedate(calender.getDate());
+			}
+		});
 		
 //		JScrollPane scrollPane_1 = new JScrollPane(x,
 //		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -436,18 +464,16 @@ public class mainscreen {
 		JTable mods = new JTable();
 		JTable aktverwalter = new JTable();
 		JTable user = new JTable();	
+
+		mv.setLayout(new GridLayout(2, 1));
 		
-		JPanel design = new JPanel();
-		design.setLayout(new GridLayout(2,1));
 		
 		JPanel buttons = new JPanel();
 		
 		
 		JPanel tabellen = new JPanel();
-		tabellen.setLayout(new GridLayout(2,3));
+		tabellen.setLayout(new GridLayout(2,3,0,0));
 		
-		design.add(tabellen);
-		design.add(buttons);
 		
 		JLabel modules = new JLabel("Module");
 		JLabel aktuelle = new JLabel("Aktuelle Verwalter");
@@ -456,18 +482,15 @@ public class mainscreen {
 				
 		mv.setLayout(new GridLayout(2,1));
 		mv.add(tabellen);
+		mv.add(buttons);
 		
 		ScrollPane scp_1 = new ScrollPane();
 		ScrollPane scp_2 = new ScrollPane();
 		ScrollPane scp_3 = new ScrollPane();
-
 		
-		scp_1.add(mods, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scp_2.add(aktverwalter, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scp_3.add(user, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scp_1.add(mods);
+		scp_2.add(aktverwalter);
+		scp_3.add(user);
 				
 		tabellen.add(modules);
 		tabellen.add(aktuelle);
@@ -495,11 +518,16 @@ public class mainscreen {
 		modstuff.setRowCount(0);
 		
 		//on construction
-		modstuff.addRow(new Object[] { "BLA" });
-		userstuff.addRow(new Object[] { "BLA1","bla1-1","bla1-2" });
+		ArrayList<Modul> modstufflist = new ArrayList<Modul>();
+		ArrayList<User> alluser = new ArrayList<User>();
+		ArrayList<User> verwalter = new ArrayList<User>();
+		
+		
+		modstuff.addRow(new Object[] { "Modul1" });
+		userstuff.addRow(new Object[] { "","bla1-1","bla1-2" });
 		userstuff2.addRow(new Object[] { "BLA2","bla2-1","bla2-2" });
 		
-		save.addActionListener(new ActionListener() {
+		back.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -2668,6 +2696,18 @@ public class mainscreen {
 		btnUserVerwaltung.setEnabled(false);
 		btnLogin.setText("Einloggen");
 		showCard("welcome page");
+	}
+	
+	private Date getDateFromString(String dateString) {
+	        java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+	        Date date = null;
+			try {
+				date = df.parse(dateString);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        return date;
 	}
 
 }

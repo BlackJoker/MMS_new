@@ -1608,5 +1608,45 @@ public class sql {
 		return new Date(d.getTime());
 	}
 
+	public int setDate(Date date) {
+		PreparedStatement state = null;
+		int status = FAILED;
+		if (connect() == true) {
+			try {
+				state = this.con.prepareStatement("TRUNCATE TABLE stichtag;");
+				state.executeUpdate();
+				state = this.con.prepareStatement("INSERT INTO stichtag VALUES (?);");
+				state.setDate(1, (java.sql.Date) date);
+				state.executeUpdate();
+				state.close();
+				status = SUCCES;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return status;
+	}
+	
+	public Date getDate(){
+		PreparedStatement state = null;
+		ResultSet res = null;
+		Date date = null;
+		if (connect() == true) {
+			try {
+				state = this.con.prepareStatement("SELECT * FROM stichtag;");
+				res = state.executeQuery();
+				while(res.next()){
+					date = res.getDate("datum");
+				}
+				state.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return date;
+	}
+
 
 }

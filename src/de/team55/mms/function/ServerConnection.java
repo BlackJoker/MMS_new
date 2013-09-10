@@ -626,6 +626,21 @@ public class ServerConnection {
 		}
 		return null;
 	}
+
+	public ClientResponse savedate(Date date) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("/datum/set").type(MediaType.APPLICATION_XML).post(ClientResponse.class, date);
+		}
+		return null;
+	}
+	
+	public Date getDate() {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("/datum/get").accept(MediaType.APPLICATION_XML).get(new GenericType<Date>() {
+					});
+		}
+		return null;
+	}
 	
 
 }

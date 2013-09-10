@@ -1,6 +1,7 @@
 package de.team55.mms.server.ctrl;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -183,6 +184,29 @@ public class MessageResource {
 			System.out.println("Nachricht von " + n.getAbsender() + " nicht hinzugefügt");
 			return Response.status(500).build();
 		}
+	}
+	
+	@POST
+	@Path("/datum/set")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setDatum(Date date) {
+		int status = new sql().setDate(date);
+		if (status == 1) {
+			System.out.println("Deadline hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Deadline nicht hinzugefügt");
+			return Response.status(500).build();
+		}
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/datum/get")
+	public Date getDatum() {
+		System.out.println("Deadline abgefragt");
+		return new sql().getDate();
 	}
 
 	/**

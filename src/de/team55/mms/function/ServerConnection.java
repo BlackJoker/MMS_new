@@ -642,5 +642,13 @@ public class ServerConnection {
 		return null;
 	}
 	
+	public ArrayList<ArrayList<User>> getModulverwalter(String modname){
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("/modverwa/getall").path(modname).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<ArrayList<User>>>() {
+					});
+		}
+		return null;
+	
+	}
 
 }

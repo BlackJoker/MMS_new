@@ -186,28 +186,7 @@ public class MessageResource {
 		}
 	}
 	
-	@POST
-	@Path("/datum/set")
-	@Consumes(MediaType.APPLICATION_XML)
-	public Response setDatum(Date date) {
-		int status = new sql().setDate(date);
-		if (status == 1) {
-			System.out.println("Deadline hinzugefügt");
-			return Response.status(201).build();
-		} else {
-			System.out.println("Deadline nicht hinzugefügt");
-			return Response.status(500).build();
-		}
-	}
-	
-	
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	@Path("/datum/get")
-	public Date getDatum() {
-		System.out.println("Deadline abgefragt");
-		return new sql().getDate();
-	}
+
 
 	/**
 	 * Gibt die neuste Version eines Moduls aus
@@ -541,4 +520,39 @@ public class MessageResource {
 //		}
 //	}
 
+	
+	@POST
+	@Path("/datum/set")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setDatum(Date date) {
+		int status = new sql().setDate(date);
+		if (status == 1) {
+			System.out.println("Deadline hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Deadline nicht hinzugefügt");
+			return Response.status(500).build();
+		}
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/datum/get")
+	public Date getDatum() {
+		System.out.println("Deadline abgefragt");
+		return new sql().getDate();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/modverwa/getall/{modname}")
+	public ArrayList<ArrayList<User>> getModVerwa(@PathParam("modname") String modname) {
+		System.out.println("Modulverwalter des "+modname+" abgefragt");
+		return new sql().getVerwalterLis(modname);
+	}
+	
+	
+	
+	
 }

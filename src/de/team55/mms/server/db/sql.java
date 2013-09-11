@@ -1,5 +1,6 @@
 package de.team55.mms.server.db;
 
+import java.awt.List;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -1646,6 +1647,42 @@ public class sql {
 			disconnect();
 		}
 		return date;
+	}
+	
+	public ArrayList<ArrayList<User>> getVerwalterLis(String modname){
+		ArrayList<ArrayList<User>> lists = new ArrayList<ArrayList<User>>();
+		PreparedStatement state = null;
+		ResultSet res = null;
+		if(connect() == true){
+			try{
+				lists.add(new ArrayList<User>());
+				lists.add(new ArrayList<User>());
+				
+				state = this.con.prepareStatement("SELECT user.* From User where email not in (SELECT email FROM user join mod_user_relation on user.id = mod_user_relation.userID join module on module.modID = mod_user_relation.modid WHERE module.modulname =?);");
+				state.setString(1, modname);
+				res = state.executeQuery();
+				while(res.next()){
+					lists.get(0).add(new User(res.getInt("id"), res.getString("vorname"), res.getString("name"), res.getString("titel"), res.getString("email"), res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res.getBoolean("redaktion"), res.getBoolean("frei")));
+				}
+
+				state = this.con.prepareStatement("SELECT user.*, rights.* From User join rights on user.id = rights.id join mod_user_relation on user.id = mod_user_relation.userID join module on module.modID = mod_user_relation.modid WHERE module.modulname =?;");
+				state.setString(1, modname);
+				res = state.executeQuery();
+				while(res.next()){
+					lists.get(1).add(new User(res.getInt("id"), res.getString("vorname"), res.getString("name"), res.getString("titel"), res.getString("email"), res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res.getBoolean("redaktion"), res.getBoolean("frei")));
+				}
+				
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		
+		
+		
+		return lists;
 	}
 
 

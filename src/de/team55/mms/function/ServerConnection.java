@@ -650,5 +650,12 @@ public class ServerConnection {
 		return null;
 	
 	}
+	
+	public ArrayList<String> getallModulnames(){
+		if(connect(email, password) == SUCCES){
+			return webResource.path("/modnames/getall").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<String>>(){});
+		}
+		return null;
+	}
 
 }

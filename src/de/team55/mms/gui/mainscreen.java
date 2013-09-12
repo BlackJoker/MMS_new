@@ -521,7 +521,6 @@ public class mainscreen {
 		ArrayList<Modul> modstufflist = new ArrayList<Modul>();
 		ArrayList<User> alluser = new ArrayList<User>();
 		ArrayList<User> verwalter = new ArrayList<User>();
-
 		
 		modstuff.addRow(new Object[] { "Modul1" });
 		userstuff.addRow(new Object[] { "","bla1-1","bla1-2" });
@@ -1069,11 +1068,12 @@ public class mainscreen {
 				current = serverConnection.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					// Studiengänge und Zuordnungen abrufen
-					studmodel.setRowCount(0);
+//					studmodel.setRowCount(0);
 					studienlist = serverConnection.getStudiengaenge();
-					for (int i = 0; i < studienlist.size(); i++) {
-						addToTable(studienlist.get(i));
-					}
+//					for (int i = 0; i < studienlist.size(); i++) {
+//						addToTable(studienlist.get(i));
+//					}
+					//TODO something 
 					// typen = serverConnection.getZuordnungen();
 
 					// Zur Card wechseln
@@ -2696,18 +2696,6 @@ public class mainscreen {
 		btnUserVerwaltung.setEnabled(false);
 		btnLogin.setText("Einloggen");
 		showCard("welcome page");
-	}
-	
-	private Date getDateFromString(String dateString) {
-	        java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd");
-	        Date date = null;
-			try {
-				date = df.parse(dateString);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        return date;
 	}
 
 }

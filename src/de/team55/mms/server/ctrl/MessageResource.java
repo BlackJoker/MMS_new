@@ -552,6 +552,13 @@ public class MessageResource {
 		return new sql().getVerwalterLis(modname);
 	}
 	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/modnames/getall")
+	public ArrayList<String> getallModulnames() {
+		System.out.println("Modulnamen abgefragt");
+		return new sql().getallModulnames();
+	}
 	
 	
 	

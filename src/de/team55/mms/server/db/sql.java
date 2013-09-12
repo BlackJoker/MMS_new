@@ -1463,7 +1463,7 @@ public class sql {
 	}
 	
 	/**
-	 * 
+	 *  Default felder werden gespeichert
 	 */
 	
 	public int setDefaultFelder(ArrayList<Feld> felder){
@@ -1489,7 +1489,7 @@ public class sql {
 	}
 	
 	/**
-	 * 
+	 * Default Felder werden ausgegeben
 	 */
 	
 
@@ -1608,6 +1608,12 @@ public class sql {
 	public Date dateConverter(java.sql.Date d) {
 		return new Date(d.getTime());
 	}
+	
+	
+	/**
+	 * Deadline (Stichtags) Datum speichern
+	 * 
+	 * */
 
 	public int setDate(Date date) {
 		PreparedStatement state = null;
@@ -1629,6 +1635,11 @@ public class sql {
 		return status;
 	}
 	
+	/**
+	 * Deadline (Stichtags) Datum abfrage
+	 * 
+	 * */
+	
 	public Date getDate(){
 		PreparedStatement state = null;
 		ResultSet res = null;
@@ -1648,7 +1659,15 @@ public class sql {
 		}
 		return date;
 	}
-	
+	/**
+	 * gibt 2 Listen zurueck eine mit den Verwaltern des Moduls und eine andere Liste mit Usern ohne die aus der anderen Liste
+	 * 
+	 * 
+	 * Erste Liste: Liste der nicht Verwalter des bestimmten Moduls
+	 * 
+	 * Zweite Liste: Liste der Verwalter des bestimmten Moduls
+	 * 
+	 * */
 	public ArrayList<ArrayList<User>> getVerwalterLis(String modname){
 		ArrayList<ArrayList<User>> lists = new ArrayList<ArrayList<User>>();
 		PreparedStatement state = null;
@@ -1657,14 +1676,14 @@ public class sql {
 			try{
 				lists.add(new ArrayList<User>());
 				lists.add(new ArrayList<User>());
-				
+				//Liste der nicht Verwalter des Moduls
 				state = this.con.prepareStatement("SELECT user.* From User where email not in (SELECT email FROM user join mod_user_relation on user.id = mod_user_relation.userID join module on module.modID = mod_user_relation.modid WHERE module.modulname =?);");
 				state.setString(1, modname);
 				res = state.executeQuery();
 				while(res.next()){
 					lists.get(0).add(new User(res.getInt("id"), res.getString("vorname"), res.getString("name"), res.getString("titel"), res.getString("email"), res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res.getBoolean("redaktion"), res.getBoolean("frei")));
 				}
-
+				//Liste der Verwalter
 				state = this.con.prepareStatement("SELECT user.*, rights.* From User join rights on user.id = rights.id join mod_user_relation on user.id = mod_user_relation.userID join module on module.modID = mod_user_relation.modid WHERE module.modulname =?;");
 				state.setString(1, modname);
 				res = state.executeQuery();
@@ -1676,13 +1695,35 @@ public class sql {
 				e.printStackTrace();
 			}
 			
+		}		
+		
+		return lists;
+	}
+	
+	
+	/**
+	 * Fuer die Modulverwalter Liste werden nur die Modulnamen abgefragt
+	 * */
+	
+	public ArrayList<String> getallModulnames(){
+		ArrayList<String> give = new ArrayList<String>();
+		PreparedStatement state = null;
+		ResultSet res = null;
+		if(connect() == true){
+			try{
+				state = this.con.prepareStatement("Select modulname From module");
+				res = state.executeQuery();
+				while(res.next()){
+					give.add(res.getString("modulname"));
+				}
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
 		}
 		
 		
+		return give;
 		
-		
-		
-		return lists;
 	}
 
 

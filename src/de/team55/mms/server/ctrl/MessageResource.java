@@ -524,7 +524,9 @@ public class MessageResource {
 	@POST
 	@Path("/datum/set")
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response setDatum(Date date) {
+	public Response setDatum(String d) {
+		long l = Long.parseLong(d);
+		Date date = new Date(l);
 		int status = new sql().setDate(date);
 		if (status == 1) {
 			System.out.println("Deadline hinzugefügt");
@@ -539,9 +541,9 @@ public class MessageResource {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/datum/get")
-	public Date getDatum() {
+	public String getDatum() {
 		System.out.println("Deadline abgefragt");
-		return new sql().getDate();
+		return Long.toString(new sql().getDate().getTime());
 	}
 	
 	@GET

@@ -628,16 +628,18 @@ public class ServerConnection {
 	}
 
 	public ClientResponse savedate(Date date) {
+		String d = Long.toString(date.getTime());
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("/datum/set").type(MediaType.APPLICATION_XML).post(ClientResponse.class, date);
+			return webResource.path("/datum/set").type(MediaType.APPLICATION_XML).post(ClientResponse.class, d);
 		}
 		return null;
 	}
 	
 	public Date getDate() {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("/datum/get").accept(MediaType.APPLICATION_XML).get(new GenericType<Date>() {
-					});
+			String d = webResource.path("/datum/get").accept(MediaType.APPLICATION_XML).get(String.class);
+			long l = Long.parseLong(d);
+			return new Date(l);
 		}
 		return null;
 	}

@@ -437,7 +437,11 @@ public class mainscreen {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				try{
 				serverConnection.savedate(calender.getDate());
+				} catch(Exception ex){
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie ein gültiges Datum aus!", "Datenfehler", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		

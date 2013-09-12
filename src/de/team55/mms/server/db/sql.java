@@ -1622,8 +1622,8 @@ public class sql {
 			try {
 				state = this.con.prepareStatement("TRUNCATE TABLE stichtag;");
 				state.executeUpdate();
-				state = this.con.prepareStatement("INSERT INTO stichtag VALUES (?);");
-				state.setDate(1, (java.sql.Date) date);
+				state = this.con.prepareStatement("INSERT INTO stichtag(datum) VALUES (?);");
+				state.setDate(1, dateConverter(date));
 				state.executeUpdate();
 				state.close();
 				status = SUCCES;
@@ -1640,7 +1640,7 @@ public class sql {
 	 * 
 	 * */
 	
-	public Date getDate(){
+	public java.util.Date getDate(){
 		PreparedStatement state = null;
 		ResultSet res = null;
 		Date date = null;
@@ -1649,7 +1649,7 @@ public class sql {
 				state = this.con.prepareStatement("SELECT * FROM stichtag;");
 				res = state.executeQuery();
 				while(res.next()){
-					date = res.getDate("datum");
+					date = dateConverter(res.getDate("datum"));
 				}
 				state.close();
 			} catch (SQLException e) {

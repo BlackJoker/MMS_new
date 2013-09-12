@@ -847,6 +847,14 @@ public class mainscreen {
 	 * 
 	 */
 	private void leftscr() {
+		btnLogin.setToolTipText("Klicken Sie hier, um in das MMS einzuloggen.");
+		btnModulAkzeptieren.setToolTipText("Klicken Sie hier, um das ausgewählte Modul zu akzeptieren. Damit wird es freigegeben und in der Liste der aktuellen Module angezeigt.");
+		btnModulArchiv.setToolTipText("Klicken Sie hier, um das Archiv der aktuellen Module zu durchstöbern.");
+		btnModulBearbeiten.setToolTipText("Klicken Sie hier, um bereits vorhandene Module zu bearbeiten.");
+		btnModulEinreichen.setToolTipText("Klicken Sie hier, um das Modul einzureichen. Damit wird es der verantwortlichen Stelle vorgelegt. Das Modul wird erst nach der Bestätigung der verantwortlichen Stelle in der Liste der aktuellen Module angezeigt.");
+		btnUserVerwaltung.setToolTipText("Klicken Sie hier, um die Benutzerverwaltung aufzurufen. Hier können Sie neue Benutzer anlegen, deren Daten ändern und ihre Rechte im MMS festlegen.");
+		btnVerwaltung.setToolTipText("Klicken Sie hier, um die Verwaltung zu öffnen. Hier können Sie mögliche Studiengänge festlegen, für die es Modulhandbücher geben kann. Hier können Sie die Deadline für die Modulhandbücher aktualisieren.");
+		
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
 

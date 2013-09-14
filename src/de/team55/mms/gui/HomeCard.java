@@ -219,7 +219,6 @@ public class HomeCard extends JPanel {
 	}
 
 	public void refreshMessages() {
-		System.out.println(mail);
 		nachrichten = serverConnection.getNachrichten(mail);
 		refreshMessageTable();
 	}

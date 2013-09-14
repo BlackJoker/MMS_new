@@ -2445,7 +2445,7 @@ public class mainscreen {
 		modbuchmodel.setRowCount(0);
 		System.out.println(studienlist.get(0).getName());
 		System.out.println(studtransferstring);
-		System.out.println(studienlist.get(0).getModbuch().get(0).getId());
+		//System.out.println(studienlist.get(0).getModbuch().get(0).getId());
 		//modulhandlist = serverConnection.getModulhandbuch(studtransferstring);
 		for(int i = 0; i < studienlist.size(); i++){
 			if(studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)){

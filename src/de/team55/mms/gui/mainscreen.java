@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.AllPermission;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,7 @@ import javax.xml.transform.TransformerException;
 
 import com.lowagie.text.DocumentException;
 import com.toedter.calendar.JDateChooser;
+
 
 
 
@@ -1080,11 +1082,11 @@ public class mainscreen {
 				current = serverConnection.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					// Studiengänge und Zuordnungen abrufen
-//					studmodel.setRowCount(0);
+				studmodel.setRowCount(0);
 					studienlist = serverConnection.getStudiengaenge();
-//					for (int i = 0; i < studienlist.size(); i++) {
-//						addToTable(studienlist.get(i));
-//					}
+					for (int i = 0; i < studienlist.size(); i++) {
+						addToTable(studienlist.get(i));
+					}
 					//TODO something 
 					// typen = serverConnection.getZuordnungen();
 
@@ -2385,6 +2387,7 @@ public class mainscreen {
 					studtransferstring = (String) studtable.getValueAt(openrow, 0);
 					modhandshowCard();
 					showCard("modbuch show");
+					
 				}
 			}
 		});
@@ -2436,14 +2439,20 @@ public class mainscreen {
 				return false;
 			}
 		};
-
+		int zws = 0;
 		// Tabelle füllen
 		modbuchtable.setModel(modbuchmodel);
 		modbuchmodel.setRowCount(0);
 		modulhandlist = serverConnection.getModulhandbuch(studtransferstring);
+		for(int i = 0; i < studienlist.size(); i++){
+			if(studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)){
+				zws = i;
+				break;
+			}
+		}
 		for (int i = 0; i < modulhandlist.size(); i++) {
 
-			addToTable(modulhandlist.get(i));
+			addToTable(studienlist.get(zws).getModbuch().get(i));
 
 		}
 		modbuchtransferstring = "";

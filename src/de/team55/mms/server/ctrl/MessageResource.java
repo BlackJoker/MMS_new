@@ -252,7 +252,7 @@ public class MessageResource {
 	@Path("/studiengang/get/all")
 	public ArrayList<Studiengang> getStudiengaenge() {
 		System.out.println("Alle Studiengänge abgefragt");
-		return new sql().getStudiengaenge();
+		return new sql().getAllActiveData(true);
 	}
 
 	/**

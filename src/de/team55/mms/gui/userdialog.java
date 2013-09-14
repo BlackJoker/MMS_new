@@ -295,7 +295,7 @@ public class userdialog extends JDialog {
 
 			south.add(pnl_list, BorderLayout.NORTH);
 
-			ArrayList<User> userlist = serverConnection.userload();
+			ArrayList<User> userlist = serverConnection.userload("true");
 
 			DefaultComboBoxModel<User> cbmodel = new DefaultComboBoxModel<User>();
 			for (int i = 0; i < userlist.size(); i++) {

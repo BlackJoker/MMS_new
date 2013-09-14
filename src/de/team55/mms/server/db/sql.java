@@ -550,10 +550,11 @@ public class sql {
 
 	/**
 	 * Fragt alle User ab
+	 * @param b 
 	 * 
 	 * @return Liste von Usern
 	 */
-	public ArrayList<User> userload() {
+	public ArrayList<User> userload(boolean b) {
 		User zws = null;
 		ResultSet res = null;
 		Statement state = null;
@@ -564,7 +565,7 @@ public class sql {
 			try {
 				state = con.createStatement();
 				res = state
-						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,redaktion FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email!='gast@gast.gast';");
+						.executeQuery("SELECT u.*,userchange,modcreate,modacc,manage,redaktion FROM user AS u JOIN rights AS r ON u.id=r.id WHERE email!='gast@gast.gast' AND frei="+b+";");
 				while (res.next()) {
 					zws = new User(res.getInt("id"),res.getString("vorname"), res.getString("namen"), res.getString("titel"), res.getString("email"),
 							res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"),

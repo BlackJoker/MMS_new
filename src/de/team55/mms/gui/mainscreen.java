@@ -978,7 +978,7 @@ public class mainscreen {
 					tmodel.setRowCount(0);
 
 					// Tabelle mit neuen daten füllen
-					worklist = serverConnection.userload();
+					worklist = serverConnection.userload("true");
 					for (int i = 0; i < worklist.size(); i++) {
 						// Wenn der User noch nicht freigeschaltet wurde,
 						// zur Liste mit neuen Benutzern hinzufügen

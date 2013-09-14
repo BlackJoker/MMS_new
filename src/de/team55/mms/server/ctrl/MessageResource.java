@@ -34,10 +34,14 @@ public class MessageResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	@Path("/user/get/all")
-	public ArrayList<User> getAllUsers() {
+	@Path("/user/get/all/{ack}")
+	public ArrayList<User> getAllUsers(@PathParam("ack") String s) {
 		System.out.println("Userliste abgefragt");
-		return new sql().userload();
+		if(s.equals("true")){
+		return new sql().userload(true);
+		} else{
+			return new sql().userload(false);
+		}
 	}
 
 	/**

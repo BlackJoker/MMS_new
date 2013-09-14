@@ -355,9 +355,9 @@ public class ServerConnection {
 	 * 
 	 * @return eine Liste von Usern
 	 */
-	public ArrayList<User> userload() {
+	public ArrayList<User> userload(String s) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("user/get/all").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
+			return webResource.path("user/get/all").path(s).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
 			});
 		} else {
 			return null;

@@ -57,9 +57,6 @@ import javax.xml.transform.TransformerException;
 import com.lowagie.text.DocumentException;
 import com.toedter.calendar.JDateChooser;
 
-
-
-
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
@@ -89,7 +86,7 @@ public class mainscreen {
 										// modultyp
 	String modulselectionstring = ""; // ubergabe String des ausgewaehlten
 										// Moduls
-	private boolean canReadMessages=false;
+	private boolean canReadMessages = false;
 
 	// Listen
 	private ArrayList<User> worklist = null; // Liste mit Usern
@@ -105,7 +102,6 @@ public class mainscreen {
 	// Map der Dynamischen Buttons
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
-	private ArrayList<Nachricht> nachrichten = new ArrayList<Nachricht>();
 
 	// Modelle
 	private DefaultTableModel tmodel;
@@ -136,11 +132,10 @@ public class mainscreen {
 	private static JButton btnModulAkzeptieren = new JButton("Modul akzeptieren");
 	private static JPanel mod = new JPanel();
 	private JTable tblmessages;
-	private static JPanel welcome = new JPanel();
-	private static JPanel pnl_content = new JPanel();
+	private static HomeCard welcome;
 
-	
-	//zum testen von drag and drop und für die Verwaltung der Modulverantwortlichen
+	// zum testen von drag and drop und für die Verwaltung der
+	// Modulverantwortlichen
 	DefaultTableModel userstuff = new DefaultTableModel(new Object[][] {}, new String[] { "User-Email", "Vorname", "Nachname" }) {
 		@SuppressWarnings("rawtypes")
 		Class[] columnTypes = new Class[] { String.class, String.class, String.class };
@@ -186,13 +181,7 @@ public class mainscreen {
 			return false;
 		}
 	};
-	
-	
-	
-	
-	
-	
-	
+
 	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
@@ -308,7 +297,7 @@ public class mainscreen {
 					// eintragen
 					// Anschließend Liste und Modelle aktualisieren
 					if (neu) {
-						serverConnection.setStudiengang(name,abschluss);
+						serverConnection.setStudiengang(name, abschluss);
 						studimodel.removeAllElements();
 						cbmodel.removeAllElements();
 						studienlist = serverConnection.getStudiengaenge();
@@ -346,61 +335,71 @@ public class mainscreen {
 		btnNeueZuordnung.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				try {
+				// try {
 				modverwaltung();
-					showCard("modverwaltung");
-//					JTextField neu_Name = new JTextField();
-//					JTextField neu_Abschluss = new JTextField();
-//					JComboBox<Studiengang> neu_sgbox = new JComboBox<Studiengang>(cbmodel);
-//
-//					Object[] message = { "Name des Types:", neu_Name, "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
-//
-//					// Dialog anzeigen, in dem Daten eingetragen werden
-//					int option = JOptionPane.showConfirmDialog(frame, message, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-//					if (option == JOptionPane.OK_OPTION) {
-//
-//						// Teste, ob alle Felder ausgefüllt werden
-//						while ((neu_Name.getText().isEmpty() || (neu_sgbox.getSelectedItem() == null) || neu_Abschluss.getText().isEmpty())
-//								&& (option == JOptionPane.OK_OPTION)) {
-//							Object[] messageEmpty = { "Bitte alle Felder ausf\u00fcllen!", "Name des Types:", neu_Name, "Abschluss:",
-//									neu_Abschluss, "Studiengang:", neu_sgbox };
-//							option = JOptionPane.showConfirmDialog(frame, messageEmpty, "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-//						}
-//						// Wenn ok gedrückt wird
-//						if (option == JOptionPane.OK_OPTION) {
-//							Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
-//							// Zuordnung z = new Zuordnung(neu_Name.getText(),
-//							// s.getName(), s.getId(), neu_Abschluss.getText());
-//
-//							// Teste, ob Zuordnung schon vorhanden
-//							boolean neu = true;
-//							// for (int i = 0; i < typen.size(); i++) {
-//							// if (typen.get(i).equals(z)) {
-//							// neu = false;
-//							// break;
-//							// }
-//							// }
-//
-//							// Falls neu, in Datenbank eintragen und Liste und
-//							// Model aktualisieren
-//							if (neu) {
-//								// serverConnection.setZuordnung(z);
-//								// typen = serverConnection.getZuordnungen();
-//								// typenmodel.removeAllElements();
-//								// for (int i = 0; i < typen.size(); i++) {
-//								// typenmodel.addElement(typen.get(i));
-//								// }
-//							}
-//							// Ansonsten Fehler ausgeben
-//							else {
-//								JOptionPane.showMessageDialog(frame, "Zuordnung ist schon vorhanden", "Fehler", JOptionPane.ERROR_MESSAGE);
-//							}
-//						}
-//					}
-//
-//				} catch (NullPointerException np) {
-//					// Bei abbruch nichts tuen
-//				}
+				showCard("modverwaltung");
+				// JTextField neu_Name = new JTextField();
+				// JTextField neu_Abschluss = new JTextField();
+				// JComboBox<Studiengang> neu_sgbox = new
+				// JComboBox<Studiengang>(cbmodel);
+				//
+				// Object[] message = { "Name des Types:", neu_Name,
+				// "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
+				//
+				// // Dialog anzeigen, in dem Daten eingetragen werden
+				// int option = JOptionPane.showConfirmDialog(frame, message,
+				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+				// if (option == JOptionPane.OK_OPTION) {
+				//
+				// // Teste, ob alle Felder ausgefüllt werden
+				// while ((neu_Name.getText().isEmpty() ||
+				// (neu_sgbox.getSelectedItem() == null) ||
+				// neu_Abschluss.getText().isEmpty())
+				// && (option == JOptionPane.OK_OPTION)) {
+				// Object[] messageEmpty = {
+				// "Bitte alle Felder ausf\u00fcllen!", "Name des Types:",
+				// neu_Name, "Abschluss:",
+				// neu_Abschluss, "Studiengang:", neu_sgbox };
+				// option = JOptionPane.showConfirmDialog(frame, messageEmpty,
+				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+				// }
+				// // Wenn ok gedrückt wird
+				// if (option == JOptionPane.OK_OPTION) {
+				// Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
+				// // Zuordnung z = new Zuordnung(neu_Name.getText(),
+				// // s.getName(), s.getId(), neu_Abschluss.getText());
+				//
+				// // Teste, ob Zuordnung schon vorhanden
+				// boolean neu = true;
+				// // for (int i = 0; i < typen.size(); i++) {
+				// // if (typen.get(i).equals(z)) {
+				// // neu = false;
+				// // break;
+				// // }
+				// // }
+				//
+				// // Falls neu, in Datenbank eintragen und Liste und
+				// // Model aktualisieren
+				// if (neu) {
+				// // serverConnection.setZuordnung(z);
+				// // typen = serverConnection.getZuordnungen();
+				// // typenmodel.removeAllElements();
+				// // for (int i = 0; i < typen.size(); i++) {
+				// // typenmodel.addElement(typen.get(i));
+				// // }
+				// }
+				// // Ansonsten Fehler ausgeben
+				// else {
+				// JOptionPane.showMessageDialog(frame,
+				// "Zuordnung ist schon vorhanden", "Fehler",
+				// JOptionPane.ERROR_MESSAGE);
+				// }
+				// }
+				// }
+				//
+				// } catch (NullPointerException np) {
+				// // Bei abbruch nichts tuen
+				// }
 			}
 
 		});
@@ -415,19 +414,19 @@ public class mainscreen {
 			}
 		});
 		buttons1.add(btnZurck_1);
-//		worklist = serverConnection.userload();
+		// worklist = serverConnection.userload();
 		JLabel lblZuordnungen = new JLabel("Deadline");
 		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
-		
+
 		final JDateChooser calender = new JDateChooser();
 		pnl_zuordnungen.add(calender);
-		
+
 		JButton savedate = new JButton("Datum setzen");
 		buttons1.add(savedate);
 		JButton test = new JButton("test");
 		buttons1.add(test);
 		test.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
@@ -435,118 +434,112 @@ public class mainscreen {
 			}
 		});
 		savedate.addActionListener(new ActionListener() {
-		String dateString;	
+			String dateString;
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				try{
-				serverConnection.savedate(calender.getDate());
-				} catch(Exception ex){
-					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie ein gültiges Datum aus!", "Datenfehler", JOptionPane.ERROR_MESSAGE);
+				try {
+					serverConnection.savedate(calender.getDate());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie ein gültiges Datum aus!", "Datenfehler",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
-		
-//		JScrollPane scrollPane_1 = new JScrollPane(x,
-//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//		pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
-//		 
-//		JScrollPane scrollPane_2 = new JScrollPane(y,
-//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//		pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
-//				 
-//		JScrollPane scrollPane_3 = new JScrollPane(z,
-//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//		pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
-//						 
+
+		// JScrollPane scrollPane_1 = new JScrollPane(x,
+		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
+		//
+		// JScrollPane scrollPane_2 = new JScrollPane(y,
+		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
+		//
+		// JScrollPane scrollPane_3 = new JScrollPane(z,
+		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
+		//
 	}
 
-	private void modverwaltung(){
+	private void modverwaltung() {
 		JPanel mv = new JPanel();
-		cards.add(mv,"modverwaltung");
+		cards.add(mv, "modverwaltung");
 		JTable mods = new JTable();
 		JTable aktverwalter = new JTable();
-		JTable user = new JTable();	
+		JTable user = new JTable();
 
 		mv.setLayout(new GridLayout(2, 1));
-		
-		
+
 		JPanel buttons = new JPanel();
-		
-		
+
 		JPanel tabellen = new JPanel();
-		tabellen.setLayout(new GridLayout(2,3,0,0));
-		
-		
+		tabellen.setLayout(new GridLayout(2, 3, 0, 0));
+
 		JLabel modules = new JLabel("Module");
 		JLabel aktuelle = new JLabel("Aktuelle Verwalter");
 		JLabel rest = new JLabel("Userlist");
 
-				
-		mv.setLayout(new GridLayout(2,1));
+		mv.setLayout(new GridLayout(2, 1));
 		mv.add(tabellen);
 		mv.add(buttons);
-		
+
 		ScrollPane scp_1 = new ScrollPane();
 		ScrollPane scp_2 = new ScrollPane();
 		ScrollPane scp_3 = new ScrollPane();
-		
+
 		scp_1.add(mods);
 		scp_2.add(aktverwalter);
 		scp_3.add(user);
-				
+
 		tabellen.add(modules);
 		tabellen.add(aktuelle);
 		tabellen.add(rest);
-		
+
 		tabellen.add(scp_1);
 		tabellen.add(scp_2);
 		tabellen.add(scp_3);
 
 		JButton back = new JButton("Zur\u00FCck");
 		JButton save = new JButton("Speichern");
-		
+
 		buttons.add(back);
 		buttons.add(save);
-		
+
 		aktverwalter.setDragEnabled(true);
 		user.setDragEnabled(true);
-				
+
 		mods.setModel(modstuff);
 		aktverwalter.setModel(userstuff);
 		user.setModel(userstuff2);
-		
+
 		userstuff.setRowCount(0);
 		userstuff2.setRowCount(0);
 		modstuff.setRowCount(0);
-		
-		//on construction
+
+		// on construction
 		ArrayList<Modul> modstufflist = new ArrayList<Modul>();
 		ArrayList<User> alluser = new ArrayList<User>();
 		ArrayList<User> verwalter = new ArrayList<User>();
-		
+
 		modstuff.addRow(new Object[] { "Modul1" });
-		userstuff.addRow(new Object[] { "","bla1-1","bla1-2" });
-		userstuff2.addRow(new Object[] { "BLA2","bla2-1","bla2-2" });
-		
+		userstuff.addRow(new Object[] { "", "bla1-1", "bla1-2" });
+		userstuff2.addRow(new Object[] { "BLA2", "bla2-1", "bla2-2" });
+
 		back.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				showCard("manage");
 			}
 		});
-		
+
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * Erstellt den oberen Teil der GUI
 	 */
@@ -613,14 +606,13 @@ public class mainscreen {
 	private void addToTable(String modtyp) {
 		modtypmodel.addRow(new Object[] { modtyp });
 	}
-	
+
 	private void addToTable(String user, int i) {
-		if(i == 1)
-		userstuff.addRow(new Object[] { user });
-		if(i == 2)
+		if (i == 1)
+			userstuff.addRow(new Object[] { user });
+		if (i == 2)
 			userstuff2.addRow(new Object[] { user });
 	}
-
 
 	/**
 	 * Liefert ein Feld mit Label, TextArea und Checkbox
@@ -684,168 +676,9 @@ public class mainscreen {
 	 * Erstellt den Startbildschirm der GUI
 	 * 
 	 */
-	private void homecard() {		
-		final ArrayList<String> dialogs = new ArrayList<String>();
+	private void homecard() {
+		welcome = new HomeCard();
 		cards.add(welcome, "welcome page");
-		welcome.setLayout(new BorderLayout(0, 0));
-
-		
-		pnl_content.setLayout(new BoxLayout(pnl_content, BoxLayout.Y_AXIS));
-
-		JPanel pnl_day = new JPanel();
-		pnl_content.add(pnl_day);
-
-		JLabel lblStichtag = new JLabel("Stichtag f\u00FCr das Einreichen von Modulen: 30.08.13");
-		pnl_day.add(lblStichtag);
-		lblStichtag.setHorizontalAlignment(SwingConstants.CENTER);
-		lblStichtag.setAlignmentY(0.0f);
-		lblStichtag.setForeground(Color.RED);
-		lblStichtag.setFont(new Font("Tahoma", Font.BOLD, 14));
-
-		JPanel pnl_messages = new JPanel();
-		pnl_content.add(pnl_messages);
-		pnl_messages.setLayout(new BoxLayout(pnl_messages, BoxLayout.Y_AXIS));
-
-		JPanel pnl_mestop = new JPanel();
-		pnl_messages.add(pnl_mestop);
-		pnl_mestop.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
-		JLabel lblNachrichten = new JLabel("Nachrichten:");
-		pnl_mestop.add(lblNachrichten);
-		lblNachrichten.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblNachrichten.setHorizontalAlignment(SwingConstants.CENTER);
-
-		JScrollPane scrollPane = new JScrollPane();
-		pnl_messages.add(scrollPane);
-
-		messagemodel = new DefaultTableModel(new Object[][] { { Boolean.FALSE, "", null, null }, }, new String[] { "", "Von", "Betreff",
-				"Datum" }) {
-			Class[] columnTypes = new Class[] { Boolean.class, String.class, String.class, String.class };
-
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-
-			boolean[] columnEditables = new boolean[] { true, false, false, false };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		};
-		refreshMessageTable();
-
-		tblmessages = new JTable(messagemodel);
-		scrollPane.setViewportView(tblmessages);
-		tblmessages.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tblmessages.setFillsViewportHeight(true);
-		tblmessages.setShowVerticalLines(false);
-
-		tblmessages.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					int row = tblmessages.getSelectedRow();
-					Nachricht n = nachrichten.get(row);
-					nachrichten.remove(row);
-					n.setGelesen(true);
-					if(!dialogs.contains(n.toString())){
-						dialogs.add(n.toString());
-						MessageDialog dialog = new MessageDialog(n);
-						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						dialog.setVisible(true);
-					}
-					nachrichten.add(n);
-					refreshMessageTable();
-				}
-			}
-		});
-
-		JPanel pnl_mesbot = new JPanel();
-		pnl_messages.add(pnl_mesbot);
-
-		JButton btnNeu = new JButton("Neu");
-		btnNeu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int x = -1;
-				int von = 1;
-				int an = 2;
-				String betreff = "Neuer Test";
-				Date datum = new Date();
-				boolean gelesen = false;
-				String nachricht = "foooooooooooo blabulb fooooooooo";
-				Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); //abgeändert damit das prog wieder startet
-				nachrichten.add(neu);
-				refreshMessageTable();
-			}
-		});
-		pnl_mesbot.add(btnNeu);
-
-		JButton btnAlsGelesenMarkieren = new JButton("Als gelesen markieren");
-		btnAlsGelesenMarkieren.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				for (int i = 0; i < messagemodel.getRowCount(); i++) {
-					if ((boolean) messagemodel.getValueAt(i, 0)) {
-						nachrichten.get(i).setGelesen(true);
-					}
-				}
-				refreshMessageTable();
-			}
-		});
-		pnl_mesbot.add(btnAlsGelesenMarkieren);
-
-		JButton btnAlsUngelesenMarkieren = new JButton("Als ungelesen markieren");
-		btnAlsUngelesenMarkieren.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < messagemodel.getRowCount(); i++) {
-					if ((boolean) messagemodel.getValueAt(i, 0)) {
-						nachrichten.get(i).setGelesen(false);
-					}
-				}
-				refreshMessageTable();
-			}
-		});
-		pnl_mesbot.add(btnAlsUngelesenMarkieren);
-
-		JButton btnLschen = new JButton("L\u00F6schen");
-		btnLschen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ArrayList<Nachricht> tmp = new ArrayList<Nachricht>();
-				for (int i = 0; i < messagemodel.getRowCount(); i++) {
-					if ((boolean) messagemodel.getValueAt(i, 0)) {
-						tmp.add(nachrichten.get(i));
-					}
-				}
-				nachrichten.removeAll(tmp);
-				refreshMessageTable();
-			}
-		});
-		pnl_mesbot.add(btnLschen);
-
-		JPanel pnl_welc = new JPanel();
-		welcome.add(pnl_welc, BorderLayout.NORTH);
-
-		JLabel lblNewLabel = new JLabel("Willkommen beim Modul Management System");
-		pnl_welc.add(lblNewLabel);
-
-	}
-
-	private void refreshMessageTable() {
-		Collections.sort(nachrichten, new Comparator<Nachricht>() {
-			public int compare(Nachricht n1, Nachricht n2) {
-				return n1.getDatum().compareTo(n2.getDatum()) * -1;
-			}
-		});
-		messagemodel.setRowCount(0);
-		for (int i = 0; i < nachrichten.size(); i++) {
-			addToTable(nachrichten.get(i));
-		}
-	}
-
-	protected void addToTable(Nachricht neu) {
-		if(neu.isGelesen()){
-			messagemodel.addRow(new Object[] { false, neu.getAbsender(), neu.getBetreff(), neu.getDatumString() });
-		} else {
-			messagemodel.addRow(new Object[] { false, "<html><b>" +neu.getAbsender()+ "</b></html>", "<html><b>" +neu.getBetreff()+ "</b></html>", "<html><b>" +neu.getDatumString()+ "</b></html>" });
-		}
 	}
 
 	/**
@@ -854,13 +687,17 @@ public class mainscreen {
 	 */
 	private void leftscr() {
 		btnLogin.setToolTipText("Klicken Sie hier, um in das MMS einzuloggen.");
-		btnModulAkzeptieren.setToolTipText("Klicken Sie hier, um das ausgewählte Modul zu akzeptieren. Damit wird es freigegeben und in der Liste der aktuellen Module angezeigt.");
+		btnModulAkzeptieren
+				.setToolTipText("Klicken Sie hier, um das ausgewählte Modul zu akzeptieren. Damit wird es freigegeben und in der Liste der aktuellen Module angezeigt.");
 		btnModulArchiv.setToolTipText("Klicken Sie hier, um das Archiv der aktuellen Module zu durchstöbern.");
 		btnModulBearbeiten.setToolTipText("Klicken Sie hier, um bereits vorhandene Module zu bearbeiten.");
-		btnModulEinreichen.setToolTipText("Klicken Sie hier, um das Modul einzureichen. Damit wird es der verantwortlichen Stelle vorgelegt. Das Modul wird erst nach der Bestätigung der verantwortlichen Stelle in der Liste der aktuellen Module angezeigt.");
-		btnUserVerwaltung.setToolTipText("Klicken Sie hier, um die Benutzerverwaltung aufzurufen. Hier können Sie neue Benutzer anlegen, deren Daten ändern und ihre Rechte im MMS festlegen.");
-		btnVerwaltung.setToolTipText("Klicken Sie hier, um die Verwaltung zu öffnen. Hier können Sie mögliche Studiengänge festlegen, für die es Modulhandbücher geben kann, die Deadline für die Modulhandbücher aktualisieren und Verwalter für bestimmte Module festlegen.");
-		
+		btnModulEinreichen
+				.setToolTipText("Klicken Sie hier, um das Modul einzureichen. Damit wird es der verantwortlichen Stelle vorgelegt. Das Modul wird erst nach der Bestätigung der verantwortlichen Stelle in der Liste der aktuellen Module angezeigt.");
+		btnUserVerwaltung
+				.setToolTipText("Klicken Sie hier, um die Benutzerverwaltung aufzurufen. Hier können Sie neue Benutzer anlegen, deren Daten ändern und ihre Rechte im MMS festlegen.");
+		btnVerwaltung
+				.setToolTipText("Klicken Sie hier, um die Verwaltung zu öffnen. Hier können Sie mögliche Studiengänge festlegen, für die es Modulhandbücher geben kann, die Deadline für die Modulhandbücher aktualisieren und Verwalter für bestimmte Module festlegen.");
+
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
 
@@ -1082,12 +919,12 @@ public class mainscreen {
 				current = serverConnection.login(current.geteMail(), current.getPassword());
 				if (current != null) {
 					// Studiengänge und Zuordnungen abrufen
-				studmodel.setRowCount(0);
+					studmodel.setRowCount(0);
 					studienlist = serverConnection.getStudiengaenge();
 					for (int i = 0; i < studienlist.size(); i++) {
 						addToTable(studienlist.get(i));
 					}
-					//TODO something 
+					// TODO something
 					// typen = serverConnection.getZuordnungen();
 
 					// Zur Card wechseln
@@ -1575,35 +1412,36 @@ public class mainscreen {
 		btnModulBearbeiten.setEnabled(false);
 		btnUserVerwaltung.setEnabled(false);
 		btnModulAkzeptieren.setEnabled(false);
-		canReadMessages=false;
-		welcome.remove(pnl_content);
-		welcome.repaint();
+		canReadMessages = false;
+		welcome.setMessageView(false);
 		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
 			btnModulBearbeiten.setEnabled(true);
-			canReadMessages=true;
+			canReadMessages = true;
 		}
 		if (current.getAcceptModule()) {
 			btnModulBearbeiten.setEnabled(true);
 			btnModulAkzeptieren.setEnabled(true);
-			canReadMessages=true;
+			canReadMessages = true;
 		}
 		if (current.getManageSystem()) {
 			btnVerwaltung.setEnabled(true);
-			canReadMessages=true;
+			canReadMessages = true;
 		}
 		if (current.getManageUsers()) {
 			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("User Verwaltung");
-			canReadMessages=true;
+			canReadMessages = true;
 		} else {
 			btnUserVerwaltung.setEnabled(true);
 			btnUserVerwaltung.setText("Account bearbeiten");
 		}
-		if(canReadMessages){
-			welcome.add(pnl_content, BorderLayout.CENTER);
-			nachrichten = serverConnection.getNachrichten(current.geteMail());
-			refreshMessageTable();
+		if (canReadMessages) {
+			welcome.setMail(current.geteMail());
+			welcome.setConnection(serverConnection);
+			welcome.refreshMessages();
+			welcome.setMessageView(true);
+			
 		}
 		showCard("welcome page");
 	}
@@ -2387,7 +2225,7 @@ public class mainscreen {
 					studtransferstring = (String) studtable.getValueAt(openrow, 0);
 					modhandshowCard();
 					showCard("modbuch show");
-					
+
 				}
 			}
 		});
@@ -2445,10 +2283,11 @@ public class mainscreen {
 		modbuchmodel.setRowCount(0);
 		System.out.println(studienlist.get(0).getName());
 		System.out.println(studtransferstring);
-		//System.out.println(studienlist.get(0).getModbuch().get(0).getId());
-		//modulhandlist = serverConnection.getModulhandbuch(studtransferstring);
-		for(int i = 0; i < studienlist.size(); i++){
-			if(studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)){
+		// System.out.println(studienlist.get(0).getModbuch().get(0).getId());
+		// modulhandlist =
+		// serverConnection.getModulhandbuch(studtransferstring);
+		for (int i = 0; i < studienlist.size(); i++) {
+			if (studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)) {
 				zws = i;
 				break;
 			}

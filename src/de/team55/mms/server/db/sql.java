@@ -1328,8 +1328,7 @@ public class sql {
 						}
 						for (int k = 0; k < fach.size(); k++){ 
 						//get Module
-							sql = "SELECT m.* " + "FROM module as m JOIN Fach as f on f.modID = m.modID" + "WHERE f.Name = '"
-									+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
+							sql = "SELECT m.* FROM module as m JOIN Fach as f on f.modID = m.modID WHERE f.Name = '"+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
 							res = state.executeQuery(sql);
 							while (res.next()) {
 								String name = res.getString("modulname");
@@ -1338,8 +1337,7 @@ public class sql {
 							}
 							for (int l = 0; l < modul.size(); l++) {
 								//get Felder
-								res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on txt.mID = m.modID WHERE m.modulname = '" + modul.get(l).getName()
-										+ "' AND txt.version = " + modul.get(l).getVersion() + ";");
+								res = state.executeQuery("SELECT txt.label, txt.text, txt.dezernat2 FROM text as txt join module as m on txt.mID = m.modID WHERE m.modulname = '" + modul.get(l).getName()+ "' AND txt.version = " + modul.get(l).getVersion() + ";");
 
 								while (res.next()) {
 									felder.add(new Feld(res.getString("label"), res.getString("text"), res.getBoolean("dezernat2")));

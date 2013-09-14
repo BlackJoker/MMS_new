@@ -17,6 +17,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,6 +26,8 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import de.team55.mms.data.Nachricht;
+import de.team55.mms.data.User;
+import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
 
 public class HomeCard extends JPanel {
@@ -32,10 +35,11 @@ public class HomeCard extends JPanel {
 	private static JPanel welcome = new JPanel();
 	private static JPanel pnl_content = new JPanel();
 	private JTable tblmessages;
-	private String mail;
+	private User user;
 	private DefaultTableModel messagemodel;
 	private ServerConnection serverConnection;
 	private ArrayList<Nachricht> nachrichten = new ArrayList<Nachricht>();
+	private ArrayList<User> neueUser;
 
 	public HomeCard() {
 		super();
@@ -102,9 +106,39 @@ public class HomeCard extends JPanel {
 					n.setGelesen(true);
 					if (!dialogs.contains(n.toString())) {
 						dialogs.add(n.toString());
-						MessageDialog dialog = new MessageDialog(n);
-						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						dialog.setVisible(true);
+						if(n.getBetreff().contains("hat sich angemeldet")){
+							for(int i = 0; i<neueUser.size();i++){
+								String u = neueUser.get(i).getId()+"";
+								if(u.equals(n.getNachricht())){
+									userdialog dlg = new userdialog(null, "User bestätigen", neueUser.get(i), true, serverConnection);
+									int response = dlg.showCustomDialog();
+									// Bei Bestätigung, neuen User freischalten und e-Mail
+									// senden
+									User tmp = dlg.getUser();
+									if (response == 1) {
+										tmp.setFreigeschaltet(true);
+										if (SendMail.send(user.geteMail(), neueUser.get(i).geteMail(), "Sie wurden freigeschaltet!") == 1) {
+											tmp.setFreigeschaltet(true);
+											if (serverConnection.userupdate(tmp, tmp.geteMail()).getStatus() == 201) {
+												neueUser.remove(i);
+											}
+										}
+										// Ansonsten möglichkeit ihn wieder zu löschen
+									} else {
+										int a = JOptionPane.showConfirmDialog(null, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
+												JOptionPane.YES_NO_OPTION);
+										if (a == 0) {
+											serverConnection.deluser(tmp.geteMail());
+										}
+									}
+									break;
+								}						
+							}
+						} else {
+							MessageDialog dialog = new MessageDialog(n);
+							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							dialog.setVisible(true);
+						}
 					}
 					nachrichten.add(n);
 					refreshMessageTable();
@@ -114,28 +148,6 @@ public class HomeCard extends JPanel {
 
 		JPanel pnl_mesbot = new JPanel();
 		pnl_messages.add(pnl_mesbot);
-
-		JButton btnNeu = new JButton("Neu");
-		btnNeu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int x = -1;
-				int von = 1;
-				int an = 2;
-				String betreff = "Neuer Test";
-				Date datum = new Date();
-				boolean gelesen = false;
-				String nachricht = "foooooooooooo blabulb fooooooooo";
-				Nachricht neu = new Nachricht(x, von, an, betreff, datum, gelesen, nachricht); // abgeändert
-																								// damit
-																								// das
-																								// prog
-																								// wieder
-																								// startet
-				nachrichten.add(neu);
-				refreshMessageTable();
-			}
-		});
-		pnl_mesbot.add(btnNeu);
 
 		JButton btnAlsGelesenMarkieren = new JButton("Als gelesen markieren");
 		btnAlsGelesenMarkieren.addActionListener(new ActionListener() {
@@ -214,12 +226,28 @@ public class HomeCard extends JPanel {
 		welcome.repaint();
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public void setUser(User u) {
+		this.user = u;
 	}
 
 	public void refreshMessages() {
-		nachrichten = serverConnection.getNachrichten(mail);
+		nachrichten = serverConnection.getNachrichten(user.geteMail());
+		neueUser = serverConnection.userload("false");
+		for (int i = 0; i < neueUser.size(); i++) {
+			User u = neueUser.get(i);
+			String name = u.getTitel()+" "+u.getVorname()+" "+u.getNachname();
+			name.trim();
+			
+			Nachricht n = new Nachricht();
+			n.setAbsenderID(u.getId());
+			n.setEmpfaengerID(user.getId());
+			n.setBetreff(n+" hat sich angemeldet");
+			n.setNachricht(u.getId()+"");
+			n.setGelesen(false);
+			n.setDatum(new Date());
+			
+			serverConnection.setNachricht(n);
+		}
 		refreshMessageTable();
 	}
 

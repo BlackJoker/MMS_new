@@ -1437,7 +1437,7 @@ public class mainscreen {
 			btnUserVerwaltung.setText("Account bearbeiten");
 		}
 		if (canReadMessages) {
-			welcome.setMail(current.geteMail());
+			welcome.setUser(current);
 			welcome.setConnection(serverConnection);
 			welcome.refreshMessages();
 			welcome.setMessageView(true);

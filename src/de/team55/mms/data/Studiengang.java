@@ -29,7 +29,7 @@ public class Studiengang {
 		this.id = id;
 		this.name = name;
 		this.abschluss = abschluss;
-		this.modbuch = modbuch;
+		this.modbuch = new ArrayList<Modulhandbuch>(modbuch);
 	}
 	
 	@Override
@@ -96,7 +96,7 @@ public class Studiengang {
 	}
 
 	public void setModbuch(ArrayList<Modulhandbuch> modbuch) {
-		this.modbuch = modbuch;
+		this.modbuch = new ArrayList<Modulhandbuch>(modbuch);
 	}
 
 }

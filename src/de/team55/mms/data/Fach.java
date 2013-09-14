@@ -19,7 +19,7 @@ public class Fach {
 	public Fach(String name, ArrayList<Modul> modlist){
 		
 		this.name = name;
-		this.modlist = modlist;
+		this.modlist = new ArrayList<Modul>(modlist);
 		
 	}
 	
@@ -33,7 +33,7 @@ public class Fach {
 		return modlist;
 	}
 	public void setModlist(ArrayList<Modul> modlist) {
-		this.modlist = modlist;
+		this.modlist = new ArrayList<Modul>(modlist);
 	}
 	
 	

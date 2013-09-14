@@ -55,7 +55,7 @@ public class Modul {
 			ArrayList<Feld> felder, int version2, Date datum2,
 			int status, boolean inbearbeitung2, String kommentar) {
 		this.name = name2;
-		this.felder = felder;
+		this.felder = new ArrayList<Feld>( felder);
 		this.version = version2;
 		this.datum = datum2;
 		this.setStatus(status);
@@ -68,12 +68,12 @@ public class Modul {
 			ArrayList<Feld> felder, int version2, Date datum2,
 			int status, boolean inbearbeitung2, ArrayList<String> user2, String kommentar) {
 		this.name = name2;
-		this.felder = felder;
+		this.felder = new ArrayList<Feld>( felder);
 		this.version = version2;
 		this.datum = datum2;
 		this.setStatus(status);
 		this.inbearbeitung = inbearbeitung2;
-		this.user = user2;
+		this.user = new ArrayList<String>(user2);
 		this.kommentar = kommentar;
 	}
 	
@@ -159,7 +159,7 @@ public class Modul {
 	}
 
 	public void setFelder(ArrayList<Feld> felder) {
-		this.felder = felder;
+		this.felder = new ArrayList<Feld>(felder);
 	}
 
 	public void setInbearbeitung(boolean inbearbeitung) {
@@ -188,7 +188,7 @@ public class Modul {
 	}
 	
 	public void setUser(ArrayList<String> user){
-		this.user = user;
+		this.user = new ArrayList<String>(user);
 	}
 	
 

@@ -27,7 +27,7 @@ public class Modulhandbuch {
 		this.jahrgang = jahrgang;
 		this.prosa = prosa;
 		this.pruefungsordnungsjahr = pordnung;
-		this.fach = fach;
+		this.fach = new ArrayList<Fach>(fach);
 	}
 	
 	public Modulhandbuch(){
@@ -137,7 +137,7 @@ public class Modulhandbuch {
 	}
 
 	public void setFach(ArrayList<Fach> fach) {
-		this.fach = fach;
+		this.fach = new ArrayList<Fach>(fach);
 	}
 
 	public int getId() {

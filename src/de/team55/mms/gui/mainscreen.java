@@ -2443,16 +2443,19 @@ public class mainscreen {
 		// Tabelle füllen
 		modbuchtable.setModel(modbuchmodel);
 		modbuchmodel.setRowCount(0);
-		modulhandlist = serverConnection.getModulhandbuch(studtransferstring);
+		System.out.println(studienlist.get(0).getName());
+		System.out.println(studtransferstring);
+		System.out.println(studienlist.get(0).getModbuch().get(0).getId());
+		//modulhandlist = serverConnection.getModulhandbuch(studtransferstring);
 		for(int i = 0; i < studienlist.size(); i++){
 			if(studienlist.get(i).getName().equalsIgnoreCase(studtransferstring)){
 				zws = i;
 				break;
 			}
 		}
-		for (int i = 0; i < modulhandlist.size(); i++) {
+		for (int i = 0; i < studienlist.get(0).getModbuch().size(); i++) {
 
-			addToTable(studienlist.get(zws).getModbuch().get(i));
+			addToTable(studienlist.get(0).getModbuch().get(i));
 
 		}
 		modbuchtransferstring = "";

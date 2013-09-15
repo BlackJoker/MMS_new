@@ -181,6 +181,7 @@ public class MessageResource {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response setNachricht(Nachricht n) {
 		int status = new sql().createMessage(n);
+		System.out.println(n.getDatum());
 		if (status == 1) {
 			System.out.println("Nachricht von " + n.getAbsender() + " hinzugefügt");
 			return Response.status(201).build();

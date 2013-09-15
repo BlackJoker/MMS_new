@@ -13,10 +13,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import de.team55.mms.data.Nachricht;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MessageDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	private int result;
 
 	/**
 	 * Launch the application.
@@ -81,17 +84,23 @@ public class MessageDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
+				JButton okButton = new JButton("Schlie\u00DFen");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						result=1;
+						setVisible(false);
+						dispose();
+					}
+				});
+//				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
 		}
+	}
+	
+	public int getValue(){
+	    return result;
 	}
 
 }

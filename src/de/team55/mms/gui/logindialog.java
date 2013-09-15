@@ -197,10 +197,15 @@ public class logindialog extends JDialog {
 				// neuen User eintragen
 				if (response == 1) {
 					User tmp = dlg.getUser();
-					serverConnection.usersave(tmp);
+					if(serverConnection.usersave(tmp).getStatus()==201){
 					JOptionPane
 							.showMessageDialog(owner,
 									"Ihre Anmeldung wird von eimem Administrator geprüft. Sie werden per e-Mail benachricht, sobald Sie freigeschaltet werden.");
+					} else {
+						JOptionPane
+						.showMessageDialog(owner,
+								"Ihre Anmeldung ist fehlgeschlagen, bitte versuchen Sie es später erneut.", "Fehler",JOptionPane.ERROR_MESSAGE);
+					}
 					userResponse = CANCEL_OPTION;
 					hide();
 				}

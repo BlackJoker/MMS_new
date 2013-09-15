@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -101,7 +103,7 @@ public class HomeCard extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					int row = tblmessages.getSelectedRow();
-					Nachricht n = nachrichten.get(row);
+					final Nachricht n = nachrichten.get(row);
 					nachrichten.remove(row);
 					n.setGelesen(true);
 					if (!dialogs.contains(n.toString())) {
@@ -123,6 +125,7 @@ public class HomeCard extends JPanel {
 												neueUser.remove(i);
 											}
 										}
+										dialogs.remove(n.toString());
 										// Ansonsten möglichkeit ihn wieder zu löschen
 									} else {
 										int a = JOptionPane.showConfirmDialog(null, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
@@ -130,14 +133,60 @@ public class HomeCard extends JPanel {
 										if (a == 0) {
 											serverConnection.deluser(tmp.geteMail());
 										}
+										dialogs.remove(n.toString());
 									}
 									break;
 								}						
 							}
 						} else {
-							MessageDialog dialog = new MessageDialog(n);
-							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							final MessageDialog dialog = new MessageDialog(n);
+							dialog.addWindowListener(new WindowListener() {  
+								  public void windowClosed(WindowEvent e) {  
+								     if (e.getSource() == dialog) {  
+											dialogs.remove(n.toString());
+								     }  
+								  }
+
+								@Override
+								public void windowActivated(WindowEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void windowClosing(WindowEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void windowDeactivated(WindowEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void windowDeiconified(WindowEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void windowIconified(WindowEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void windowOpened(WindowEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}  
+								   
+								  // other window callbacks  
+								});
 							dialog.setVisible(true);
+							
 						}
 					}
 					nachrichten.add(n);
@@ -231,7 +280,6 @@ public class HomeCard extends JPanel {
 	}
 
 	public void refreshMessages() {
-		nachrichten = serverConnection.getNachrichten(user.geteMail());
 		neueUser = serverConnection.userload("false");
 		for (int i = 0; i < neueUser.size(); i++) {
 			User u = neueUser.get(i);
@@ -239,15 +287,17 @@ public class HomeCard extends JPanel {
 			name.trim();
 			
 			Nachricht n = new Nachricht();
+			n.setAbsender(user.geteMail());
 			n.setAbsenderID(u.getId());
 			n.setEmpfaengerID(user.getId());
-			n.setBetreff(n+" hat sich angemeldet");
+			n.setBetreff(name+" hat sich angemeldet");
 			n.setNachricht(u.getId()+"");
 			n.setGelesen(false);
 			n.setDatum(new Date());
-			
+			nachrichten.add(n);
 			serverConnection.setNachricht(n);
 		}
+		nachrichten = serverConnection.getNachrichten(user.geteMail());
 		refreshMessageTable();
 	}
 

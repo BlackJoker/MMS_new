@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -491,7 +492,7 @@ public class sql {
 				state = con.prepareStatement("INSERT INTO module (modulname, version, datum, kommentar, status) VALUES(?,?,?,?,?,?)");
 				state.setString(1, name);
 				state.setInt(2, version);
-				state.setDate(3, dateConverter(neu.getDatum()));
+				state.setTimestamp(3, dateConverterUtil2SQL(neu.getDatum()));
 				state.setString(4, neu.getKommentar());
 				state.setInt(5, neu.getStatus());
 				state.executeUpdate();
@@ -1562,12 +1563,14 @@ public class sql {
 				state.setString(3, n.getBetreff());
 				state.setString(4, n.getNachricht());
 				state.setBoolean(5, n.isGelesen());
-				state.setDate(6, dateConverter(n.getDatum()));
+				state.setTimestamp(6, dateConverterUtil2SQL(n.getDatum()));
+				System.out.println(state);
 				state.executeUpdate();
 				status = SUCCES;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
-				e.printStackTrace();
+				//e.printStackTrace();
+				status = FAILED;
 			}
 			disconnect();
 		}
@@ -1584,11 +1587,10 @@ public class sql {
 				state.setInt(1, empfaenger_id);
 				res = state.executeQuery();
 				while(res.next()){
-					Nachricht n = new Nachricht(res.getInt("id"),res.getInt("absender_id"),empfaenger_id,res.getString("betreff"),res.getDate("datum"),res.getBoolean("gelesen"),res.getString("text"));
+					Nachricht n = new Nachricht(res.getInt("id"),res.getInt("absender_id"),empfaenger_id,res.getString("betreff"),dateConverterSQL2Util(res.getTimestamp("datum")),res.getBoolean("gelesen"),res.getString("text"));
 					n.setAbsender(res.getString("absender").trim());
 					n.setEmpfaenger(res.getString("empfaenger").trim());
 					liste.add(n);
-					System.out.println(n);
 				}
 				res.close();
 				state.close();
@@ -1600,13 +1602,15 @@ public class sql {
 		return liste;
 	}
 
-	public java.sql.Date dateConverter(Date d) {
-		return new java.sql.Date(d.getTime());
+	public Timestamp dateConverterUtil2SQL(Date d) {
+		return new Timestamp(d.getTime());
 	}
 	
-	public Date dateConverter(java.sql.Date d) {
-		return new Date(d.getTime());
+	public Date dateConverterSQL2Util(Timestamp t) {
+		Date d = new Date(t.getTime());
+		return d;
 	}
+	
 	
 	
 	/**
@@ -1622,7 +1626,7 @@ public class sql {
 				state = this.con.prepareStatement("TRUNCATE TABLE stichtag;");
 				state.executeUpdate();
 				state = this.con.prepareStatement("INSERT INTO stichtag(datum) VALUES (?);");
-				state.setDate(1, dateConverter(date));
+				state.setTimestamp(1, dateConverterUtil2SQL(date));
 				state.executeUpdate();
 				state.close();
 				status = SUCCES;
@@ -1648,7 +1652,7 @@ public class sql {
 				state = this.con.prepareStatement("SELECT * FROM stichtag;");
 				res = state.executeQuery();
 				while(res.next()){
-					date = dateConverter(res.getDate("datum"));
+					date = dateConverterSQL2Util(res.getTimestamp("datum"));
 				}
 				state.close();
 			} catch (SQLException e) {

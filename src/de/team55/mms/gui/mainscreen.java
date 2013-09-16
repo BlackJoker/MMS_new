@@ -1454,7 +1454,9 @@ public class mainscreen {
 	}
 
 	private void startThread() {
-		t = new Thread() {
+		System.out.println("start");
+		run=true;
+		new Thread() {
 			@Override
 			public void run() {
 				while (run) {
@@ -1467,11 +1469,10 @@ public class mainscreen {
 						// TODO Auto-generated catch block
 						// e.printStackTrace();
 					}
-					System.out.println("checked " + new Date());
+					System.out.println(welcome.getMessageCount());
 				}
 			}
-		};
-		t.start();
+		}.start();
 	}
 
 	public void stopThread() {

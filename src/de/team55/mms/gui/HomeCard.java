@@ -47,8 +47,7 @@ public class HomeCard extends JPanel {
 	private JLabel lblStichtag;
 	private JPanel pnl_day = new JPanel();
 	private Thread t;
-	private int messageCount=0;
-	
+	private int messageCount = 0;
 
 	public HomeCard(final JFrame frame) {
 		super();
@@ -293,7 +292,7 @@ public class HomeCard extends JPanel {
 	}
 
 	public void refreshMessages() {
-		ArrayList<Nachricht> tmp=new ArrayList<Nachricht>();
+		ArrayList<Nachricht> tmp = nachrichten;
 		neueUser = serverConnection.userload("false");
 		for (int i = 0; i < neueUser.size(); i++) {
 			User u = neueUser.get(i);
@@ -308,10 +307,10 @@ public class HomeCard extends JPanel {
 			n.setNachricht(u.getId() + "");
 			n.setGelesen(false);
 			n.setDatum(new Date());
-			nachrichten.add(n);
 			serverConnection.setNachricht(n);
 		}
 		nachrichten = serverConnection.getNachrichten(user.geteMail());
+		messageCount = nachrichten.size() - tmp.size();
 		refreshMessageTable();
 	}
 
@@ -330,8 +329,11 @@ public class HomeCard extends JPanel {
 	}
 
 	public int getMessageCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		if (messageCount > 0) {
+			return messageCount;
+		} else{
+			return 0;
+		}
 	}
 
 }

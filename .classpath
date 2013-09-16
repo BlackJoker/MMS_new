@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/itext-pdfa-5.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
 	<classpathentry kind="lib" path="lib/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/itextpdf-5.4.2-javadoc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

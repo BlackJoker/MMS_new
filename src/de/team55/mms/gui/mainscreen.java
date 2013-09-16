@@ -613,11 +613,24 @@ public class mainscreen {
 		modstuff.setRowCount(0);
 
 		// on construction
-		ArrayList<Modul> modstufflist = new ArrayList<Modul>();
+		ArrayList<String> modstufflist = new ArrayList<String>();
 		ArrayList<User> alluser = new ArrayList<User>();
 		ArrayList<User> verwalter = new ArrayList<User>();
+		
+		modstufflist = serverConnection.getallModulnames();
 
-		modstuff.addRow(new Object[] { "Modul1" });
+		for(int i = 0; i < modstufflist.size(); i++){
+			modstuff.addRow(new Object[]{ modstufflist.get(i) });
+		}
+		ArrayList<ArrayList<User>> userlisting = serverConnection.getModulverwalter(null);
+		alluser = userlisting.get(0);
+		verwalter = userlisting.get(1);
+		for(int i = 0; i < alluser.size(); i++){
+			userstuff.addRow(new Object[]{ alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
+		}
+		for(int i = 0; i < verwalter.size(); i++){
+			userstuff2.addRow(new Object[]{ alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
+		}
 		userstuff.addRow(new Object[] { "", "bla1-1", "bla1-2" });
 		userstuff2.addRow(new Object[] { "BLA2", "bla2-1", "bla2-2" });
 

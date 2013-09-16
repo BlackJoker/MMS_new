@@ -31,10 +31,14 @@ import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.function.ServerConnection;
 
+import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
@@ -68,7 +72,7 @@ public class LookCard extends JPanel {
 		DefaultMutableTreeNode t4Child;
 
 		for (int i = 0; i < studienlist.size(); i++) {
-			child = new DefaultMutableTreeNode(studienlist.get(i).getName());
+			child = new DefaultMutableTreeNode(studienlist.get(i).toString());
 			root.add(child);
 			for (int j = 0; j < studienlist.get(i).getModbuch().size(); j++) {
 				grandChild = new DefaultMutableTreeNode("Modulhandbuch " + studienlist.get(i).getModbuch().get(j).getJahrgang() + " PO "
@@ -122,16 +126,11 @@ public class LookCard extends JPanel {
 					if(node.getParent() != null)
 //					System.out.println(node.getParent().toString());
 					if((node.getParent().toString().equalsIgnoreCase("Universität Ulm") || node.getParent().getParent().toString().equalsIgnoreCase("Universität Ulm"))){
-//						try {
-//							if(node.getParent().getParent().toString().equalsIgnoreCase("Universität Ulm")){
-//								MHBPDF(0, 0);
-//							}else{
-//								MHBPDF(0);
-//							}
-//						} catch (IOException e1) {
-//							// TODO Auto-generated catch block
-//							e1.printStackTrace();
-//						}
+						if(node.getParent().toString().equalsIgnoreCase("Universität Ulm")){
+							toPDF(node.toString());
+						}else{
+							toPDF(node.getParent().toString(), node.toString());
+						}
 					}else{
 						JOptionPane.showMessageDialog(frame, "Bitte wählen sie entweder einen Studiengang oder ein Modulhandbuch aus.", "Input Error", JOptionPane.ERROR_MESSAGE);
 						
@@ -151,19 +150,76 @@ public class LookCard extends JPanel {
 		this.studienlist = studienlist;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void MHBPDF(int stu, int mod) throws IOException {
+	public void toPDF(String st){
+
+		int stu=9001;
+		for(int i=0;i<studienlist.size();i++){
+		if (studienlist.get(i).toString().equalsIgnoreCase(st)) stu=i;
+		}
+		aMHBPDF(stu);
+		}
+
+
+		public void toPDF(String st, String mo){
+		int stu=9001,mod=-1;
+
+
+		for(int i=0;i<studienlist.size();i++){
+		if (studienlist.get(i).toString().equalsIgnoreCase(st)) stu=i;
+		}
+		for(int j=0;j<studienlist.get(stu).getModbuch().size();j++){
+
+		String ja = studienlist.get(stu).getModbuch().get(j).getJahrgang();
+		int po = studienlist.get(stu).getModbuch().get(j).getPruefungsordnungsjahr();
+		String could= "Modulhandbuch "+ ja +" PO "+po;
+		if (could.equalsIgnoreCase(mo)) mod=j;
+		}
+
+
+		try {
+		MHBPDF(stu, mod);
+		} catch (IOException | DocumentException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}
+
+		}
+
+
+		public void aMHBPDF(int stu){
+
+		for (int i=0; i<studienlist.get(stu).getModbuch().size();i++){
+		try {
+		MHBPDF(stu, i);
+		} catch (IOException | DocumentException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}
+
+		}
+
+		}
+
+
+		@SuppressWarnings("deprecation")
+		public void MHBPDF(int stu, int mod) throws IOException, DocumentException {
 
 		Chunk tab = new Chunk(new VerticalPositionMark(), 80); // Position
-																// anpassen
+		// anpassen
 		Chunk underline = new Chunk("Underline. ");
 		underline.setUnderline(0.1f, -2f); // 0.1 thick, -2 y-location
 
+		Font font = FontFactory.getFont("Times-Roman", 12, Font.NORMAL);
+		Font fontbold = FontFactory.getFont("Times-Roman", 16, Font.BOLD);
+		Font fontunder= FontFactory.getFont("Times-Roman", 16, Font.UNDERLINE);
+
+		//document.add(new Paragraph("Times-Roman, Bold", fontbold));
+		Paragraph cTitle;
+		Chapter chapter;
+		Section section;
+
 		String studname = studienlist.get(stu).getName();
 		String abschluss = studienlist.get(stu).getAbschluss();
-
-		// for (int i=0; i<Stud.modbuch.size();i++){ //evtl keine schleife
-		// sondern index des benötigten MHB angeben/übergeben
 
 		Modulhandbuch ModHB = studienlist.get(stu).getModbuch().get(mod);
 
@@ -172,88 +228,64 @@ public class LookCard extends JPanel {
 		int pruefjahr = ModHB.getPruefungsordnungsjahr();
 
 		String pdfname = abschluss + "-" + studname + "-PO" + pruefjahr + "-" + jahrgang;
+		String titel=("Modulhandbuch: " + abschluss + "" + studname + " FSPO " + pruefjahr + "" + jahrgang);
 
 		Document document = new Document();
-		try {
-			// Writer Instanz erstellen
-			PdfWriter.getInstance(document, new FileOutputStream(pdfname + ".pdf"));
-			// step 3: Dokument öffnen
-			document.open();
-			// step 4: Absatz mit Text dem Dokument hinzufügen
-			document.add(new Paragraph("Modulhandbuch: " + abschluss + "" + studname + " FSPO " + pruefjahr + "" + jahrgang));
-			document.add(underline);
-			document.add(new Paragraph(prosa));
-	
-		} catch (DocumentException de) {
-			System.err.println(de.getMessage());
-		} catch (IOException ioe) {
-			System.err.println(ioe.getMessage());
-		}
+
+
+		// Writer Instanz erstellen
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfname + ".pdf"));
+
+		writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
+
+		// step 3: Dokument öffnen
+		document.open();
+		// step 4: Absatz mit Text dem Dokument hinzufügen
+		document.add(new Paragraph(titel, fontunder));
+		document.add(underline);
+		document.add(new Paragraph(prosa, font));
+
 
 		for (int j = 0; j < ModHB.getFach().size(); j++) {
 
-			Fach Fach = ModHB.getFach().get(j);
+		Fach Fach = ModHB.getFach().get(j);
 
-			String fachname = Fach.getName();
+		String fachname = Fach.getName();
 
-			try {
-				// step 3: Dokument öffnen
-				
-				// step 4: Absatz mit Text dem Dokument hinzufügen
-				document.add(new Chunk((j + 1) + ". " + fachname).setLocalDestination((j + 1) + ". " + fachname));
-				document.add(Chunk.NEWLINE); // leerzeile
-				
-			} catch (DocumentException de) {
-				System.err.println(de.getMessage());
-			}
+		cTitle = new Paragraph(fachname);
+		chapter = new Chapter(cTitle, 1);
 
-			for (int k = 0; k < Fach.getModlist().size(); k++) {
-				Modul Dul = Fach.getModlist().get(k);
+		document.add(Chunk.NEWLINE); // leerzeile
 
-				String Modname = Dul.getName();
+		for (int k = 0; k < Fach.getModlist().size(); k++) {
+		Modul Dul = Fach.getModlist().get(k);
 
-				try {
-					// step 3: Dokument öffnen
-				
-					// step 4: Absatz mit Text dem Dokument hinzufügen
-					document.add(new Paragraph(new Chunk((j + 1) + "." + (k + 1) + ". " + Modname).setLocalDestination((j + 1) + "."
-							+ (k + 1) + ". " + Modname)));
-				
-				} catch (DocumentException de) {
-					System.err.println(de.getMessage());
-				}
+		String Modname = Dul.getName();
 
-				for (int l = 0; l < Dul.getFelder().size(); l++) {
+		section = chapter.addSection(Modname, 1); 
+		section.setBookmarkOpen(false);
 
-					Feld Felder = Dul.getFelder().get(l);
+		for (int l = 0; l < Dul.getFelder().size(); l++) {
 
-					String label = Felder.getLabel();
-					String value = Felder.getValue();
+		Feld Felder = Dul.getFelder().get(l);
 
-					try {
-						// step 3: Dokument öffnen
-					
-						// step 4: Absatz mit Text dem Dokument hinzufügen
+		String label = Felder.getLabel();
+		String value = Felder.getValue();
 
-						document.add(new Chunk(String.format(label + ": ")));
-						document.add(new Chunk(tab));
-						document.add(new Chunk(value));
+		document.add(new Chunk(String.format(label + ": ")));
+		document.add(new Chunk(tab));
+		document.add(new Chunk(value));
+		}// 3 fs
 
-					
-					} catch (DocumentException de) {
-						System.err.println(de.getMessage());
-					}
-
-				}// 4
-
-				document.newPage();
-			}// 3 fs
-
-			document.newPage();
+		document.newPage();
 		}// f-shleif 2
-			// }//erste for-schleife
+
+		document.add(chapter);
+		document.newPage();
+		}// erste for-schleife
+
 
 		document.close();
-	}
+		}
 
 }

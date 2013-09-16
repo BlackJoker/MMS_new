@@ -65,6 +65,7 @@ import de.team55.mms.data.User;
 //import de.team55.mms.data.Zuordnung;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
+import javax.swing.UIManager;
 
 public class mainscreen {
 
@@ -120,6 +121,7 @@ public class mainscreen {
 
 	// Komponenten
 	private static JPanel cards = new JPanel();
+	private static 		JPanel top = new JPanel();
 	private static JPanel modul_panel = new JPanel();
 	private static JPanel modul_panel_edit = new JPanel();
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
@@ -134,6 +136,8 @@ public class mainscreen {
 	private static HomeCard welcome;
 	private static LookCard looking;
 	private int messages=0;
+	private JDateChooser calender = new JDateChooser();
+
 
 	// zum testen von drag and drop und für die Verwaltung der
 	// Modulverantwortlichen
@@ -186,6 +190,10 @@ public class mainscreen {
 	private Thread t;
 
 	private boolean run;
+
+	protected int newMessages;
+
+	protected JButton btnNewButton=new JButton();
 
 	// main Frame
 	public mainscreen() {
@@ -423,21 +431,20 @@ public class mainscreen {
 		JLabel lblZuordnungen = new JLabel("Deadline");
 		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
 
-		final JDateChooser calender = new JDateChooser();
 		pnl_zuordnungen.add(calender);
 
 		JButton savedate = new JButton("Datum setzen");
 		buttons1.add(savedate);
-		JButton test = new JButton("test");
-		buttons1.add(test);
-		test.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				calender.setDate(serverConnection.getDate());
-			}
-		});
+//		JButton test = new JButton("test");
+//		buttons1.add(test);
+//		test.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				// TODO Auto-generated method stub
+//				calender.setDate(serverConnection.getDate());
+//			}
+//		});
 		savedate.addActionListener(new ActionListener() {
 			String dateString;
 
@@ -549,7 +556,6 @@ public class mainscreen {
 	 * Erstellt den oberen Teil der GUI
 	 */
 	private void topscr() {
-		JPanel top = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) top.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		frame.getContentPane().add(top, BorderLayout.NORTH);
@@ -559,6 +565,16 @@ public class mainscreen {
 		lblMMS.setHorizontalAlignment(SwingConstants.LEFT);
 		lblMMS.setLabelFor(frame);
 		top.add(lblMMS);
+		
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		top.add(horizontalStrut);
+		//btnNewButton.setBorder(BorderFactory.createEmptyBorder());
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				top.remove(btnNewButton);
+				showCard("welcome page");
+			}
+		});
 	}
 
 	/**
@@ -903,6 +919,7 @@ public class mainscreen {
 				// typenmodel.addElement(typen.get(i));
 				// }
 				// Zur Card wechseln
+				calender.setDate(serverConnection.getDate());
 				showCard("manage");
 
 			}
@@ -1458,7 +1475,6 @@ public class mainscreen {
 	}
 
 	private void startThread() {
-		System.out.println("start");
 		run=true;
 		new Thread() {
 			@Override
@@ -1473,7 +1489,18 @@ public class mainscreen {
 						// TODO Auto-generated catch block
 						// e.printStackTrace();
 					}
-					System.out.println(welcome.getMessageCount());
+					newMessages=welcome.getMessageCount();
+					if(newMessages>1){
+						top.remove(btnNewButton);
+						btnNewButton.setText("Sie haben" +newMessages+ "neuen Nachrichten.");
+						top.add(btnNewButton);
+					} else if(newMessages==1){
+						top.remove(btnNewButton);
+						btnNewButton.setText("Sie haben eine neue Nachricht.");
+						top.add(btnNewButton);
+					} else {
+						top.remove(btnNewButton);
+					}
 				}
 			}
 		}.start();

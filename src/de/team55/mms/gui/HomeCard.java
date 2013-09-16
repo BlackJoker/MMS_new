@@ -228,9 +228,9 @@ public class HomeCard extends JPanel {
 					if ((boolean) messagemodel.getValueAt(i, 0)) {
 						tmp.add(nachrichten.get(i));
 						serverConnection.deleteNachricht(nachrichten.get(i));
-						nachrichten.remove(i);
 					}
 				}
+				nachrichten.removeAll(tmp);
 				refreshMessageTable();
 			}
 		});

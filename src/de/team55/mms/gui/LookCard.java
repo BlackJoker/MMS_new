@@ -79,8 +79,7 @@ public class LookCard extends JPanel {
 		};
 
 		BasicTreeUI ui = (BasicTreeUI) tree.getUI();
-		ui.setCollapsedIcon(new ImageIcon("collapsedIcon.jpg"));
-		ui.setExpandedIcon(new ImageIcon("expandedIcon.jpg"));
+
 
 		tree.setCellRenderer(renderer);
 		looking.add(tree);

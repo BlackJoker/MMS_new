@@ -57,8 +57,7 @@ public class HomeCard extends JPanel {
 
 		pnl_content.add(pnl_day);
 
-
-		lblStichtag=new JLabel();
+		lblStichtag = new JLabel();
 		pnl_day.add(lblStichtag);
 		JPanel pnl_messages = new JPanel();
 		pnl_content.add(pnl_messages);
@@ -104,18 +103,19 @@ public class HomeCard extends JPanel {
 					int row = tblmessages.getSelectedRow();
 					final Nachricht n = nachrichten.get(row);
 					nachrichten.remove(row);
-					n.setGelesen(true);					
+					n.setGelesen(true);
 					if (!dialogs.contains(n.toString())) {
 						dialogs.add(n.toString());
-						if(n.getBetreff().contains("hat sich angemeldet")){
+						if (n.getBetreff().contains("hat sich angemeldet")) {
 							boolean neu = false;
-							for(int i = 0; i<neueUser.size();i++){
-								String u = neueUser.get(i).getId()+"";
-								if(u.equals(n.getNachricht())){
-									neu=true;
+							for (int i = 0; i < neueUser.size(); i++) {
+								String u = neueUser.get(i).getId() + "";
+								if (u.equals(n.getNachricht())) {
+									neu = true;
 									userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, serverConnection);
 									int response = dlg.showCustomDialog();
-									// Bei Bestätigung, neuen User freischalten und e-Mail
+									// Bei Bestätigung, neuen User freischalten
+									// und e-Mail
 									// senden
 									User tmp = dlg.getUser();
 									if (response == 1) {
@@ -127,7 +127,8 @@ public class HomeCard extends JPanel {
 											}
 										}
 										dialogs.remove(n.toString());
-										// Ansonsten möglichkeit ihn wieder zu löschen
+										// Ansonsten möglichkeit ihn wieder zu
+										// löschen
 									} else {
 										int a = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
 												JOptionPane.YES_NO_OPTION);
@@ -137,61 +138,61 @@ public class HomeCard extends JPanel {
 										dialogs.remove(n.toString());
 									}
 									break;
-								}						
+								}
 							}
-							if(!neu){
+							if (!neu) {
 								JOptionPane.showMessageDialog(frame, "User wurde bereits frei geschaltet");
 								dialogs.remove(n.toString());
 							}
 						} else {
 							final MessageDialog dialog = new MessageDialog(n);
-							dialog.addWindowListener(new WindowListener() {  
-								  public void windowClosed(WindowEvent e) {  
-								     if (e.getSource() == dialog) {  
-											dialogs.remove(n.toString());
-								     }  
-								  }
+							dialog.addWindowListener(new WindowListener() {
+								public void windowClosed(WindowEvent e) {
+									if (e.getSource() == dialog) {
+										dialogs.remove(n.toString());
+									}
+								}
 
 								@Override
 								public void windowActivated(WindowEvent arg0) {
 									// TODO Auto-generated method stub
-									
+
 								}
 
 								@Override
 								public void windowClosing(WindowEvent arg0) {
 									// TODO Auto-generated method stub
-									
+
 								}
 
 								@Override
 								public void windowDeactivated(WindowEvent arg0) {
 									// TODO Auto-generated method stub
-									
+
 								}
 
 								@Override
 								public void windowDeiconified(WindowEvent arg0) {
 									// TODO Auto-generated method stub
-									
+
 								}
 
 								@Override
 								public void windowIconified(WindowEvent arg0) {
 									// TODO Auto-generated method stub
-									
+
 								}
 
 								@Override
 								public void windowOpened(WindowEvent arg0) {
 									// TODO Auto-generated method stub
-									
-								}  
-								   
-								  // other window callbacks  
-								});
+
+								}
+
+								// other window callbacks
+							});
 							dialog.setVisible(true);
-							
+
 						}
 					}
 					serverConnection.updateNachricht(n);
@@ -289,34 +290,49 @@ public class HomeCard extends JPanel {
 	}
 
 	public void refreshMessages() {
-		neueUser = serverConnection.userload("false");
-		for (int i = 0; i < neueUser.size(); i++) {
-			User u = neueUser.get(i);
-			String name = u.getTitel()+" "+u.getVorname()+" "+u.getNachname();
-			name.trim();
-			
-			Nachricht n = new Nachricht();
-			n.setAbsender(user.geteMail());
-			n.setAbsenderID(u.getId());
-			n.setEmpfaengerID(user.getId());
-			n.setBetreff(name+" hat sich angemeldet");
-			n.setNachricht(u.getId()+"");
-			n.setGelesen(false);
-			n.setDatum(new Date());
-			nachrichten.add(n);
-			serverConnection.setNachricht(n);
-		}
-		nachrichten = serverConnection.getNachrichten(user.geteMail());
-		refreshMessageTable();
+		new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					neueUser = serverConnection.userload("false");
+					for (int i = 0; i < neueUser.size(); i++) {
+						User u = neueUser.get(i);
+						String name = u.getTitel() + " " + u.getVorname() + " " + u.getNachname();
+						name.trim();
+
+						Nachricht n = new Nachricht();
+						n.setAbsender(user.geteMail());
+						n.setAbsenderID(u.getId());
+						n.setEmpfaengerID(user.getId());
+						n.setBetreff(name + " hat sich angemeldet");
+						n.setNachricht(u.getId() + "");
+						n.setGelesen(false);
+						n.setDatum(new Date());
+						nachrichten.add(n);
+						serverConnection.setNachricht(n);
+					}
+					nachrichten = serverConnection.getNachrichten(user.geteMail());
+					refreshMessageTable();
+					getDate();
+					try {
+						sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+				}
+			}
+		}.start();
 	}
 
 	public void setConnection(ServerConnection serverConnection) {
 		this.serverConnection = serverConnection;
 	}
-	
-	public void getDate(){
+
+	public void getDate() {
 		Date date = serverConnection.getDate();
-		lblStichtag.setText("Stichtag f\u00FCr das Einreichen von Modulen: "+date.getDate()+"."+date.getMonth()+"."+(date.getYear()+1900));
+		lblStichtag.setText("Stichtag f\u00FCr das Einreichen von Modulen: " + date.getDate() + "." + (date.getMonth()+1) + "."
+				+ (date.getYear() + 1900));
 		lblStichtag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStichtag.setAlignmentY(0.0f);
 		lblStichtag.setForeground(Color.RED);

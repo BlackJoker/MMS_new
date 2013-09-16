@@ -34,6 +34,7 @@ import de.team55.mms.data.User;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
 
+
 public class HomeCard extends JPanel {
 
 	private static JPanel welcome = new JPanel();
@@ -48,6 +49,7 @@ public class HomeCard extends JPanel {
 	private JPanel pnl_day = new JPanel();
 	private Thread t;
 	private int messageCount = 0;
+	private int mc=0;
 
 	public HomeCard(final JFrame frame) {
 		super();
@@ -292,7 +294,6 @@ public class HomeCard extends JPanel {
 	}
 
 	public void refreshMessages() {
-		ArrayList<Nachricht> tmp = nachrichten;
 		neueUser = serverConnection.userload("false");
 		for (int i = 0; i < neueUser.size(); i++) {
 			User u = neueUser.get(i);
@@ -310,7 +311,12 @@ public class HomeCard extends JPanel {
 			serverConnection.setNachricht(n);
 		}
 		nachrichten = serverConnection.getNachrichten(user.geteMail());
-		messageCount = nachrichten.size() - tmp.size();
+		messageCount=0;
+		for(int i = 0;i<nachrichten.size();i++){
+			if(!nachrichten.get(i).isGelesen()){
+				messageCount++;
+			}
+		}
 		refreshMessageTable();
 	}
 
@@ -329,11 +335,7 @@ public class HomeCard extends JPanel {
 	}
 
 	public int getMessageCount() {
-		if (messageCount > 0) {
 			return messageCount;
-		} else{
-			return 0;
-		}
 	}
 
 }

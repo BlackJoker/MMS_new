@@ -46,6 +46,9 @@ public class HomeCard extends JPanel {
 	private ArrayList<User> neueUser;
 	private JLabel lblStichtag;
 	private JPanel pnl_day = new JPanel();
+	private Thread t;
+	private int messageCount=0;
+	
 
 	public HomeCard(final JFrame frame) {
 		super();
@@ -290,39 +293,26 @@ public class HomeCard extends JPanel {
 	}
 
 	public void refreshMessages() {
-		new Thread() {
-			@Override
-			public void run() {
-				while (true) {
-					neueUser = serverConnection.userload("false");
-					for (int i = 0; i < neueUser.size(); i++) {
-						User u = neueUser.get(i);
-						String name = u.getTitel() + " " + u.getVorname() + " " + u.getNachname();
-						name.trim();
+		ArrayList<Nachricht> tmp=new ArrayList<Nachricht>();
+		neueUser = serverConnection.userload("false");
+		for (int i = 0; i < neueUser.size(); i++) {
+			User u = neueUser.get(i);
+			String name = u.getTitel() + " " + u.getVorname() + " " + u.getNachname();
+			name.trim();
 
-						Nachricht n = new Nachricht();
-						n.setAbsender(user.geteMail());
-						n.setAbsenderID(u.getId());
-						n.setEmpfaengerID(user.getId());
-						n.setBetreff(name + " hat sich angemeldet");
-						n.setNachricht(u.getId() + "");
-						n.setGelesen(false);
-						n.setDatum(new Date());
-						nachrichten.add(n);
-						serverConnection.setNachricht(n);
-					}
-					nachrichten = serverConnection.getNachrichten(user.geteMail());
-					refreshMessageTable();
-					getDate();
-					try {
-						sleep(10000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						//e.printStackTrace();
-					}
-				}
-			}
-		}.start();
+			Nachricht n = new Nachricht();
+			n.setAbsender(user.geteMail());
+			n.setAbsenderID(u.getId());
+			n.setEmpfaengerID(user.getId());
+			n.setBetreff(name + " hat sich angemeldet");
+			n.setNachricht(u.getId() + "");
+			n.setGelesen(false);
+			n.setDatum(new Date());
+			nachrichten.add(n);
+			serverConnection.setNachricht(n);
+		}
+		nachrichten = serverConnection.getNachrichten(user.geteMail());
+		refreshMessageTable();
 	}
 
 	public void setConnection(ServerConnection serverConnection) {
@@ -331,12 +321,17 @@ public class HomeCard extends JPanel {
 
 	public void getDate() {
 		Date date = serverConnection.getDate();
-		lblStichtag.setText("Stichtag f\u00FCr das Einreichen von Modulen: " + date.getDate() + "." + (date.getMonth()+1) + "."
+		lblStichtag.setText("Stichtag f\u00FCr das Einreichen von Modulen: " + date.getDate() + "." + (date.getMonth() + 1) + "."
 				+ (date.getYear() + 1900));
 		lblStichtag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStichtag.setAlignmentY(0.0f);
 		lblStichtag.setForeground(Color.RED);
 		lblStichtag.setFont(new Font("Tahoma", Font.BOLD, 14));
+	}
+
+	public int getMessageCount() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

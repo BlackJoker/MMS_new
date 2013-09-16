@@ -133,6 +133,7 @@ public class mainscreen {
 	private JTable tblmessages;
 	private static HomeCard welcome;
 	private static LookCard looking;
+	private int messages=0;
 
 	// zum testen von drag and drop und für die Verwaltung der
 	// Modulverantwortlichen
@@ -181,6 +182,10 @@ public class mainscreen {
 			return false;
 		}
 	};
+
+	private Thread t;
+
+	private boolean run;
 
 	// main Frame
 	public mainscreen() {
@@ -793,6 +798,7 @@ public class mainscreen {
 						btnLogin.setText("Einloggen");
 						btnUserVerwaltung.setText("User Verwaltung");
 						btnUserVerwaltung.setEnabled(false);
+						stopThread();
 						showCard("welcome page");
 					}
 				} else {
@@ -1441,12 +1447,35 @@ public class mainscreen {
 			btnUserVerwaltung.setText("Account bearbeiten");
 		}
 		if (canReadMessages) {
-			welcome.getDate();
-			welcome.refreshMessages();
+			startThread();
 			welcome.setMessageView(true);
-			
 		}
 		showCard("welcome page");
+	}
+
+	private void startThread() {
+		t = new Thread() {
+			@Override
+			public void run() {
+				while (run) {
+					messages = welcome.getMessageCount();
+					welcome.refreshMessages();
+					welcome.getDate();
+					try {
+						sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						// e.printStackTrace();
+					}
+					System.out.println("checked " + new Date());
+				}
+			}
+		};
+		t.start();
+	}
+
+	public void stopThread() {
+		run = false;
 	}
 
 	/**

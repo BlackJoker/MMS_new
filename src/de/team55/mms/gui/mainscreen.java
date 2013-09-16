@@ -1243,6 +1243,10 @@ public class mainscreen {
 
 		pnl_newmod.add(scrollPane);
 		cards.add(pnl_newmod, "newmodule");
+		
+		btnOk.setToolTipText("Klicken, um ihr Modul einzureichen.");
+		btnHome.setToolTipText("Klicken, um zurück in den Hauptbildschirm zu gelangen.");
+		btnNeuesFeld.setToolTipText("Klicken, um ein neues Feld in ihrem Modul zu erstellen.");
 
 	}
 

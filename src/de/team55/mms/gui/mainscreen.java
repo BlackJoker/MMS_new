@@ -1405,7 +1405,11 @@ public class mainscreen {
 		usrcenter.add(ussrscp);
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
-
+		
+		btnUserAdd.setToolTipText("Klicken, um neuen Benutzer hinzuzufügen.");
+		btnHome.setToolTipText("Klicken, um zurück zum Hauptbildschirm zu gelangen.");
+		btnUserDel.setToolTipText("Klicken, um den ausgewählten Benutzer zu löschen.");
+		btnUserEdit.setToolTipText("Klicken, um den ausgewählten Benutzer zu bearbeiten.");
 	}
 
 	/**

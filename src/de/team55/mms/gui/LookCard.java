@@ -83,12 +83,13 @@ public class LookCard extends JPanel {
 
 		tree.setCellRenderer(renderer);
 		looking.add(tree);
-
+		
 		tree.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
+				System.out.println(tree.getSelectionRows());
 				try {
 					MHBPDF(0, 0);
 				} catch (IOException e1) {

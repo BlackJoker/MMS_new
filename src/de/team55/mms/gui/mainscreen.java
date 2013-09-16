@@ -65,6 +65,7 @@ import de.team55.mms.data.User;
 //import de.team55.mms.data.Zuordnung;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
+
 import javax.swing.UIManager;
 
 public class mainscreen {
@@ -121,7 +122,7 @@ public class mainscreen {
 
 	// Komponenten
 	private static JPanel cards = new JPanel();
-	private static 		JPanel top = new JPanel();
+	private static JPanel top = new JPanel();
 	private static JPanel modul_panel = new JPanel();
 	private static JPanel modul_panel_edit = new JPanel();
 	private static JButton btnModulEinreichen = new JButton("Modul Einreichen");
@@ -135,9 +136,8 @@ public class mainscreen {
 	private JTable tblmessages;
 	private static HomeCard welcome;
 	private static LookCard looking;
-	private int messages=0;
+	private int messages = 0;
 	private JDateChooser calender = new JDateChooser();
-
 
 	// zum testen von drag and drop und für die Verwaltung der
 	// Modulverantwortlichen
@@ -193,7 +193,9 @@ public class mainscreen {
 
 	protected int newMessages;
 
-	protected JButton btnNewButton=new JButton();
+	protected static JButton btnNewButton = new JButton("Sie haben keine neue Nachricht.");
+
+	protected static String selectedCard = "welcome Page";
 
 	// main Frame
 	public mainscreen() {
@@ -435,16 +437,16 @@ public class mainscreen {
 
 		JButton savedate = new JButton("Datum setzen");
 		buttons1.add(savedate);
-//		JButton test = new JButton("test");
-//		buttons1.add(test);
-//		test.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				// TODO Auto-generated method stub
-//				calender.setDate(serverConnection.getDate());
-//			}
-//		});
+		// JButton test = new JButton("test");
+		// buttons1.add(test);
+		// test.addActionListener(new ActionListener() {
+		//
+		// @Override
+		// public void actionPerformed(ActionEvent arg0) {
+		// // TODO Auto-generated method stub
+		// calender.setDate(serverConnection.getDate());
+		// }
+		// });
 		savedate.addActionListener(new ActionListener() {
 			String dateString;
 
@@ -556,9 +558,8 @@ public class mainscreen {
 	 * Erstellt den oberen Teil der GUI
 	 */
 	private void topscr() {
-		FlowLayout flowLayout = (FlowLayout) top.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
 		frame.getContentPane().add(top, BorderLayout.NORTH);
+		top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
 
 		JLabel lblMMS = new JLabel("Modul Management System");
 		lblMMS.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -566,12 +567,11 @@ public class mainscreen {
 		lblMMS.setLabelFor(frame);
 		top.add(lblMMS);
 		
-		Component horizontalStrut = Box.createHorizontalStrut(20);
-		top.add(horizontalStrut);
-		//btnNewButton.setBorder(BorderFactory.createEmptyBorder());
+		Component horizontalGlue = Box.createHorizontalGlue();
+		top.add(horizontalGlue);
+//		top.add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				top.remove(btnNewButton);
 				showCard("welcome page");
 			}
 		});
@@ -1243,7 +1243,7 @@ public class mainscreen {
 
 		pnl_newmod.add(scrollPane);
 		cards.add(pnl_newmod, "newmodule");
-		
+
 		btnOk.setToolTipText("Klicken, um ihr Modul einzureichen.");
 		btnHome.setToolTipText("Klicken, um zurück in den Hauptbildschirm zu gelangen.");
 		btnNeuesFeld.setToolTipText("Klicken, um ein neues Feld in ihrem Modul zu erstellen.");
@@ -1267,6 +1267,7 @@ public class mainscreen {
 	 *            Die Bezeichnung der Card, zu der gewechselt werden soll
 	 */
 	private static void showCard(String card) {
+		selectedCard = card;
 		((CardLayout) cards.getLayout()).show(cards, card);
 	}
 
@@ -1426,7 +1427,7 @@ public class mainscreen {
 		usrcenter.add(ussrscp);
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
-		
+
 		btnUserAdd.setToolTipText("Klicken, um neuen Benutzer hinzuzufügen.");
 		btnHome.setToolTipText("Klicken, um zurück zum Hauptbildschirm zu gelangen.");
 		btnUserDel.setToolTipText("Klicken, um den ausgewählten Benutzer zu löschen.");
@@ -1449,6 +1450,7 @@ public class mainscreen {
 		welcome.setMessageView(false);
 		welcome.setUser(current);
 		welcome.setConnection(serverConnection);
+		top.remove(btnNewButton);
 		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
 			btnModulBearbeiten.setEnabled(true);
@@ -1472,6 +1474,7 @@ public class mainscreen {
 			btnUserVerwaltung.setText("Account bearbeiten");
 		}
 		if (canReadMessages) {
+			top.add(btnNewButton);
 			startThread();
 			welcome.setMessageView(true);
 		}
@@ -1479,32 +1482,32 @@ public class mainscreen {
 	}
 
 	private void startThread() {
-		run=true;
+		run = true;
 		new Thread() {
 			@Override
 			public void run() {
+				int time = 10;// Aktualisierungsintevall in Sekunden
 				while (run) {
 					messages = welcome.getMessageCount();
 					welcome.refreshMessages();
 					welcome.getDate();
-					try {
-						sleep(10000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						// e.printStackTrace();
+					newMessages = welcome.getMessageCount();
+					for (int i = 0; i < time; i++) {
+						if (newMessages > 1) {
+							btnNewButton.setText("Sie haben" + newMessages + "neuen Nachrichten.");
+						} else if (newMessages == 1) {
+							btnNewButton.setText("Sie haben eine neue Nachricht.");
+						} else {
+							btnNewButton.setText("Sie haben keine neue Nachricht.");
+						}
+						try {
+							sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							// e.printStackTrace();
+						}
 					}
-					newMessages=welcome.getMessageCount();
-					if(newMessages>1){
-						top.remove(btnNewButton);
-						btnNewButton.setText("Sie haben" +newMessages+ "neuen Nachrichten.");
-						top.add(btnNewButton);
-					} else if(newMessages==1){
-						top.remove(btnNewButton);
-						btnNewButton.setText("Sie haben eine neue Nachricht.");
-						top.add(btnNewButton);
-					} else {
-						top.remove(btnNewButton);
-					}
+
 				}
 			}
 		}.start();
@@ -2574,7 +2577,6 @@ public class mainscreen {
 		}
 
 		// Pdf für das Modul erstellen
-		
 
 		// Zurück zur vorherigen Ansicht
 		back.addActionListener(new ActionListener() {

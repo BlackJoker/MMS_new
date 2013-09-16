@@ -1,6 +1,9 @@
 package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileOutputStream;
@@ -8,11 +11,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
 
 import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
@@ -29,16 +39,24 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 public class LookCard extends JPanel {
+	private static JFrame frame;
 	private ServerConnection serverConnection = null;
 	private static JPanel looking = new JPanel();
+	private static JPanel content = new JPanel();
+	private static JPanel btn_panel = new JPanel();
 	private JTree tree;
 	private ArrayList<Studiengang> studienlist = null;
+	private DefaultMutableTreeNode node;
 
 	public LookCard() {
 		super();
 		this.setLayout(new BorderLayout(0, 0));
 		add(looking, BorderLayout.CENTER);
 		looking.setLayout(new BorderLayout(0, 0));
+		content.setLayout(new BorderLayout(0, 0));
+		btn_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		looking.add(content, BorderLayout.CENTER);
+		looking.add(btn_panel, BorderLayout.SOUTH);
 
 	}
 
@@ -79,50 +97,49 @@ public class LookCard extends JPanel {
 		};
 
 		BasicTreeUI ui = (BasicTreeUI) tree.getUI();
-
-
 		tree.setCellRenderer(renderer);
-		looking.add(tree);
+		content.add(tree);
 		
-		tree.addMouseListener(new MouseListener() {
-
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			
 			@Override
-			public void mouseReleased(MouseEvent e) {
+			public void valueChanged(TreeSelectionEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println(tree.getSelectionRows());
-				try {
-					MHBPDF(0, 0);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} // bei goforit nach openrow
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-
+				node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();			
 			}
 		});
+		
+		JButton pdfbtn = new JButton("PDF ausgeben");
+		btn_panel.add(pdfbtn);
+		pdfbtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(node != null){
+					System.out.println(node.toString());
+					if(node.getParent() != null)
+					System.out.println(node.getParent().toString());
+					if((node.getParent().toString().equalsIgnoreCase("Universität Ulm") || node.getParent().getParent().toString().equalsIgnoreCase("Universität Ulm"))){
+//						try {
+//							if(node.getParent().getParent().toString().equalsIgnoreCase("Universität Ulm")){
+//								MHBPDF(0, 0);
+//							}else{
+//								MHBPDF(0);
+//							}
+//						} catch (IOException e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+					}else{
+						JOptionPane.showMessageDialog(frame, "Bitte wählen sie entweder einen Studiengang oder ein Modulhandbuch aus.", "Input Error", JOptionPane.ERROR_MESSAGE);
+						
+					}
+				}
+			}
+		});
+		
 
 	}
 

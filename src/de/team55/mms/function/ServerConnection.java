@@ -29,7 +29,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import com.lowagie.text.DocumentException;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
@@ -521,48 +521,48 @@ public class ServerConnection {
 	 * @throws TransformerConfigurationException
 	 * @throws FileNotFoundException
 	 */
-	public void toPdf(String name) throws IOException, DocumentException, TransformerException,
-
-	TransformerConfigurationException, FileNotFoundException {
-
-		getModulXMLFile(name); // nach einigen verschachtelten aufrufen wird
-								// hier die xml-datei erstellt
-
-		String pdfname = (name + getPDFname() + ".pdf"); // pdf-datei name wird
-															// generiert
-
-		// transformer mit xsl datei wird erzeugt
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		Transformer transformer = tFactory.newTransformer(new StreamSource("style.xsl"));
-
-		// eiegnschaften des transformer werden verändert/spezifiziert
-		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-		// eigentliche umwandlung von xml + xsl zu html
-		transformer.transform(new StreamSource("modul.xml"), new StreamResult(new OutputStreamWriter(new FileOutputStream("modul.html"),
-				"UTF-8")));
-
-		specialreplacer(); // ersetzt sonderzeichentags in utf-8 sonderzeichen
-
-		String File_To_Convert = "modul.html";
-		String url = new File(File_To_Convert).toURI().toURL().toString();
-
-		// umwandlung von html zu pdf
-		String HTML_TO_PDF = pdfname;
-
-		FileOutputStream os = new FileOutputStream(HTML_TO_PDF);
-		ITextRenderer renderer = new ITextRenderer();
-		renderer.setDocument(url);
-		renderer.layout();
-		renderer.createPDF(os);
-
-		os.close();
-
-		Desktop.getDesktop().open(new File(pdfname));// erstellte Pdf wird
-														// geöffnet
-		dclean(); // räumt die xml-datei welche nicht mehr benötigt wird auf...
-	}
+//	public void toPdf(String name) throws IOException, DocumentException, TransformerException,
+//
+//	TransformerConfigurationException, FileNotFoundException {
+//
+//		getModulXMLFile(name); // nach einigen verschachtelten aufrufen wird
+//								// hier die xml-datei erstellt
+//
+//		String pdfname = (name + getPDFname() + ".pdf"); // pdf-datei name wird
+//															// generiert
+//
+//		// transformer mit xsl datei wird erzeugt
+//		TransformerFactory tFactory = TransformerFactory.newInstance();
+//		Transformer transformer = tFactory.newTransformer(new StreamSource("style.xsl"));
+//
+//		// eiegnschaften des transformer werden verändert/spezifiziert
+//		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+//		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+//
+//		// eigentliche umwandlung von xml + xsl zu html
+//		transformer.transform(new StreamSource("modul.xml"), new StreamResult(new OutputStreamWriter(new FileOutputStream("modul.html"),
+//				"UTF-8")));
+//
+//		specialreplacer(); // ersetzt sonderzeichentags in utf-8 sonderzeichen
+//
+//		String File_To_Convert = "modul.html";
+//		String url = new File(File_To_Convert).toURI().toURL().toString();
+//
+//		// umwandlung von html zu pdf
+//		String HTML_TO_PDF = pdfname;
+//
+//		FileOutputStream os = new FileOutputStream(HTML_TO_PDF);
+//		ITextRenderer renderer = new ITextRenderer();
+//		renderer.setDocument(url);
+//		renderer.layout();
+//		renderer.createPDF(os);
+//
+//		os.close();
+//
+//		Desktop.getDesktop().open(new File(pdfname));// erstellte Pdf wird
+//														// geöffnet
+//		dclean(); // räumt die xml-datei welche nicht mehr benötigt wird auf...
+//	}
 
 	/**
 	 * generiert pdfnamen aus erstellungszeitpunkt

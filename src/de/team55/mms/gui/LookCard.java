@@ -3,6 +3,7 @@ package de.team55.mms.gui;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -13,10 +14,19 @@ import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
+import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.function.ServerConnection;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 public class LookCard extends JPanel {
 	private ServerConnection serverConnection = null;
@@ -156,7 +166,7 @@ public class LookCard extends JPanel {
 			document.add(new Paragraph("Modulhandbuch: " + abschluss + "" + studname + " FSPO " + pruefjahr + "" + jahrgang));
 			document.add(underline);
 			document.add(new Paragraph(prosa));
-			document.close();
+	
 		} catch (DocumentException de) {
 			System.err.println(de.getMessage());
 		} catch (IOException ioe) {
@@ -171,11 +181,11 @@ public class LookCard extends JPanel {
 
 			try {
 				// step 3: Dokument öffnen
-				document.open();
+				
 				// step 4: Absatz mit Text dem Dokument hinzufügen
 				document.add(new Chunk((j + 1) + ". " + fachname).setLocalDestination((j + 1) + ". " + fachname));
 				document.add(Chunk.NEWLINE); // leerzeile
-				document.close();
+				
 			} catch (DocumentException de) {
 				System.err.println(de.getMessage());
 			}
@@ -187,11 +197,11 @@ public class LookCard extends JPanel {
 
 				try {
 					// step 3: Dokument öffnen
-					document.open();
+				
 					// step 4: Absatz mit Text dem Dokument hinzufügen
 					document.add(new Paragraph(new Chunk((j + 1) + "." + (k + 1) + ". " + Modname).setLocalDestination((j + 1) + "."
 							+ (k + 1) + ". " + Modname)));
-					document.close();
+				
 				} catch (DocumentException de) {
 					System.err.println(de.getMessage());
 				}
@@ -205,14 +215,14 @@ public class LookCard extends JPanel {
 
 					try {
 						// step 3: Dokument öffnen
-						document.open();
+					
 						// step 4: Absatz mit Text dem Dokument hinzufügen
 
 						document.add(new Chunk(String.format(label + ": ")));
 						document.add(new Chunk(tab));
 						document.add(new Chunk(value));
 
-						document.close();
+					
 					} catch (DocumentException de) {
 						System.err.println(de.getMessage());
 					}

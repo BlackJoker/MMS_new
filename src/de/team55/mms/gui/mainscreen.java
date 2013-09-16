@@ -54,7 +54,6 @@ import javax.swing.table.JTableHeader;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import com.lowagie.text.DocumentException;
 import com.toedter.calendar.JDateChooser;
 
 import de.team55.mms.data.Feld;
@@ -2510,31 +2509,7 @@ public class mainscreen {
 		}
 
 		// Pdf für das Modul erstellen
-		pdfbtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				try {
-					serverConnection.toPdf(modulselectionstring);
-				} catch (TransformerConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (DocumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (TransformerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+		
 
 		// Zurück zur vorherigen Ansicht
 		back.addActionListener(new ActionListener() {

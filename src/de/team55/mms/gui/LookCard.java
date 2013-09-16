@@ -1,20 +1,23 @@
 package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
-
 import java.util.ArrayList;
 
 
 
+
+
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
 import javax.swing.JTree;
-
+import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
-import de.team55.mms.data.Studiengang;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
+import de.team55.mms.data.Studiengang;
 import de.team55.mms.function.ServerConnection;
 
 public class LookCard extends JPanel{
@@ -41,12 +44,6 @@ public class LookCard extends JPanel{
 	    DefaultMutableTreeNode t3Child;
 	    DefaultMutableTreeNode t4Child;
 	    
-	    
-	    
-	    
-	    
-	    
-	    
 	    for(int i = 0; i < studienlist.size(); i++) {
 	      child = new DefaultMutableTreeNode(studienlist.get(i).getName());
 	      root.add(child);
@@ -69,6 +66,19 @@ public class LookCard extends JPanel{
 	    }
 	    
 	    tree = new JTree(root);
+	    DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+            {
+                setLeafIcon(new ImageIcon("leafIcon.jpg"));
+                setOpenIcon(new ImageIcon("openIcon.jpg"));
+                setClosedIcon(new ImageIcon("closeIcon.jpg"));
+            }
+        };
+ 
+        BasicTreeUI ui = (BasicTreeUI) tree.getUI();
+        ui.setCollapsedIcon(new ImageIcon("collapsedIcon.jpg"));
+        ui.setExpandedIcon(new ImageIcon("expandedIcon.jpg"));
+ 
+        tree.setCellRenderer(renderer);
 	    looking.add(tree);
 	}
 	

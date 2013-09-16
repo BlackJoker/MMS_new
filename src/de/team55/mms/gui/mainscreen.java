@@ -133,6 +133,7 @@ public class mainscreen {
 	private static JPanel mod = new JPanel();
 	private JTable tblmessages;
 	private static HomeCard welcome;
+	private static LookCard looking;
 
 	// zum testen von drag and drop und für die Verwaltung der
 	// Modulverantwortlichen
@@ -926,7 +927,9 @@ public class mainscreen {
 					}
 					// TODO something
 					// typen = serverConnection.getZuordnungen();
-
+					looking.setConnection(serverConnection);
+					looking.setStudienlist(studienlist);
+					looking.buildTree();
 					// Zur Card wechseln
 					showCard("studiengang show");
 				} else {
@@ -2180,9 +2183,9 @@ public class mainscreen {
 	 */
 	@SuppressWarnings("serial")
 	private void studiengangCard() {
-
+		looking = new LookCard();
 		JPanel studiengangshow = new JPanel();
-		cards.add(studiengangshow, "studiengang show");
+		cards.add(looking, "studiengang show");
 		studiengangshow.setLayout(new BorderLayout(0, 0));
 		JPanel btnpan = new JPanel();
 		JButton goforit = new JButton("\u00d6ffnen");

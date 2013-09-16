@@ -118,9 +118,9 @@ public class LookCard extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				if(node != null){
-					System.out.println(node.toString());
+//					System.out.println(node.toString());
 					if(node.getParent() != null)
-					System.out.println(node.getParent().toString());
+//					System.out.println(node.getParent().toString());
 					if((node.getParent().toString().equalsIgnoreCase("Universität Ulm") || node.getParent().getParent().toString().equalsIgnoreCase("Universität Ulm"))){
 //						try {
 //							if(node.getParent().getParent().toString().equalsIgnoreCase("Universität Ulm")){

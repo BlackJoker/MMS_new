@@ -660,4 +660,13 @@ public class ServerConnection {
 		return null;
 	}
 
+	public void deleteNachricht(Nachricht nachricht) {
+		if (connect(email, password) == SUCCES) {
+			String id = Integer.toString(nachricht.getId());
+			webResource.path("nachrichten/delete").path(id).type(MediaType.APPLICATION_XML).delete();
+		//	return webResource.path("user/get").path(mail).get(ClientResponse.class);
+		}
+		//return null;
+	}
+
 }

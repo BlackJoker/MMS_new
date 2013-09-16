@@ -191,6 +191,14 @@ public class MessageResource {
 		}
 	}
 	
+	@DELETE
+	@Path("/nachrichten/delete/{id}")
+	@Consumes(MediaType.APPLICATION_XML)
+	public void deleteNachricht(@PathParam("id") String id) {
+		System.out.println("Nachricht " + id + " wurde gelöscht");
+		new sql().deleteNachricht(id);
+	}
+	
 
 
 	/**

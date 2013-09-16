@@ -1729,5 +1729,21 @@ public class sql {
 		
 	}
 
+	public void deleteNachricht(String id) {
+		PreparedStatement state = null;
+		if(connect() == true){
+			try{
+				int nID = Integer.parseInt(id);
+				state = this.con.prepareStatement("DELETE FROM nachrichten WHERE id=?");
+				state.setInt(1, nID);
+				System.out.println(state);
+				state.executeUpdate();
+				this.con.commit();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}	
+		}	
+	}
+
 
 }

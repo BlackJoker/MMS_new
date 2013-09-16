@@ -92,6 +92,7 @@ public class userdialog extends JDialog {
 		this.adminedit = adminedit;
 		this.serverConnection = serverConnection;
 		createDialog();
+	    setLocationRelativeTo(owner);
 	}
 
 	/**

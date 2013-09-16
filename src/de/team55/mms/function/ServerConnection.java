@@ -669,4 +669,10 @@ public class ServerConnection {
 		//return null;
 	}
 
+	public ClientResponse updateNachricht(Nachricht n) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("nachrichten/update").type(MediaType.APPLICATION_XML).put(ClientResponse.class, n);
+		}
+		return null;
+	}
 }

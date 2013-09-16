@@ -677,7 +677,7 @@ public class mainscreen {
 	 * 
 	 */
 	private void homecard() {
-		welcome = new HomeCard();
+		welcome = new HomeCard(frame);
 		cards.add(welcome, "welcome page");
 	}
 

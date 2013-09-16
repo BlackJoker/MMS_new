@@ -19,6 +19,7 @@ import java.util.Date;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -44,9 +45,9 @@ public class HomeCard extends JPanel {
 	private ArrayList<Nachricht> nachrichten = new ArrayList<Nachricht>();
 	private ArrayList<User> neueUser;
 	private JLabel lblStichtag;
-	JPanel pnl_day = new JPanel();
+	private JPanel pnl_day = new JPanel();
 
-	public HomeCard() {
+	public HomeCard(final JFrame frame) {
 		super();
 		this.setLayout(new BorderLayout(0, 0));
 		add(welcome, BorderLayout.CENTER);
@@ -103,14 +104,16 @@ public class HomeCard extends JPanel {
 					int row = tblmessages.getSelectedRow();
 					final Nachricht n = nachrichten.get(row);
 					nachrichten.remove(row);
-					n.setGelesen(true);
+					n.setGelesen(true);					
 					if (!dialogs.contains(n.toString())) {
 						dialogs.add(n.toString());
 						if(n.getBetreff().contains("hat sich angemeldet")){
+							boolean neu = false;
 							for(int i = 0; i<neueUser.size();i++){
 								String u = neueUser.get(i).getId()+"";
 								if(u.equals(n.getNachricht())){
-									userdialog dlg = new userdialog(null, "User bestätigen", neueUser.get(i), true, serverConnection);
+									neu=true;
+									userdialog dlg = new userdialog(frame, "User bestätigen", neueUser.get(i), true, serverConnection);
 									int response = dlg.showCustomDialog();
 									// Bei Bestätigung, neuen User freischalten und e-Mail
 									// senden
@@ -126,7 +129,7 @@ public class HomeCard extends JPanel {
 										dialogs.remove(n.toString());
 										// Ansonsten möglichkeit ihn wieder zu löschen
 									} else {
-										int a = JOptionPane.showConfirmDialog(null, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
+										int a = JOptionPane.showConfirmDialog(frame, "Möchten Sie diesen Benutzer löschen", "Bestätigung",
 												JOptionPane.YES_NO_OPTION);
 										if (a == 0) {
 											serverConnection.deluser(tmp.geteMail());
@@ -135,6 +138,10 @@ public class HomeCard extends JPanel {
 									}
 									break;
 								}						
+							}
+							if(!neu){
+								JOptionPane.showMessageDialog(frame, "User wurde bereits frei geschaltet");
+								dialogs.remove(n.toString());
 							}
 						} else {
 							final MessageDialog dialog = new MessageDialog(n);
@@ -187,6 +194,7 @@ public class HomeCard extends JPanel {
 							
 						}
 					}
+					serverConnection.updateNachricht(n);
 					nachrichten.add(n);
 					refreshMessageTable();
 				}
@@ -202,6 +210,7 @@ public class HomeCard extends JPanel {
 				for (int i = 0; i < messagemodel.getRowCount(); i++) {
 					if ((boolean) messagemodel.getValueAt(i, 0)) {
 						nachrichten.get(i).setGelesen(true);
+						serverConnection.updateNachricht(nachrichten.get(i));
 					}
 				}
 				refreshMessageTable();
@@ -215,6 +224,7 @@ public class HomeCard extends JPanel {
 				for (int i = 0; i < messagemodel.getRowCount(); i++) {
 					if ((boolean) messagemodel.getValueAt(i, 0)) {
 						nachrichten.get(i).setGelesen(false);
+						serverConnection.updateNachricht(nachrichten.get(i));
 					}
 				}
 				refreshMessageTable();

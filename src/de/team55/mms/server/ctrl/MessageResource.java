@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -199,6 +200,19 @@ public class MessageResource {
 		new sql().deleteNachricht(id);
 	}
 	
+	@PUT
+	@Path("/nachrichten/update/")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response UpdateNachricht(Nachricht n) {
+		int status = new sql().updateNachricht(n);
+		if (status == 1) {
+			System.out.println("Nachricht " + n.getId() + " aktualisiert");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Nachricht " + n.getId() + " wurde nicht aktualisiert");
+			return Response.status(500).build();
+		}
+	}
 
 
 	/**

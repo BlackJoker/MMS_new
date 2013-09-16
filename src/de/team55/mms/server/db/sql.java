@@ -1630,6 +1630,7 @@ public class sql {
 				state.executeUpdate();
 				state.close();
 				status = SUCCES;
+				state.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -1654,6 +1655,7 @@ public class sql {
 				while(res.next()){
 					date = dateConverterSQL2Util(res.getTimestamp("datum"));
 				}
+				res.close();
 				state.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1693,11 +1695,12 @@ public class sql {
 				while(res.next()){
 					lists.get(1).add(new User(res.getInt("id"), res.getString("vorname"), res.getString("name"), res.getString("titel"), res.getString("email"), res.getString("password"), res.getBoolean("userchange"), res.getBoolean("modcreate"), res.getBoolean("modacc"), res.getBoolean("manage"), res.getBoolean("redaktion"), res.getBoolean("frei")));
 				}
-				
+				res.close();
+				state.close();				
 			}catch(SQLException e){
 				e.printStackTrace();
 			}
-			
+			disconnect();
 		}		
 		
 		return lists;
@@ -1719,11 +1722,13 @@ public class sql {
 				while(res.next()){
 					give.add(res.getString("modulname"));
 				}
+				res.close();
+				state.close();
 			}catch(SQLException e){
 				e.printStackTrace();
 			}
+			disconnect();
 		}
-		
 		
 		return give;
 		
@@ -1739,10 +1744,39 @@ public class sql {
 				System.out.println(state);
 				state.executeUpdate();
 				this.con.commit();
+				state.close();
 			}catch(SQLException e){
 				e.printStackTrace();
 			}	
+			disconnect();
 		}	
+	}
+
+	public int updateNachricht(Nachricht n) {
+		int status = FAILED;
+		if (connect() == true) {
+			PreparedStatement state = null;
+			try {
+				state = con
+						.prepareStatement("UPDATE nachrichten SET absender_id=?, empfaenger_id=?, betreff=?, text=?, gelesen=?, datum=? WHERE id=?");
+				state.setInt(1, n.getAbsenderID());
+				state.setInt(2, n.getEmpfaengerID());
+				state.setString(3, n.getBetreff());
+				state.setString(4, n.getNachricht());
+				state.setBoolean(5, n.isGelesen());
+				state.setTimestamp(6, dateConverterUtil2SQL(n.getDatum()));
+				state.setInt(7, n.getId());
+				System.out.println(state);
+				state.executeUpdate();
+				status = SUCCES;
+				state.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				status = FAILED;
+			}
+			disconnect();
+		}
+		return status;
 	}
 
 

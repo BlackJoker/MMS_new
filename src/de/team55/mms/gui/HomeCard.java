@@ -57,6 +57,8 @@ public class HomeCard extends JPanel {
 		pnl_content.add(pnl_day);
 
 
+		lblStichtag=new JLabel();
+		pnl_day.add(lblStichtag);
 		JPanel pnl_messages = new JPanel();
 		pnl_content.add(pnl_messages);
 		pnl_messages.setLayout(new BoxLayout(pnl_messages, BoxLayout.Y_AXIS));
@@ -304,8 +306,7 @@ public class HomeCard extends JPanel {
 	
 	public void getDate(){
 		Date date = serverConnection.getDate();
-		lblStichtag = new JLabel("Stichtag f\u00FCr das Einreichen von Modulen: "+date.getDate()+"."+date.getMonth()+"."+(date.getYear()+1900));
-		pnl_day.add(lblStichtag);
+		lblStichtag.setText("Stichtag f\u00FCr das Einreichen von Modulen: "+date.getDate()+"."+date.getMonth()+"."+(date.getYear()+1900));
 		lblStichtag.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStichtag.setAlignmentY(0.0f);
 		lblStichtag.setForeground(Color.RED);

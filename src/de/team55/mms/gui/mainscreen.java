@@ -1413,7 +1413,9 @@ public class mainscreen {
 		btnUserVerwaltung.setEnabled(false);
 		btnModulAkzeptieren.setEnabled(false);
 		canReadMessages = false;
-		welcome.setMessageView(false);		
+		welcome.setMessageView(false);
+		welcome.setUser(current);
+		welcome.setConnection(serverConnection);
 		if (current.getCreateModule()) {
 			btnModulEinreichen.setEnabled(true);
 			btnModulBearbeiten.setEnabled(true);
@@ -1437,8 +1439,6 @@ public class mainscreen {
 			btnUserVerwaltung.setText("Account bearbeiten");
 		}
 		if (canReadMessages) {
-			welcome.setUser(current);
-			welcome.setConnection(serverConnection);
 			welcome.getDate();
 			welcome.refreshMessages();
 			welcome.setMessageView(true);

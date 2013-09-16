@@ -2,6 +2,7 @@ package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -42,6 +43,8 @@ public class HomeCard extends JPanel {
 	private ServerConnection serverConnection;
 	private ArrayList<Nachricht> nachrichten = new ArrayList<Nachricht>();
 	private ArrayList<User> neueUser;
+	private JLabel lblStichtag;
+	JPanel pnl_day = new JPanel();
 
 	public HomeCard() {
 		super();
@@ -51,15 +54,8 @@ public class HomeCard extends JPanel {
 		final ArrayList<String> dialogs = new ArrayList<String>();
 		pnl_content.setLayout(new BoxLayout(pnl_content, BoxLayout.Y_AXIS));
 
-		JPanel pnl_day = new JPanel();
 		pnl_content.add(pnl_day);
 
-		JLabel lblStichtag = new JLabel("Stichtag f\u00FCr das Einreichen von Modulen: 30.08.13");
-		pnl_day.add(lblStichtag);
-		lblStichtag.setHorizontalAlignment(SwingConstants.CENTER);
-		lblStichtag.setAlignmentY(0.0f);
-		lblStichtag.setForeground(Color.RED);
-		lblStichtag.setFont(new Font("Tahoma", Font.BOLD, 14));
 
 		JPanel pnl_messages = new JPanel();
 		pnl_content.add(pnl_messages);
@@ -304,6 +300,16 @@ public class HomeCard extends JPanel {
 
 	public void setConnection(ServerConnection serverConnection) {
 		this.serverConnection = serverConnection;
+	}
+	
+	public void getDate(){
+		Date date = serverConnection.getDate();
+		lblStichtag = new JLabel("Stichtag f\u00FCr das Einreichen von Modulen: "+date.getDate()+"."+date.getMonth()+"."+(date.getYear()+1900));
+		pnl_day.add(lblStichtag);
+		lblStichtag.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStichtag.setAlignmentY(0.0f);
+		lblStichtag.setForeground(Color.RED);
+		lblStichtag.setFont(new Font("Tahoma", Font.BOLD, 14));
 	}
 
 }

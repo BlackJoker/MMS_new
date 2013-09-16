@@ -34,7 +34,7 @@ public class Studiengang {
 	
 	@Override
 	public String toString() {
-		return name;
+		return name+" "+abschluss;
 	}
 
 	public int getId() {

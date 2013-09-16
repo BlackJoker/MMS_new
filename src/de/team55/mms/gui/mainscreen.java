@@ -196,6 +196,9 @@ public class mainscreen {
 	protected static JButton btnNewButton = new JButton("Sie haben keine neue Nachricht.");
 
 	protected static String selectedCard = "welcome Page";
+	private JTable table;
+
+	private DefaultTableModel tableFelder;
 
 	// main Frame
 	public mainscreen() {
@@ -265,6 +268,7 @@ public class mainscreen {
 
 		// Liste mit Studiengängen in ScrollPane
 		JList<Studiengang> list = new JList<Studiengang>(studimodel);
+		list.setVisibleRowCount(10);
 		JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pnl_studiengang.add(scrollPane, BorderLayout.CENTER);
@@ -334,6 +338,77 @@ public class mainscreen {
 
 		JLabel lblStudiengnge = new JLabel("Studieng\u00E4nge");
 		pnl_studiengang.add(lblStudiengnge, BorderLayout.NORTH);
+
+		JPanel pnl_felder = new JPanel();
+		pnl_manage.add(pnl_felder);
+		pnl_felder.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane_1 = new JScrollPane();
+		pnl_felder.add(scrollPane_1, BorderLayout.CENTER);
+
+		table = new JTable();
+		tableFelder = new DefaultTableModel(new Object[][] {}, new String[] { "Name", "Dezernat 2" }) {
+			Class[] columnTypes = new Class[] { String.class, Boolean.class };
+
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		};
+		table.setModel(tableFelder);
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table.getColumnModel().getColumn(0).setMinWidth(75);
+		table.getColumnModel().getColumn(1).setMaxWidth(75);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane_1.setViewportView(table);
+
+		JPanel panel = new JPanel();
+		pnl_felder.add(panel, BorderLayout.SOUTH);
+
+		JButton btnNeuesStandardFeld = new JButton("Neues Standard Feld");
+		btnNeuesStandardFeld.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JPanel p = new JPanel();
+				p.setLayout(new GridLayout(2, 0, 0, 0));
+
+				JPanel pnl_name = new JPanel();
+				JPanel pnl_dezernat = new JPanel();
+				JLabel lblNameDesFeldes = new JLabel("Name des Feldes:");
+				JTextField txtName = new JTextField();
+				JCheckBox chckbxDezernat = new JCheckBox("Dezernat 2");
+
+				p.add(pnl_name);
+				pnl_name.setLayout(new GridLayout(0, 2, 0, 0));
+
+				pnl_name.add(lblNameDesFeldes);
+
+				pnl_name.add(txtName);
+
+				p.add(pnl_dezernat);
+				chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");
+
+				pnl_dezernat.add(chckbxDezernat);
+				// Abfrage des Namen des Feldes
+				try {
+					Object[] options = { "Annehmen", "Abbrechen" };
+					int n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+							null, options, // the titles of buttons
+							options[1]); // default button title
+					String name = txtName.getText();
+					while (name.isEmpty() && n == 0) {
+						n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+								null, options, // the titles of buttons
+								options[1]);
+						name = txtName.getText();
+					}
+					boolean dezernat = chckbxDezernat.isSelected();
+					System.out.println(dezernat);
+					System.out.println(name);
+				} catch (NullPointerException np) {
+					// Nichts bei abbruch
+				}
+			}
+		});
+		panel.add(btnNeuesStandardFeld);
 
 		JPanel pnl_zuordnungen = new JPanel();
 		pnl_manage.add(pnl_zuordnungen);
@@ -419,6 +494,17 @@ public class mainscreen {
 
 		});
 		buttons1.add(btnNeueZuordnung);
+		// worklist = serverConnection.userload();
+		JLabel lblZuordnungen = new JLabel("Deadline");
+		lblZuordnungen.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
+		calender.getCalendarButton().setText("Datum w\u00E4hlen");
+		calender.getCalendarButton().setVerticalAlignment(SwingConstants.BOTTOM);
+
+		pnl_zuordnungen.add(calender, BorderLayout.CENTER);
+
+		JButton savedate = new JButton("Datum setzen");
+		buttons1.add(savedate);
 
 		JButton btnZurck_1 = new JButton("Zur\u00FCck");
 		btnZurck_1.addActionListener(new ActionListener() {
@@ -429,14 +515,6 @@ public class mainscreen {
 			}
 		});
 		buttons1.add(btnZurck_1);
-		// worklist = serverConnection.userload();
-		JLabel lblZuordnungen = new JLabel("Deadline");
-		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
-
-		pnl_zuordnungen.add(calender);
-
-		JButton savedate = new JButton("Datum setzen");
-		buttons1.add(savedate);
 		// JButton test = new JButton("test");
 		// buttons1.add(test);
 		// test.addActionListener(new ActionListener() {
@@ -566,10 +644,10 @@ public class mainscreen {
 		lblMMS.setHorizontalAlignment(SwingConstants.LEFT);
 		lblMMS.setLabelFor(frame);
 		top.add(lblMMS);
-		
+
 		Component horizontalGlue = Box.createHorizontalGlue();
 		top.add(horizontalGlue);
-//		top.add(btnNewButton);
+		// top.add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				showCard("welcome page");

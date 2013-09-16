@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -200,6 +201,8 @@ public class mainscreen {
 
 	private DefaultTableModel tableFelder;
 
+	private Vector<String> columnIdentifiers;
+
 	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
@@ -346,9 +349,14 @@ public class mainscreen {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		pnl_felder.add(scrollPane_1, BorderLayout.CENTER);
 
+		columnIdentifiers = new Vector<String>();
+		columnIdentifiers.add("Position");
+		columnIdentifiers.add("Name");
+		columnIdentifiers.add("Dezernat 2");
+
 		table = new JTable();
-		tableFelder = new DefaultTableModel(new Object[][] {}, new String[] { "Name", "Dezernat 2" }) {
-			Class[] columnTypes = new Class[] { String.class, Boolean.class };
+		tableFelder = new DefaultTableModel(new Vector(), columnIdentifiers) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class, Boolean.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -371,41 +379,53 @@ public class mainscreen {
 				p.setLayout(new GridLayout(2, 0, 0, 0));
 
 				JPanel pnl_name = new JPanel();
-				JPanel pnl_dezernat = new JPanel();
+				p.add(pnl_name);
 				JLabel lblNameDesFeldes = new JLabel("Name des Feldes:");
 				JTextField txtName = new JTextField();
-				JCheckBox chckbxDezernat = new JCheckBox("Dezernat 2");
-
-				p.add(pnl_name);
 				pnl_name.setLayout(new GridLayout(0, 2, 0, 0));
-
 				pnl_name.add(lblNameDesFeldes);
-
 				pnl_name.add(txtName);
 
+				JPanel pnl_pos = new JPanel();
+				p.add(pnl_pos);
+				JTextField txtPos = new JTextField();
+				JLabel lbl_pos = new JLabel("An Position:");
+				pnl_pos.setLayout(new GridLayout(0, 2, 0, 0));
+				pnl_pos.add(lbl_pos);
+				pnl_pos.add(txtPos);
+
+				JPanel pnl_dezernat = new JPanel();
+
+				JCheckBox chckbxDezernat = new JCheckBox("Dezernat 2");
 				p.add(pnl_dezernat);
 				chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");
 
 				pnl_dezernat.add(chckbxDezernat);
+
 				// Abfrage des Namen des Feldes
+				Object[] options = { "Annehmen", "Abbrechen" };
+				int pos = tableFelder.getRowCount();
+				txtPos.setText(pos + "");
+				int n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						options, // the titles of buttons
+						options[1]); // default button title
+				String name = txtName.getText();
+				pos = Integer.parseInt(txtPos.getText());
 				try {
-					Object[] options = { "Annehmen", "Abbrechen" };
-					int n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-							null, options, // the titles of buttons
-							options[1]); // default button title
-					String name = txtName.getText();
-					while (name.isEmpty() && n == 0) {
+					while (name.isEmpty() && (n == 0)) {
 						n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
 								null, options, // the titles of buttons
 								options[1]);
 						name = txtName.getText();
+						pos = Integer.parseInt(txtPos.getText());
 					}
-					boolean dezernat = chckbxDezernat.isSelected();
-					System.out.println(dezernat);
-					System.out.println(name);
-				} catch (NullPointerException np) {
-					// Nichts bei abbruch
+				} catch (NumberFormatException nfe) {
 				}
+				boolean dezernat = chckbxDezernat.isSelected();
+				addToTable(name, dezernat, pos);
+				System.out.println(dezernat);
+				System.out.println(name);
+
 			}
 		});
 		panel.add(btnNeuesStandardFeld);
@@ -557,6 +577,22 @@ public class mainscreen {
 		//
 	}
 
+	@SuppressWarnings("unchecked")
+	protected void addToTable(String name, boolean dezernat, int pos) {
+		Vector row = new Vector();
+		row.add(pos);
+		row.add(name);
+		row.add(dezernat);
+		Vector data = tableFelder.getDataVector();
+		data.insertElementAt(row, pos);
+		for(int i = 0;i<data.size();i++){
+			Vector tmp=	(Vector) data.elementAt(i);
+			tmp.setElementAt(i, 0);
+			data.setElementAt(tmp, i);
+		}
+		tableFelder.setDataVector(data, columnIdentifiers);
+	}
+
 	private void modverwaltung() {
 		JPanel mv = new JPanel();
 		cards.add(mv, "modverwaltung");
@@ -616,20 +652,20 @@ public class mainscreen {
 		ArrayList<String> modstufflist = new ArrayList<String>();
 		ArrayList<User> alluser = new ArrayList<User>();
 		ArrayList<User> verwalter = new ArrayList<User>();
-		
+
 		modstufflist = serverConnection.getallModulnames();
 
-		for(int i = 0; i < modstufflist.size(); i++){
-			modstuff.addRow(new Object[]{ modstufflist.get(i) });
+		for (int i = 0; i < modstufflist.size(); i++) {
+			modstuff.addRow(new Object[] { modstufflist.get(i) });
 		}
 		ArrayList<ArrayList<User>> userlisting = serverConnection.getModulverwalter(null);
 		alluser = userlisting.get(0);
 		verwalter = userlisting.get(1);
-		for(int i = 0; i < alluser.size(); i++){
-			userstuff.addRow(new Object[]{ alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
+		for (int i = 0; i < alluser.size(); i++) {
+			userstuff.addRow(new Object[] { alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
 		}
-		for(int i = 0; i < verwalter.size(); i++){
-			userstuff2.addRow(new Object[]{ alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
+		for (int i = 0; i < verwalter.size(); i++) {
+			userstuff2.addRow(new Object[] { alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
 		}
 		userstuff.addRow(new Object[] { "", "bla1-1", "bla1-2" });
 		userstuff2.addRow(new Object[] { "BLA2", "bla2-1", "bla2-2" });

@@ -507,7 +507,7 @@ public class sql {
 					state.setBoolean(5, f.isDezernat());
 					state.executeUpdate();
 				}
-				state = con.prepareStatement("UPDATE Fach SET modID=(SELECT modID FROM module WHERE modulname =? and version =?) WHERE modID = (SELECT modID FROM module where modulname =? and version =?);");
+				state = con.prepareStatement("UPDATE fach SET modID=(SELECT modID FROM module WHERE modulname =? and version =?) WHERE modID = (SELECT modID FROM module where modulname =? and version =?);");
 				state.setString(1, name);
 				state.setInt(2, version);
 				state.setString(3, name);
@@ -1277,7 +1277,7 @@ public class sql {
 
 	
 	/**
-	 * gibt eine Liste aller freigegebenen Module aus von Studiengang -> PO -> Modbuch -> Fach -> Modul
+	 * gibt eine Liste aller freigegebenen Module aus von Studiengang -> PO -> Modbuch -> fach -> Modul
 	 * @return Liste von Studiengaengen
 	 */
 	public ArrayList<Studiengang> getAllActiveData(Boolean b) {
@@ -1320,8 +1320,8 @@ public class sql {
 						mhb.add(new Modulhandbuch(id, semester + " " + jahr, prosa, pojahr));
 					}
 					for (int j = 0; j < mhb.size(); j++) {
-						//get Fach
-						sql = "SELECT Name FROM Fach WHERE buchid = " + mhb.get(j).getId() + ";";
+						//get fach
+						sql = "SELECT Name FROM fach WHERE buchid = " + mhb.get(j).getId() + ";";
 						res = state.executeQuery(sql);
 						while (res.next()) {
 							String name = res.getString("Name");
@@ -1329,7 +1329,7 @@ public class sql {
 						}
 						for (int k = 0; k < fach.size(); k++){ 
 						//get Module
-							sql = "SELECT m.* FROM module as m JOIN Fach as f on f.modID = m.modID WHERE f.Name = '"+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
+							sql = "SELECT m.* FROM module as m JOIN fach as f on f.modID = m.modID WHERE f.Name = '"+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
 							res = state.executeQuery(sql);
 							while (res.next()) {
 								String name = res.getString("modulname");
@@ -1387,7 +1387,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				sql = "SELECT m.* " 
-						+ "FROM module as m JOIN mod_user_relation as rel on rel.modname = m.modulname JOIN user on user.id = rel.userID JOIN Fach on m.modID = Fach.modID JOIN modulhandbuch as mhb on Fach.buchid = mhb.ID"
+						+ "FROM module as m JOIN mod_user_relation as rel on rel.modname = m.modulname JOIN user on user.id = rel.userID JOIN fach on m.modID = fach.modID JOIN modulhandbuch as mhb on fach.buchid = mhb.ID"
 						+ "WHERE user.email = '"+email+"' and mhb.akzeptiert = 0";
 						
 				res = state.executeQuery(sql);

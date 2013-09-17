@@ -23,6 +23,7 @@ import de.team55.mms.data.Nachricht;
 import de.team55.mms.data.StellvertreterList;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
+import de.team55.mms.data.pordnung;
 //import de.team55.mms.data.Zuordnung;
 import de.team55.mms.gui.mainscreen;
 
@@ -1915,6 +1916,32 @@ public class sql {
 		}
 		return status;
 	}
-
+	
+	public ArrayList<pordnung> getallpo(){
+		ArrayList<pordnung> getlist = new ArrayList<pordnung>();
+		PreparedStatement state = null;
+		ResultSet res = null;
+		if(connect() == true){
+			try{
+				state = con.prepareStatement("SELECT po.*, s.name, s.abschluss FROM pordnung as po JOIN studiengang as s on po.sid = s.id");
+				res = state.executeQuery();
+				while(res.next()){
+					int id = res.getInt("id");
+					int pojahr = res.getInt("jahr");
+					int sid = res.getInt("sid");
+					String sname = res.getString("name");
+					String sabschluss = res.getString("abschluss");
+					getlist.add(new pordnung(id, pojahr, sid, sname, sabschluss));
+				}
+			}catch (SQLException e) {
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		
+		
+		return getlist;
+		
+	}
 
 }

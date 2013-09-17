@@ -104,6 +104,7 @@ public class mainscreen {
 	private DefaultListModel<Modul> lm = new DefaultListModel<Modul>();
 	private DefaultListModel<Modul> lm_ack = new DefaultListModel<Modul>();
 	private DefaultListModel<Studiengang> studimodel = new DefaultListModel<Studiengang>();
+	private DefaultListModel<Fach> fachmodel = new DefaultListModel<Fach>();
 	// private DefaultListModel<Zuordnung> typenmodel = new
 	// DefaultListModel<Zuordnung>();
 
@@ -864,7 +865,40 @@ public class mainscreen {
 			}
 		});
 		panel_1.add(btnFeldEntfernen);
+		
+		
+		JPanel pnl_fach = new JPanel();
+		tabbedPane.addTab("Standard Felder", null, pnl_fach, "Standard Felder von Modulen verwalten");
+		pnl_felder.setLayout(new BorderLayout(0, 0));
 
+//		JScrollPane scrollPane_1 = new JScrollPane();
+//		pnl_felder.add(scrollPane_1, BorderLayout.CENTER);
+		JPanel pnl_fach_content = new JPanel();
+		JPanel pnl_fach_btns = new JPanel();
+		
+		//angefangen fach hinzuzufügen model muss woanderst gefüllt werden/serverconnection wonaderst 
+		ArrayList<Fach> fachzws = new ArrayList<Fach>();
+		fachzws = serverConnection.getFach();
+		
+		for(int i = 0; i < fachzws.size(); i++){
+			fachmodel.addElement(fachzws.get(i));
+		}
+		JList<Fach> fachlist = new JList<Fach>(fachmodel);
+		JButton fach_save = new JButton("neues Fach");
+		JButton fach_edit = new JButton("edit Fach");
+		
+		pnl_fach_btns.setLayout(new FlowLayout());
+		pnl_fach_btns.add(fach_save);
+		pnl_fach_btns.add(fach_edit);
+		
+		pnl_fach_content.setLayout(new BorderLayout(0, 0));
+		pnl_fach_content.add(fachlist, BorderLayout.CENTER);
+		
+		pnl_fach.add(pnl_fach_content, BorderLayout.CENTER);
+		pnl_fach.add(pnl_fach_btns, BorderLayout.SOUTH);
+		
+		
+		
 	}
 
 	protected ArrayList<Feld> tableToList() {

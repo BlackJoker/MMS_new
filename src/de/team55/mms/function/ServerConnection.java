@@ -30,13 +30,13 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
+import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
@@ -723,9 +723,9 @@ public class ServerConnection {
 		}
 	}
 	
-	public ArrayList<String> getFach(){
+	public ArrayList<Fach> getFach(){
 		if(connect(email, password) == SUCCESS){
-			return webResource.path("/fach/get").type(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<String>>(){});
+			return webResource.path("/fach/get").type(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Fach>>(){});
 		}else {
 			return null;
 		}

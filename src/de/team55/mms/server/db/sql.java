@@ -1944,8 +1944,8 @@ public class sql {
 		
 	}
 	
-	public ArrayList<String> getFach(){
-		ArrayList<String> faecher = new ArrayList<String>();
+	public ArrayList<Fach> getFach(){
+		ArrayList<Fach> faecher = new ArrayList<Fach>();
 		PreparedStatement state = null;
 		ResultSet res = null;
 		if(connect() == true){
@@ -1953,7 +1953,8 @@ public class sql {
 				state = con.prepareStatement("SELECT name FROM fachname;");
 				res = state.executeQuery();
 				while(res.next()){
-					faecher.add(res.getString("name"));
+					String zws = res.getString("name");
+					faecher.add(new Fach(zws));
 				}
 			}catch(SQLException e){
 				e.printStackTrace();

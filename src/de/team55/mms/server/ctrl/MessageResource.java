@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
@@ -649,7 +650,7 @@ public class MessageResource {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/fach/get")
-	public ArrayList<String> getFach(){
+	public ArrayList<Fach> getFach(){
 		System.out.println("Fächer abgefragt");
 		return new sql().getFach();
 	}

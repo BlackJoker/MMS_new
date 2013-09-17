@@ -148,6 +148,25 @@ public class MessageResource {
 			return Response.status(500).build();
 		}
 	}
+	
+	@POST
+	@Path("/modulhandbuch/post/")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setModulhanbuch(Modulhandbuch mh) {
+		String[] tmp = mh.getJahrgang().split("/");
+		String semester = tmp[0];
+		String jahr = tmp[1];
+		String studiengang ="";
+		String abschluss ="";
+		int status = new sql().setModulhandbuch(studiengang, abschluss, mh.getPruefungsordnungsjahr(), mh.getProsa(), semester, jahr);
+		if (status == 1) {
+			System.out.println("Modulhandbuch " + mh.toString() + " akzeptiert");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Modulhandbuch " + mh.toString() + " wurde nicht akzeptiert");
+			return Response.status(500).build();
+		}
+	}
 
 	/**
 	 * Gibt an, ob ein Modul in Bearbeitung ist

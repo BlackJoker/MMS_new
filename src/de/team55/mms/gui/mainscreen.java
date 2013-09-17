@@ -398,11 +398,40 @@ public class mainscreen {
 		JButton btnNeuesModulhandbuch = new JButton("neues Modulhandbuch");
 		btnNeuesModulhandbuch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String jahrgang = null;
-				String prosa = null;
+				String jahrgang = "";
+				String prosa = "";
 				int pordnung = 0;
-				ArrayList<Fach> fach = null;
-				Modulhandbuch mb = new Modulhandbuch(0, jahrgang, prosa, pordnung, fach) ;
+				int jahr = 0;
+				String sem="";
+				ArrayList<Fach> fach = new ArrayList<Fach>();
+				Studiengang s = new Studiengang();
+				ModulHandbuchDialog dialog = new ModulHandbuchDialog();
+				studienlist = serverConnection.getStudiengaenge(false);
+				
+				int x = 0;
+				do  {
+					x= dialog.showDialog(frame, studienlist);
+					try{
+						pordnung=Integer.parseInt(dialog.getPO());
+						prosa=dialog.getProsa();
+						sem=dialog.getSemester();
+						jahr=Integer.parseInt(dialog.getJahr());
+						s = dialog.getStudiengang();
+						
+					} catch( NumberFormatException n){
+						jahr=0;
+					}
+					
+
+				} while((x == 1)&&(jahr==0));
+				if(x==1){
+				jahrgang=sem+"/"+jahr;
+				
+				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
+				mbs.add(new Modulhandbuch(0, jahrgang, prosa, pordnung, fach));
+				s.setModbuch(mbs);
+				}
+
 			}
 		});
 		buttons1.add(btnNeuesModulhandbuch);

@@ -1943,5 +1943,24 @@ public class sql {
 		return getlist;
 		
 	}
+	
+	public ArrayList<String> getFach(){
+		ArrayList<String> faecher = new ArrayList<String>();
+		PreparedStatement state = null;
+		ResultSet res = null;
+		if(connect() == true){
+			try{
+				state = con.prepareStatement("SELECT name FROM fachname;");
+				res = state.executeQuery();
+				while(res.next()){
+					faecher.add(res.getString("name"));
+				}
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return faecher;
+	}
 
 }

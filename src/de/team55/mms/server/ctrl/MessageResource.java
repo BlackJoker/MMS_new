@@ -272,10 +272,14 @@ public class MessageResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	@Path("/studiengang/get/all")
-	public ArrayList<Studiengang> getStudiengaenge() {
+	@Path("/studiengang/get/all/{bool}")
+	public ArrayList<Studiengang> getStudiengaenge(@PathParam("bool") String bool) {
 		System.out.println("Alle Studiengänge abgefragt");
-		return new sql().getAllActiveData(true);
+		if(bool.equalsIgnoreCase("true"))
+			return new sql().getAllActiveData(true);
+		if(bool.equalsIgnoreCase("false"))
+			return new sql().getAllActiveData(false);
+		return null;
 	}
 
 	/**

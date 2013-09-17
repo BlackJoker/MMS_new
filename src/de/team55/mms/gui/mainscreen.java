@@ -97,6 +97,8 @@ public class mainscreen {
 
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
+	private ArrayList<Studiengang> prototyplist = null; // Liste mit
+	//prototyp Studiengängen
 	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im
 														// durchstöbern segment
 	// Liste der Modulhandbuecher des ausgewählten Studiengangs
@@ -139,6 +141,7 @@ public class mainscreen {
 	private JTable tblmessages;
 	private static HomeCard welcome;
 	private static LookCard looking;
+	private static LookCard prototyp;
 	private int messages = 0;
 	private JDateChooser calender = new JDateChooser();
 
@@ -306,7 +309,7 @@ public class mainscreen {
 								"Abschluss", JOptionPane.PLAIN_MESSAGE);
 					}
 					// Vorhanden Studiengänge aus der Datenbank abfragen
-					studienlist = serverConnection.getStudiengaenge();
+					studienlist = serverConnection.getStudiengaenge(true);
 
 					// Prüfe, ob schon ein Studiengang mit dem selben Namen
 					// existiert
@@ -324,7 +327,7 @@ public class mainscreen {
 						serverConnection.setStudiengang(name, abschluss);
 						studimodel.removeAllElements();
 						cbmodel.removeAllElements();
-						studienlist = serverConnection.getStudiengaenge();
+						studienlist = serverConnection.getStudiengaenge(true);
 						for (int i = 0; i < studienlist.size(); i++) {
 							studimodel.addElement(studienlist.get(i));
 							cbmodel.addElement(studienlist.get(i));
@@ -526,6 +529,23 @@ public class mainscreen {
 
 		});
 		buttons1.add(btnNeueZuordnung);
+		prototyp = new LookCard();
+		cards.add(prototyp, "protoshow");
+		JButton btnPrototyp = new JButton("MHBProttyp");
+		buttons1.add(btnPrototyp);
+		
+		btnPrototyp.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				prototyplist = serverConnection.getStudiengaenge(false);
+				prototyp.setConnection(serverConnection);
+				prototyp.setStudienlist(prototyplist);
+				prototyp.buildTree();
+				showCard("protoshow");
+			}
+		});
 		// worklist = serverConnection.userload();
 		JLabel lblZuordnungen = new JLabel("Deadline");
 		lblZuordnungen.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -895,7 +915,7 @@ public class mainscreen {
 				// Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
 				// Danach Modelle füllen und zur Card wechseln
 				// typen = serverConnection.getZuordnungen();
-				studienlist = serverConnection.getStudiengaenge();
+				studienlist = serverConnection.getStudiengaenge(true);
 				cbmodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
 					cbmodel.addElement(studienlist.get(i));
@@ -1062,7 +1082,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
-				studienlist = serverConnection.getStudiengaenge();
+				studienlist = serverConnection.getStudiengaenge(true);
 				studimodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
 					studimodel.addElement(studienlist.get(i));
@@ -1100,7 +1120,7 @@ public class mainscreen {
 				if (current != null) {
 					// Studiengänge und Zuordnungen abrufen
 					studmodel.setRowCount(0);
-					studienlist = serverConnection.getStudiengaenge();
+					studienlist = serverConnection.getStudiengaenge(true);
 					for (int i = 0; i < studienlist.size(); i++) {
 						addToTable(studienlist.get(i));
 					}

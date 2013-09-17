@@ -230,9 +230,15 @@ public class ServerConnection {
 	 * 
 	 * @return Liste mit Studiengängen
 	 */
-	public ArrayList<Studiengang> getStudiengaenge() {
+	public ArrayList<Studiengang> getStudiengaenge(boolean bool) {
+		String boolst = "";
+		if(bool){
+			boolst = "true";
+		}else{
+			boolst = "false";
+		}
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("studiengang/get/all").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Studiengang>>() {
+			return webResource.path("studiengang/get/all").path(boolst).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Studiengang>>() {
 			});
 		}
 		return null;

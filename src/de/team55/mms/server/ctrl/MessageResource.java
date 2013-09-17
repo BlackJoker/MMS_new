@@ -383,10 +383,11 @@ public class MessageResource {
 	 * @return Response Code
 	 */
 	@POST
-	@Path("/modul/post/")
+	@Path("/modul/post/{fach}/{buchid}")
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response modulPost(Modul m) {
-		int status = new sql().setModul(m);
+	public Response modulPost(Modul m, @PathParam("fach") String fach, @PathParam("buchid") String buchid) {
+		int zws = Integer.parseInt(buchid);
+		int status = new sql().setModul(m, fach, zws);
 		if (status == 1) {
 			System.out.println("Modul " + m.getName() + " hinzugefügt");
 			return Response.status(201).build();

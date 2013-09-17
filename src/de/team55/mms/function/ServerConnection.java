@@ -325,9 +325,9 @@ public class ServerConnection {
 	 *            Das Modul
 	 * @return Response Code
 	 */
-	public ClientResponse setModul(Modul neu) {
+	public ClientResponse setModul(Modul neu, String fach, int buchid) {
 		if (connect(email, password) == SUCCESS) {
-			return webResource.path("modul/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
+			return webResource.path("modul/post").path(fach).path(buchid+"").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
 		}
 		return null;
 	}

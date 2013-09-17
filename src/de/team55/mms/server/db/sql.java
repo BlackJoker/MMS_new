@@ -1647,7 +1647,7 @@ public class sql {
 	public java.util.Date getDate(){
 		PreparedStatement state = null;
 		ResultSet res = null;
-		Date date = null;
+		Date date = new Date();
 		if (connect() == true) {
 			try {
 				state = this.con.prepareStatement("SELECT * FROM stichtag;");
@@ -1658,7 +1658,8 @@ public class sql {
 				res.close();
 				state.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				date = new Date();
 			}
 			disconnect();
 		}

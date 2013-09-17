@@ -330,6 +330,13 @@ public class ServerConnection {
 		}
 		return null;
 	}
+	
+	public ClientResponse setModulHandbuchAccepted(Modulhandbuch mb) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("/modulhandbuch/post/accept/").type(MediaType.APPLICATION_XML).post(ClientResponse.class, mb);
+		}
+		return null;
+	}
 
 	/**
 	 * Reicht eine Liste von Stellvertretern ein

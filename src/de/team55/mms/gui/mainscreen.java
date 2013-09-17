@@ -662,7 +662,7 @@ public class mainscreen {
 		alluser = userlisting.get(0);
 		verwalter = userlisting.get(1);
 		for (int i = 0; i < alluser.size(); i++) {
-			userstuff.addRow(new Object[] { alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });
+			userstuff.addRow(new Object[] { verwalter.get(i).geteMail(), verwalter.get(i).getVorname(), verwalter.get(i).getNachname() });
 		}
 		for (int i = 0; i < verwalter.size(); i++) {
 			userstuff2.addRow(new Object[] { alluser.get(i).geteMail(), alluser.get(i).getVorname(), alluser.get(i).getNachname() });

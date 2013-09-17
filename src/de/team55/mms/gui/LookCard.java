@@ -51,6 +51,7 @@ public class LookCard extends JPanel {
 	private JTree tree;
 	private ArrayList<Studiengang> studienlist = null;
 	private DefaultMutableTreeNode node;
+	private JButton pdfbtn;
 
 	public LookCard() {
 		super();
@@ -61,6 +62,8 @@ public class LookCard extends JPanel {
 		btn_panel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		looking.add(content, BorderLayout.CENTER);
 		looking.add(btn_panel, BorderLayout.SOUTH);
+		pdfbtn = new JButton("PDF ausgeben");
+		
 
 	}
 
@@ -114,7 +117,7 @@ public class LookCard extends JPanel {
 			}
 		});
 		
-		JButton pdfbtn = new JButton("PDF ausgeben");
+		
 		btn_panel.add(pdfbtn);
 		pdfbtn.addActionListener(new ActionListener() {
 			

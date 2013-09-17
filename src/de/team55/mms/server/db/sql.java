@@ -1329,7 +1329,7 @@ public class sql {
 						}
 						for (int k = 0; k < fach.size(); k++){ 
 						//get Module
-							sql = "SELECT m.* FROM module as m JOIN fach as f on f.modID = m.modID WHERE f.Name = '"+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
+							sql = "SELECT m.* FROM module as m JOIN fach as f ON f.modID = m.modID JOIN fachnamen as fn ON f.fachid = fn.id WHERE fn.Name = '"+ fach.get(k).getName() + "' AND buchid = " + mhb.get(j).getId() + ";";
 							res = state.executeQuery(sql);
 							while (res.next()) {
 								String name = res.getString("modulname");

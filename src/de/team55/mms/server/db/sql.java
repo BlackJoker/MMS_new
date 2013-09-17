@@ -481,7 +481,7 @@ public class sql {
 	 *            Das Modul
 	 * @return Erfolgsstatus
 	 */
-	public int setModul(Modul neu) {
+	public int setModul(Modul neu, String fach, int buchid ) {
 		int ok = FAILED;
 		PreparedStatement state = null;
 		if (connect() == true) {
@@ -507,11 +507,56 @@ public class sql {
 					state.setBoolean(5, f.isDezernat());
 					state.executeUpdate();
 				}
-				state = con.prepareStatement("UPDATE fach SET modID=(SELECT modID FROM module WHERE modulname =? and version =?) WHERE modID = (SELECT modID FROM module where modulname =? and version =?);");
+				state = con.prepareStatement("INSERT INTO fach (fachid, buchid, modid) VALUES ((SELECT id FROM fachname WHERE name=?) ,? ,(SELECT modID FROM module WHERE modulname =? and version =?)) ;");
+				state.setString(1, fach);
+				state.setInt(2, buchid);
+				state.setString(3, name);
+				state.setInt(4, version);
+				state.close();
+				ok = SUCCESS;
+			} catch (SQLException e) {
+				// TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return ok;
+
+	}
+	
+	public int updateModul(Modul neu, String fach, int buchid ) {
+		int ok = FAILED;
+		PreparedStatement state = null;
+		if (connect() == true) {
+			String name = neu.getName();
+			int version = neu.getVersion();
+			ArrayList<Feld> felder = neu.getFelder();
+			try {
+				state = con.prepareStatement("INSERT INTO module (modulname, version, datum, kommentar, status) VALUES(?,?,?,?,?,?)");
+				state.setString(1, name);
+				state.setInt(2, version);
+				state.setTimestamp(3, dateConverterUtil2SQL(neu.getDatum()));
+				state.setString(4, neu.getKommentar());
+				state.setInt(5, neu.getStatus());
+				state.executeUpdate();
+
+				state = con.prepareStatement("INSERT INTO text (mid, version, label, text, dezernat2) VALUES((select modID from module where modulname =?),?,?,?,?)");
+				for (int i = 0; i < felder.size(); i++) {
+					Feld f = felder.get(i);
+					state.setString(1, name);
+					state.setInt(2, version);
+					state.setString(3, f.getLabel());
+					state.setString(4, f.getValue());
+					state.setBoolean(5, f.isDezernat());
+					state.executeUpdate();
+				}
+				state = con.prepareStatement("UPDATE fach SET modID=(SELECT modID FROM module WHERE modulname =? and version =?) WHERE modID = (SELECT modID FROM module where modulname =? and version =?) AND buchID =? AND fachID = (SELECT fachID FROM Fachname WHERE name =?);");
 				state.setString(1, name);
 				state.setInt(2, version);
 				state.setString(3, name);
 				state.setInt(4, (version-1));
+				state.setInt(5, buchid);
+				state.setString(6, fach);
 				state.close();
 				ok = SUCCESS;
 			} catch (SQLException e) {

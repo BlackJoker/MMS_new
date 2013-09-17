@@ -242,7 +242,7 @@ public class LookCard extends JPanel {
 		document.open();
 		// step 4: Absatz mit Text dem Dokument hinzufügen
 		document.add(new Paragraph(titel, fontunderBig));
-		// document.add(underline);
+		
 		document.add(Chunk.NEWLINE);
 		document.add(Chunk.NEWLINE);
 		document.add(Chunk.NEWLINE);
@@ -275,14 +275,7 @@ public class LookCard extends JPanel {
 					String label = Felder.getLabel();
 					String value = Felder.getValue();
 
-					// document.add(new Chunk(String.format(label + ": ")));
-					// document.add(new Chunk(tab));
-					// document.add(new Chunk(value));
-					// st=new Paragraph(par);
 					section.add(new Paragraph((label + ": "+ value), font));
-//					par = new Paragraph((label + ": " + value) );
-//					section.addSection(par, 0);
-
 				}// 3 fs
 
 				section.newPage();

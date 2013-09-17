@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -375,28 +376,34 @@ public class mainscreen {
 		JButton btnNeuesStandardFeld = new JButton("Neues Standard Feld");
 		btnNeuesStandardFeld.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JPanel panel = new JPanel();
 				JPanel p = new JPanel();
-				p.setLayout(new GridLayout(2, 0, 0, 0));
+				panel.add(p);
+				p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
 
 				JPanel pnl_name = new JPanel();
+				pnl_name.setToolTipText("Bestimmt den Namen des neuen Feldes");
 				p.add(pnl_name);
+				pnl_name.setLayout(new GridLayout(0, 2, 5, 5));
 				JLabel lblNameDesFeldes = new JLabel("Name des Feldes:");
-				JTextField txtName = new JTextField();
-				pnl_name.setLayout(new GridLayout(0, 2, 0, 0));
 				pnl_name.add(lblNameDesFeldes);
+				JTextField txtName = new JTextField();
 				pnl_name.add(txtName);
 
 				JPanel pnl_pos = new JPanel();
+				pnl_pos.setToolTipText("Bestimmt die Reihenfolge der Felder");
 				p.add(pnl_pos);
 				JTextField txtPos = new JTextField();
 				JLabel lbl_pos = new JLabel("An Position:");
-				pnl_pos.setLayout(new GridLayout(0, 2, 0, 0));
+				lbl_pos.setToolTipText("");
+				pnl_pos.setLayout(new GridLayout(0, 2, 5, 5));
 				pnl_pos.add(lbl_pos);
 				pnl_pos.add(txtPos);
 
 				JPanel pnl_dezernat = new JPanel();
+				FlowLayout fl_pnl_dezernat_1 = (FlowLayout) pnl_dezernat.getLayout();
 
-				JCheckBox chckbxDezernat = new JCheckBox("Dezernat 2");
+				JCheckBox chckbxDezernat = new JCheckBox("Muss vom Dezernat 2 gepr\u00FCft werden");
 				p.add(pnl_dezernat);
 				chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");
 
@@ -404,27 +411,27 @@ public class mainscreen {
 
 				// Abfrage des Namen des Feldes
 				Object[] options = { "Annehmen", "Abbrechen" };
-				int pos = tableFelder.getRowCount();
-				txtPos.setText(pos + "");
-				int n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				int pos=-1;
+				txtPos.setText((tableFelder.getRowCount()+1) + "");
+				int n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						options, // the titles of buttons
 						options[1]); // default button title
 				String name = txtName.getText();
-				pos = Integer.parseInt(txtPos.getText());
 				try {
-					while (name.isEmpty() && (n == 0)) {
-						n = JOptionPane.showOptionDialog(frame, p, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+					pos = Integer.parseInt(txtPos.getText());
+					while ((name.isEmpty()||(pos==-1)) && (n == 0)) {
+						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
 								null, options, // the titles of buttons
-								options[1]);
+								options[0]);
 						name = txtName.getText();
 						pos = Integer.parseInt(txtPos.getText());
 					}
 				} catch (NumberFormatException nfe) {
 				}
+				if(n==0){
 				boolean dezernat = chckbxDezernat.isSelected();
 				addToTable(name, dezernat, pos);
-				System.out.println(dezernat);
-				System.out.println(name);
+				}
 
 			}
 		});
@@ -579,15 +586,21 @@ public class mainscreen {
 
 	@SuppressWarnings("unchecked")
 	protected void addToTable(String name, boolean dezernat, int pos) {
+		Vector data = tableFelder.getDataVector();
+		pos=pos-1;
+		if(pos<0){
+			pos=0;
+		} else if(pos>data.size()){
+			pos=data.size();
+		}
 		Vector row = new Vector();
 		row.add(pos);
 		row.add(name);
 		row.add(dezernat);
-		Vector data = tableFelder.getDataVector();
 		data.insertElementAt(row, pos);
 		for(int i = 0;i<data.size();i++){
 			Vector tmp=	(Vector) data.elementAt(i);
-			tmp.setElementAt(i, 0);
+			tmp.setElementAt(i+1, 0);
 			data.setElementAt(tmp, i);
 		}
 		tableFelder.setDataVector(data, columnIdentifiers);

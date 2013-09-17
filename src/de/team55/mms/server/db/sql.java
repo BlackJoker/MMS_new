@@ -1783,8 +1783,26 @@ public class sql {
 		return status;
 	}
 	
-	public int setPO(String studiengang){
-		return -1;
+	public int setPO(String studiengang, String abschluss, int pojahr){
+		int status = FAILED;
+		PreparedStatement state = null;
+		if(connect() == true){
+			try{
+				state = con
+						.prepareStatement("INSERT IGNORE INTO pordnung(jahr, sid) VALUES (?, (SELECT id FROM studiengang WHERE name =? AND abschluss =?))");
+				state.setInt(1, pojahr);
+				state.setString(2, studiengang);
+				state.setString(3, abschluss);
+				state.executeUpdate();
+				status = SUCCESS;
+				state.close();
+			}catch (SQLException e) {
+				e.printStackTrace();
+				status = FAILED;
+			}
+			disconnect();
+		}
+		return status;
 	}
 	
 	public int setModulhandbuch(String studiengang, String abschluss, int pojahr, String prosa, String semester, String jahr){
@@ -1793,7 +1811,7 @@ public class sql {
 		if(connect() == true){
 			try{
 				state = con
-						.prepareStatement("INSERT INTO modulhandbuch(prosa, semeser, jahr, poid, akzeptiert) VALUES (?, ?, ? ,(SELECT po.ID FROM pordnung AS po JOIN studiengang AS s on po.sid = s.id WHERE s.name =? AND s.abschluss =? AND po.jahr =?) ,0 )");
+						.prepareStatement("INSERT IGNORE INTO modulhandbuch(prosa, semeser, jahr, poid, akzeptiert) VALUES (?, ?, ? ,(SELECT po.ID FROM pordnung AS po JOIN studiengang AS s on po.sid = s.id WHERE s.name =? AND s.abschluss =? AND po.jahr =?) ,0 )");
 				state.setString(1, prosa);
 				state.setString(2, semester);
 				state.setString(3, jahr);
@@ -1809,8 +1827,47 @@ public class sql {
 			}
 			disconnect();
 		}
-		
-		
+		return status;
+	}
+	
+	public int setFach(String name){
+		int status = FAILED;
+		PreparedStatement state = null;
+		if(connect() == true){
+			try{
+				state = con
+						.prepareStatement("INSERT IGNORE INTO Fachname(name) VALUES (?)");
+				state.setString(1, name);
+				state.executeUpdate();
+				status = SUCCESS;
+				state.close();
+			}catch (SQLException e) {
+				e.printStackTrace();
+				status = FAILED;
+			}
+			disconnect();
+		}
+		return status;
+	}
+	
+	public int updateFach(String oldname, String newname){
+		int status = FAILED;
+		PreparedStatement state = null;
+		if(connect() == true){
+			try{
+				state = con
+						.prepareStatement("UPDATE Fachname SET name=? WHERE name=?");
+				state.setString(1, newname);
+				state.setString(2, oldname);
+				state.executeUpdate();
+				status = SUCCESS;
+				state.close();
+			}catch (SQLException e) {
+				e.printStackTrace();
+				status = FAILED;
+			}
+			disconnect();
+		}
 		return status;
 	}
 

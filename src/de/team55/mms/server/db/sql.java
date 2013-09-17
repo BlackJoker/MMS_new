@@ -1321,7 +1321,7 @@ public class sql {
 					}
 					for (int j = 0; j < mhb.size(); j++) {
 						//get fach
-						sql = "SELECT Name FROM fach WHERE buchid = " + mhb.get(j).getId() + ";";
+						sql = "SELECT fachname.name FROM fach JOIN fachname on fach.fachid = fachname.id WHERE fach.buchid = " + mhb.get(j).getId() + ";";
 						res = state.executeQuery(sql);
 						while (res.next()) {
 							String name = res.getString("Name");
@@ -1785,6 +1785,33 @@ public class sql {
 	
 	public int setPO(String studiengang){
 		return -1;
+	}
+	
+	public int setModulhandbuch(String studiengang, String abschluss, int pojahr, String prosa, String semester, String jahr){
+		int status = FAILED;
+		PreparedStatement state = null;
+		if(connect() == true){
+			try{
+				state = con
+						.prepareStatement("INSERT INTO modulhandbuch(prosa, semeser, jahr, poid, akzeptiert) VALUES (?, ?, ? ,(SELECT po.ID FROM pordnung AS po JOIN studiengang AS s on po.sid = s.id WHERE s.name =? AND s.abschluss =? AND po.jahr =?) ,0 )");
+				state.setString(1, prosa);
+				state.setString(2, semester);
+				state.setString(3, jahr);
+				state.setString(4, studiengang);
+				state.setString(5, abschluss);
+				state.setInt(6, pojahr);
+				state.executeUpdate();
+				status = SUCCESS;
+				state.close();
+			}catch (SQLException e) {
+				e.printStackTrace();
+				status = FAILED;
+			}
+			disconnect();
+		}
+		
+		
+		return status;
 	}
 
 

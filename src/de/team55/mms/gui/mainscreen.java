@@ -47,6 +47,7 @@ import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
+import de.team55.mms.data.pordnung;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
 import javax.swing.AbstractListModel;
@@ -400,23 +401,24 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				String jahrgang = "";
 				String prosa = "";
-				int pordnung = 0;
+				pordnung pordnung = new pordnung();
 				int jahr = 0;
 				String sem="";
 				ArrayList<Fach> fach = new ArrayList<Fach>();
 				Studiengang s = new Studiengang();
 				ModulHandbuchDialog dialog = new ModulHandbuchDialog();
 				studienlist = serverConnection.getStudiengaenge(false);
-				
+				ArrayList<pordnung> pos = serverConnection.getPOs();
 				int x = 0;
 				do  {
-					x= dialog.showDialog(frame, studienlist);
+					x= dialog.showDialog(frame, studienlist, pos);
 					try{
-						pordnung=Integer.parseInt(dialog.getPO());
+						pordnung=dialog.getPO();
 						prosa=dialog.getProsa();
 						sem=dialog.getSemester();
 						jahr=Integer.parseInt(dialog.getJahr());
-						s = dialog.getStudiengang();
+						s.setAbschluss(pordnung.getStudabschluss());
+						s.setName(pordnung.getStudname());
 						
 					} catch( NumberFormatException n){
 						jahr=0;
@@ -428,7 +430,7 @@ public class mainscreen {
 				jahrgang=sem+"/"+jahr;
 				
 				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
-				mbs.add(new Modulhandbuch(0, jahrgang, prosa, pordnung, fach));
+				mbs.add(new Modulhandbuch(0, jahrgang, prosa, pordnung.getPjahr(), fach));
 				s.setModbuch(mbs);
 				}
 

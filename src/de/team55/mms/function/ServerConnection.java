@@ -46,6 +46,7 @@ import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
 import de.team55.mms.data.UserRelation;
 import de.team55.mms.data.UserUpdateContainer;
+import de.team55.mms.data.pordnung;
 //import de.team55.mms.data.Zuordnung;
 
 public class ServerConnection {
@@ -703,6 +704,13 @@ public class ServerConnection {
 	public ClientResponse updateNachricht(Nachricht n) {
 		if (connect(email, password) == SUCCES) {
 			return webResource.path("nachrichten/update").type(MediaType.APPLICATION_XML).put(ClientResponse.class, n);
+		}
+		return null;
+	}
+	
+	public ArrayList<pordnung> getPOs(){
+		if(connect(email, password) == SUCCES){
+			return webResource.path("/po/get").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<pordnung>>(){});
 		}
 		return null;
 	}

@@ -23,6 +23,7 @@ import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
 import de.team55.mms.data.UserRelation;
 import de.team55.mms.data.UserUpdateContainer;
+import de.team55.mms.data.pordnung;
 //import de.team55.mms.data.Zuordnung;
 import de.team55.mms.server.db.sql;
 
@@ -633,6 +634,14 @@ public class MessageResource {
 	public ArrayList<String> getallModulnames() {
 		System.out.println("Modulnamen abgefragt");
 		return new sql().getallModulnames();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/po/get")
+	public ArrayList<pordnung> getPOs() {
+		System.out.println("Prüfungsordnungen abgefragt");
+		return new sql().getallpo();
 	}
 	
 	

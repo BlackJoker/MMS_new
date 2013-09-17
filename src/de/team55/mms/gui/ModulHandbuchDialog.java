@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.DefaultComboBoxModel;
 
 import de.team55.mms.data.Studiengang;
+import de.team55.mms.data.pordnung;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -35,8 +36,8 @@ public class ModulHandbuchDialog extends JDialog {
 	private JComboBox cbSem;
 	private JTextArea txtrProsa;
 	private JComboBox cbPO;
-	private JComboBox cbSg;
 	private DefaultComboBoxModel stud= new DefaultComboBoxModel();
+	private DefaultComboBoxModel poMod= new DefaultComboBoxModel();
 
 	/**
 	 * Launch the application.
@@ -81,10 +82,6 @@ public class ModulHandbuchDialog extends JDialog {
 			contentPanel.add(left, BorderLayout.WEST);
 			left.setLayout(new GridLayout(0, 1, 0, 0));
 			{
-				JLabel lblNewLabel_1 = new JLabel("Studiengang:");
-				left.add(lblNewLabel_1);
-			}
-			{
 				JLabel lblPrfungsordnung = new JLabel("Pr\u00FCfungsordnung: ");
 				left.add(lblPrfungsordnung);
 			}
@@ -102,12 +99,7 @@ public class ModulHandbuchDialog extends JDialog {
 			contentPanel.add(right, BorderLayout.CENTER);
 			right.setLayout(new GridLayout(0, 1, 0, 0));
 			{
-				cbSg = new JComboBox(stud);
-				right.add(cbSg);
-			}
-			{
-				cbPO = new JComboBox();
-				cbPO.setModel(new DefaultComboBoxModel(new String[] {"2013"}));
+				cbPO = new JComboBox(poMod);
 				right.add(cbPO);
 			}
 			{
@@ -152,14 +144,17 @@ public class ModulHandbuchDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		pack();
 	}
 
-	public int showDialog(JFrame frame, ArrayList<Studiengang> studienlist) {
+	public int showDialog(JFrame frame, ArrayList<Studiengang> studienlist, ArrayList<pordnung> pos) {
 		for(int i = 0;i<studienlist.size();i++){
 			stud.addElement(studienlist.get(i));
 		}
+		for(int i = 0;i<pos.size();i++){
+			poMod.addElement(pos.get(i));
+		}
 		setLocationRelativeTo(frame);
+		pack();
 		setVisible(true);
 		return status;
 	}
@@ -178,14 +173,8 @@ public class ModulHandbuchDialog extends JDialog {
 		return (String) cbSem.getSelectedItem();
 	}
 
-	public String getPO() {
+	public pordnung getPO() {
 		// TODO Auto-generated method stub
-		return (String) cbPO.getSelectedItem();
+		return (pordnung) cbPO.getSelectedItem();
 	}
-
-	public Studiengang getStudiengang() {
-		// TODO Auto-generated method stub
-		return (Studiengang) cbSg.getSelectedItem();
-	}
-
 }

@@ -979,7 +979,7 @@ public class mainscreen {
 	 */
 	private void addToTable(User usr) {
 		tmodel.addRow(new Object[] { usr.getTitel(), usr.getVorname(), usr.getNachname(), usr.geteMail(), usr.getManageUsers(),
-				usr.getCreateModule(), usr.getAcceptModule(), usr.getManageSystem() });
+				usr.getCreateModule(), usr.getAcceptModule(), usr.getManageSystem(), usr.getRedaktion() });
 	}
 
 	/**
@@ -1711,10 +1711,10 @@ public class mainscreen {
 		// Inhalt der Tabelle
 		//
 		tmodel = new DefaultTableModel(new Object[][] {}, new String[] { "Titel", "Vorname", "Nachname", "e-Mail", "Benutzer verwalten",
-				"Module einreichen", "Module Annehmen", "Verwaltung" }) {
+				"Module einreichen", "Module Annehmen", "Verwaltung", "Redaktion" }) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, boolean.class, boolean.class,
-					boolean.class, boolean.class };
+					boolean.class, boolean.class, boolean.class };
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override

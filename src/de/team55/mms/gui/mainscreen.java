@@ -430,8 +430,8 @@ public class mainscreen {
 					ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
 					mbs.add(new Modulhandbuch(0, jahrgang, prosa, pordnung.getPjahr(), fach));
 					s.setModbuch(mbs);
-					x=serverConnection.setModulHandbuchAccepted(s).getStatus();
-					if(x==201){
+					x = serverConnection.setModulHandbuchAccepted(s).getStatus();
+					if (x == 201) {
 						modListModel.clear();
 						studienlist = serverConnection.getStudiengaenge(false);
 						nichtAckMBs.clear();
@@ -558,17 +558,17 @@ public class mainscreen {
 
 		JPanel pnl_studiengang = new JPanel();
 		tabbedPane.addTab("Studieng\u00E4nge & PO", null, pnl_studiengang, "Studieng\u00E4nge und Pr\u00FCfungsordnungen verwalten");
-		pnl_studiengang.setLayout(new BorderLayout(0, 0));
+		pnl_studiengang.setLayout(new BoxLayout(pnl_studiengang, BoxLayout.PAGE_AXIS));
 
-		// Liste mit Studiengängen in ScrollPane
-		JList<Studiengang> list = new JList<Studiengang>(studimodel);
-		list.setVisibleRowCount(10);
-		JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		pnl_studiengang.add(scrollPane, BorderLayout.CENTER);
+		JPanel panel_2 = new JPanel();
+		pnl_studiengang.add(panel_2);
+		panel_2.setLayout(new BorderLayout(0, 0));
+
+		JLabel lblStudiengnge = new JLabel("Studieng\u00E4nge");
+		panel_2.add(lblStudiengnge, BorderLayout.NORTH);
 
 		JPanel buttons = new JPanel();
-		pnl_studiengang.add(buttons, BorderLayout.SOUTH);
+		panel_2.add(buttons, BorderLayout.SOUTH);
 
 		// Anlegen eines neuen Studienganges
 		JButton btnNeuerStudiengang = new JButton("Neuer Studiengang");
@@ -630,8 +630,50 @@ public class mainscreen {
 		});
 		buttons.add(btnNeuerStudiengang);
 
-		JLabel lblStudiengnge = new JLabel("Studieng\u00E4nge");
-		pnl_studiengang.add(lblStudiengnge, BorderLayout.NORTH);
+		// Liste mit Studiengängen in ScrollPane
+		JList<Studiengang> list = new JList<Studiengang>(studimodel);
+		list.setVisibleRowCount(10);
+		JScrollPane scrollPane = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		panel_2.add(scrollPane, BorderLayout.CENTER);
+
+		JPanel pnl_po = new JPanel();
+		pnl_studiengang.add(pnl_po);
+		pnl_po.setLayout(new BorderLayout(0, 0));
+
+		JLabel lblPrfungsordnungen = new JLabel("Pr\u00FCfungsordnungen");
+		pnl_po.add(lblPrfungsordnungen, BorderLayout.NORTH);
+
+		JScrollPane scrollPane_3 = new JScrollPane();
+		pnl_po.add(scrollPane_3, BorderLayout.CENTER);
+
+		JList list_1 = new JList();
+		scrollPane_3.setViewportView(list_1);
+
+		JPanel pnl_po_buttons = new JPanel();
+		pnl_po.add(pnl_po_buttons, BorderLayout.SOUTH);
+
+		JButton btnNeuePrfugsordnung = new JButton("Neue Pr\u00FCfugsordnung");
+		btnNeuePrfugsordnung.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				PoDialog dialog = new PoDialog();
+				studienlist = serverConnection.getStudiengaenge(false);
+				int x = 0;
+				int jahr=0;
+				while((x==1)&&(jahr==1)){
+					x=dialog.showDialog(frame, studienlist);
+					try{
+					jahr=Integer.parseInt(dialog.getJahr());
+					} catch (NumberFormatException e){
+						jahr=0;
+					}
+				}
+			}
+		});
+		pnl_po_buttons.add(btnNeuePrfugsordnung);
+
+		JButton btnZurck_2 = new JButton("Zur\u00FCck");
+		pnl_po_buttons.add(btnZurck_2);
 
 		JPanel pnl_felder = new JPanel();
 		tabbedPane.addTab("Standard Felder", null, pnl_felder, "Standard Felder von Modulen verwalten");

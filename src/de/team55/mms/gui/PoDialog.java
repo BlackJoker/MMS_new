@@ -7,43 +7,34 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.BoxLayout;
-import javax.swing.JTextArea;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
-import javax.swing.DefaultComboBoxModel;
-
-import de.team55.mms.data.Studiengang;
-import de.team55.mms.data.pordnung;
-
-import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
-public class ModulHandbuchDialog extends JDialog {
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.BoxLayout;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+
+import de.team55.mms.data.Studiengang;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class PoDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtJahr;
 	private int status;
-	private JComboBox cbSem;
-	private JTextArea txtrProsa;
-	private JComboBox cbPO;
-	private DefaultComboBoxModel poMod= new DefaultComboBoxModel();
+	private DefaultComboBoxModel stud= new DefaultComboBoxModel();
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			ModulHandbuchDialog dialog = new ModulHandbuchDialog();
+			PoDialog dialog = new PoDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -54,66 +45,40 @@ public class ModulHandbuchDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ModulHandbuchDialog() {
+	public PoDialog() {
 		setModal(true);
-		setTitle("Modulhandbuch anlegen");
+		setTitle("Neue Pr\u00FCfungsordnung");
+		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			JPanel prosa = new JPanel();
-			contentPanel.add(prosa, BorderLayout.SOUTH);
-			prosa.setLayout(new BorderLayout(0, 0));
-			{
-				JLabel lblProsa = new JLabel("Prosa: ");
-				prosa.add(lblProsa, BorderLayout.NORTH);
-			}
-			{
-				txtrProsa = new JTextArea();
-				prosa.add(txtrProsa, BorderLayout.CENTER);
-				txtrProsa.setFont(new Font("Tahoma", Font.PLAIN, 11));
-				txtrProsa.setRows(5);
-			}
-		}
-		{
 			JPanel left = new JPanel();
 			contentPanel.add(left, BorderLayout.WEST);
 			left.setLayout(new GridLayout(0, 1, 0, 0));
 			{
-				JLabel lblPrfungsordnung = new JLabel("Pr\u00FCfungsordnung: ");
-				left.add(lblPrfungsordnung);
-			}
-			{
-				JLabel lblSemester = new JLabel("Semester: ");
-				left.add(lblSemester);
-			}
-			{
 				JLabel lblJahr = new JLabel("Jahr: ");
 				left.add(lblJahr);
 			}
+			{
+				JLabel lblStudiengang = new JLabel("Studiengang: ");
+				left.add(lblStudiengang);
+			}
 		}
 		{
-			JPanel right = new JPanel();
-			contentPanel.add(right, BorderLayout.CENTER);
-			right.setLayout(new GridLayout(0, 1, 0, 0));
-			{
-				cbPO = new JComboBox(poMod);
-				right.add(cbPO);
-			}
-			{
-				cbSem = new JComboBox();
-				right.add(cbSem);
-				cbSem.setModel(new DefaultComboBoxModel(new String[] {"SS", "WS"}));
-			}
+			JPanel panel = new JPanel();
+			contentPanel.add(panel);
+			panel.setLayout(new GridLayout(2, 0, 0, 0));
 			{
 				txtJahr = new JTextField();
-				right.add(txtJahr);
+				panel.add(txtJahr);
 				txtJahr.setColumns(10);
 			}
-		}
-		{
-			JLabel lblNewLabel = new JLabel("New label");
+			{
+				JComboBox comboBox = new JComboBox(stud);
+				panel.add(comboBox);
+			}
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -122,7 +87,7 @@ public class ModulHandbuchDialog extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
+					public void actionPerformed(ActionEvent e) {
 						status=1;
 						setVisible(false);
 					}
@@ -134,7 +99,7 @@ public class ModulHandbuchDialog extends JDialog {
 			{
 				JButton cancelButton = new JButton("Abbrechen");
 				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
+					public void actionPerformed(ActionEvent e) {
 						status=0;
 						setVisible(false);
 					}
@@ -144,11 +109,11 @@ public class ModulHandbuchDialog extends JDialog {
 			}
 		}
 	}
-
-	public int showDialog(JFrame frame, ArrayList<pordnung> pos) {
-		poMod.removeAllElements();
-		for(int i = 0;i<pos.size();i++){
-			poMod.addElement(pos.get(i));
+	
+	public int showDialog(JFrame frame, ArrayList<Studiengang> slist){
+		stud.removeAllElements();
+		for(int i = 0;i<slist.size();i++){
+			stud.addElement(slist.get(i));
 		}
 		setLocationRelativeTo(frame);
 		pack();
@@ -157,21 +122,8 @@ public class ModulHandbuchDialog extends JDialog {
 	}
 
 	public String getJahr() {
+		// TODO Auto-generated method stub
 		return txtJahr.getText();
 	}
 
-	public String getProsa() {
-		// TODO Auto-generated method stub
-		return txtrProsa.getText();
-	}
-
-	public String getSemester() {
-		// TODO Auto-generated method stub
-		return (String) cbSem.getSelectedItem();
-	}
-
-	public pordnung getPO() {
-		// TODO Auto-generated method stub
-		return (pordnung) cbPO.getSelectedItem();
-	}
 }

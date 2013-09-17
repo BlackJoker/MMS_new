@@ -401,8 +401,6 @@ public class mainscreen {
 				pnl_pos.add(txtPos);
 
 				JPanel pnl_dezernat = new JPanel();
-				FlowLayout fl_pnl_dezernat_1 = (FlowLayout) pnl_dezernat.getLayout();
-
 				JCheckBox chckbxDezernat = new JCheckBox("Muss vom Dezernat 2 gepr\u00FCft werden");
 				p.add(pnl_dezernat);
 				chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");

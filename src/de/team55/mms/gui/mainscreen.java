@@ -1082,6 +1082,7 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
+				defaultFelder = serverConnection.getDefaultFelder();
 				studienlist = serverConnection.getStudiengaenge(true);
 				studimodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {

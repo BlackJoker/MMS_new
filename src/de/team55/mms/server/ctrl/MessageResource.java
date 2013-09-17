@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Nachricht;
@@ -71,6 +72,28 @@ public class MessageResource {
 	public ArrayList<Modul> getModul(@PathParam("name") String name) {
 		System.out.println("Modul " + name + " abgefragt");
 		return new sql().getModul(name);
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/feld/get")
+	public ArrayList<Feld> getFelder() {
+		System.out.println("Standard Felder abgefragt");
+		return new sql().getDefaultFelder();
+	}
+	
+	@POST
+	@Path("/feld/post")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setFelder(ArrayList<Feld> felder) {
+		int status = new sql().setDefaultFelder(felder);
+		if (status == 1) {
+			System.out.println("Neue Standardfelder hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Neue Standardfelder wurden nicht hinzugefügt");
+			return Response.status(500).build();
+		}
 	}
 
 	/**

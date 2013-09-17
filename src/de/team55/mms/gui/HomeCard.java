@@ -34,7 +34,6 @@ import de.team55.mms.data.User;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
 
-
 public class HomeCard extends JPanel {
 
 	private static JPanel welcome = new JPanel();
@@ -49,7 +48,7 @@ public class HomeCard extends JPanel {
 	private JPanel pnl_day = new JPanel();
 	private Thread t;
 	private int messageCount = 0;
-	private int mc=0;
+	private int mc = 0;
 
 	public HomeCard(final JFrame frame) {
 		super();
@@ -300,27 +299,27 @@ public class HomeCard extends JPanel {
 			String name = u.getTitel() + " " + u.getVorname() + " " + u.getNachname();
 			name.trim();
 			boolean neu = true;
-			for(int j = 0;j<nachrichten.size();j++){
-				if(nachrichten.get(j).getNachricht().equals(u.getId() + "")){
-					neu=false;
+			for (int j = 0; j < nachrichten.size(); j++) {
+				if (nachrichten.get(j).getNachricht().equals(u.getId() + "")) {
+					neu = false;
 				}
 			}
-			if(neu){
-			Nachricht n = new Nachricht();
-			n.setAbsender(user.geteMail());
-			n.setAbsenderID(u.getId());
-			n.setEmpfaengerID(user.getId());
-			n.setBetreff(name + " hat sich angemeldet");
-			n.setNachricht(u.getId() + "");
-			n.setGelesen(false);
-			n.setDatum(new Date());
-			serverConnection.setNachricht(n);
+			if (neu) {
+				Nachricht n = new Nachricht();
+				n.setAbsender(user.geteMail());
+				n.setAbsenderID(u.getId());
+				n.setEmpfaengerID(user.getId());
+				n.setBetreff(name + " hat sich angemeldet");
+				n.setNachricht(u.getId() + "");
+				n.setGelesen(false);
+				n.setDatum(new Date());
+				serverConnection.setNachricht(n);
 			}
 		}
 		nachrichten = serverConnection.getNachrichten(user.geteMail());
-		messageCount=0;
-		for(int i = 0;i<nachrichten.size();i++){
-			if(!nachrichten.get(i).isGelesen()){
+		messageCount = 0;
+		for (int i = 0; i < nachrichten.size(); i++) {
+			if (!nachrichten.get(i).isGelesen()) {
 				messageCount++;
 			}
 		}
@@ -342,7 +341,7 @@ public class HomeCard extends JPanel {
 	}
 
 	public int getMessageCount() {
-			return messageCount;
+		return messageCount;
 	}
 
 }

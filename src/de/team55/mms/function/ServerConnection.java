@@ -36,6 +36,7 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
+import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Nachricht;
@@ -155,7 +156,23 @@ public class ServerConnection {
 		}
 
 	}
+	
+	public ArrayList<Feld> getDefaultFelder(){
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("feld/get").accept(MediaType.APPLICATION_XML)
+					.get(new GenericType<ArrayList<Feld>>() {
+					});
+		}
+		return null;
+	}
 
+	public ClientResponse setDefaultFelder(ArrayList<Feld> felder) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("feld/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, felder);
+		}
+		return null;
+	}
+	
 	/**
 	 * Gibt eine Liste von Modulen aus
 	 * 

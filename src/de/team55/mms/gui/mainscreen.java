@@ -142,7 +142,7 @@ public class mainscreen {
 	private JTable tblmessages;
 	private static HomeCard welcome;
 	private static LookCard looking;
-	private static LookCard prototyp;
+	private static ProtoLookCard prototyp;
 	private int messages = 0;
 	private JDateChooser calender = new JDateChooser();
 
@@ -451,6 +451,82 @@ public class mainscreen {
 			}
 		});
 		panel.add(btnNeuesStandardFeld);
+		
+		JButton btnFeldBearbeiten = new JButton("Feld bearbeiten");
+		btnFeldBearbeiten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int row = table.getSelectedRow();
+				if (row != -1) {
+					// Daten aus der Tabelle abrufen und User erzeugen
+					int pos =  Integer.parseInt(table.getValueAt(row, 0).toString());
+					Feld f = defaultFelder.get(pos-1);
+					defaultFelder.remove(pos-1);
+					String name = (String) table.getValueAt(row, 1);
+					boolean dez = (boolean) table.getValueAt(row, 2);
+					JPanel panel = new JPanel();
+					JPanel p = new JPanel();
+					panel.add(p);
+					p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+
+					JPanel pnl_name = new JPanel();
+					pnl_name.setToolTipText("Bestimmt den Namen des neuen Feldes");
+					p.add(pnl_name);
+					pnl_name.setLayout(new GridLayout(0, 2, 5, 5));
+					JLabel lblNameDesFeldes = new JLabel("Name des Feldes:");
+					pnl_name.add(lblNameDesFeldes);
+					JTextField txtName = new JTextField(name);
+					pnl_name.add(txtName);
+
+					JPanel pnl_pos = new JPanel();
+					pnl_pos.setToolTipText("Bestimmt die Reihenfolge der Felder");
+					p.add(pnl_pos);
+					JTextField txtPos = new JTextField();
+					JLabel lbl_pos = new JLabel("An Position:");
+					lbl_pos.setToolTipText("");
+					pnl_pos.setLayout(new GridLayout(0, 2, 5, 5));
+					pnl_pos.add(lbl_pos);
+					pnl_pos.add(txtPos);
+
+					JPanel pnl_dezernat = new JPanel();
+					JCheckBox chckbxDezernat = new JCheckBox("Muss vom Dezernat 2 gepr\u00FCft werden");
+					p.add(pnl_dezernat);
+					chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");
+
+					pnl_dezernat.add(chckbxDezernat);
+
+					// Abfrage des Namen des Feldes
+					Object[] options = { "Annehmen", "Abbrechen" };
+					txtPos.setText(pos+"");
+					int n = 0;
+
+					do {
+						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+								null, options, options[1]);
+						name = txtName.getText();
+						try {
+							pos = Integer.parseInt(txtPos.getText());
+						} catch (NumberFormatException nfe) {
+							pos = -1;
+							txtPos.setText((tableFelder.getRowCount() + 1) + "");
+						}
+					} while ((name.isEmpty() || (pos == -1)) && (n == 0));
+
+					if (n == 0) {
+						boolean dezernat = chckbxDezernat.isSelected();
+						addToTable(name, dezernat, pos);
+						defaultFelder = tableToList();
+						int x = serverConnection.setDefaultFelder(defaultFelder).getStatus();
+						addToTableFelder();
+					}
+
+				}
+				}
+			
+		});
+		panel.add(btnFeldBearbeiten);
+		
+		JButton btnFeldEntfernen = new JButton("Feld entfernen");
+		panel.add(btnFeldEntfernen);
 
 		JPanel pnl_zuordnungen = new JPanel();
 		pnl_manage.add(pnl_zuordnungen);
@@ -536,7 +612,7 @@ public class mainscreen {
 
 		});
 		buttons1.add(btnNeueZuordnung);
-		prototyp = new LookCard();
+		prototyp = new ProtoLookCard();
 		cards.add(prototyp, "protoshow");
 		JButton btnPrototyp = new JButton("MHBProttyp");
 		buttons1.add(btnPrototyp);

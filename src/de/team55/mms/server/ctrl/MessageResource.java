@@ -153,12 +153,13 @@ public class MessageResource {
 	@POST
 	@Path("/modulhandbuch/post/")
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response setModulhanbuch(Modulhandbuch mh) {
+	public Response setModulhanbuch(Studiengang s) {
+		Modulhandbuch mh = s.getModbuch().get(0);
 		String[] tmp = mh.getJahrgang().split("/");
 		String semester = tmp[0];
 		String jahr = tmp[1];
-		String studiengang ="";
-		String abschluss ="";
+		String studiengang =s.getName();
+		String abschluss =s.getAbschluss();
 		int status = new sql().setModulhandbuch(studiengang, abschluss, mh.getPruefungsordnungsjahr(), mh.getProsa(), semester, jahr);
 		if (status == 1) {
 			System.out.println("Modulhandbuch " + mh.toString() + " akzeptiert");

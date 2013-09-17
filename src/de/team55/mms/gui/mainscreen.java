@@ -403,34 +403,49 @@ public class mainscreen {
 				String prosa = "";
 				pordnung pordnung = new pordnung();
 				int jahr = 0;
-				String sem="";
+				String sem = "";
 				ArrayList<Fach> fach = new ArrayList<Fach>();
 				Studiengang s = new Studiengang();
 				ModulHandbuchDialog dialog = new ModulHandbuchDialog();
 				ArrayList<pordnung> pos = serverConnection.getPOs();
 				int x = 0;
-				do  {
-					x= dialog.showDialog(frame, pos);
-					try{
-						pordnung=dialog.getPO();
-						prosa=dialog.getProsa();
-						sem=dialog.getSemester();
-						jahr=Integer.parseInt(dialog.getJahr());
+				do {
+					x = dialog.showDialog(frame, pos);
+					try {
+						pordnung = dialog.getPO();
+						prosa = dialog.getProsa();
+						sem = dialog.getSemester();
+						jahr = Integer.parseInt(dialog.getJahr());
 						s.setAbschluss(pordnung.getStudabschluss());
 						s.setName(pordnung.getStudname());
-						
-					} catch( NumberFormatException n){
-						jahr=0;
-					}
-					
 
-				} while((x == 1)&&(jahr==0));
-				if(x==1){
-				jahrgang=sem+"/"+jahr;
-				
-				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
-				mbs.add(new Modulhandbuch(0, jahrgang, prosa, pordnung.getPjahr(), fach));
-				s.setModbuch(mbs);
+					} catch (NumberFormatException n) {
+						jahr = 0;
+					}
+
+				} while ((x == 1) && (jahr == 0));
+				if (x == 1) {
+					jahrgang = sem + "/" + jahr;
+
+					ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
+					mbs.add(new Modulhandbuch(0, jahrgang, prosa, pordnung.getPjahr(), fach));
+					s.setModbuch(mbs);
+					x=serverConnection.setModulHandbuchAccepted(s).getStatus();
+					if(x==201){
+						modListModel.clear();
+						studienlist = serverConnection.getStudiengaenge(false);
+						nichtAckMBs.clear();
+						for (int i = 0; i < studienlist.size(); i++) {
+							s = studienlist.get(i);
+							ArrayList<Modulhandbuch> mb = s.getModbuch();
+							for (int j = 0; j < mb.size(); j++) {
+								Modulhandbuch m = mb.get(i);
+								nichtAckMBs.add(m);
+								modListModel.addElement(s.getAbschluss() + " " + s.getName() + ", PO " + m.getPruefungsordnungsjahr()
+										+ ", Modulhandbuch " + m.getJahrgang());
+							}
+						}
+					}
 				}
 
 			}

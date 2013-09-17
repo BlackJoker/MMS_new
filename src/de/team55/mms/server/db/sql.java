@@ -1857,7 +1857,7 @@ public class sql {
 		if(connect() == true){
 			try{
 				state = con
-						.prepareStatement("INSERT IGNORE INTO modulhandbuch(prosa, semeser, jahr, poid, akzeptiert) VALUES (?, ?, ? ,(SELECT po.ID FROM pordnung AS po JOIN studiengang AS s on po.sid = s.id WHERE s.name =? AND s.abschluss =? AND po.jahr =?) ,0 )");
+						.prepareStatement("INSERT IGNORE INTO modulhandbuch(prosa, semester, jahr, poid, akzeptiert) VALUES (?, ?, ? ,(SELECT po.ID FROM pordnung AS po JOIN studiengang AS s on po.sid = s.id WHERE s.name =? AND s.abschluss =? AND po.jahr =?) ,0 )");
 				state.setString(1, prosa);
 				state.setString(2, semester);
 				state.setString(3, jahr);

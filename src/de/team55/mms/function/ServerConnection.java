@@ -714,4 +714,12 @@ public class ServerConnection {
 		}
 		return null;
 	}
+
+	public ClientResponse setModulHandbuchAccepted(Studiengang s) {
+		if (connect(email, password) == SUCCES) {
+			return webResource.path("modulhandbuch/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, s);
+		} else {
+			return null;
+		}
+	}
 }

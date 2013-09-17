@@ -53,7 +53,7 @@ public class ServerConnection {
 
 	private static final int LOGINFALSE = 1;
 	private static final int NOCONNECTION = 0;
-	private static final int SUCCES = 2;
+	private static final int SUCCESS = 2;
 	private Client client;
 	private int connected;
 	private String email;
@@ -87,7 +87,7 @@ public class ServerConnection {
 		try {
 			ClientResponse response = webResource.post(ClientResponse.class);
 			if (response.getStatus() != 401)
-				connected = SUCCES;
+				connected = SUCCESS;
 			else
 				connected = LOGINFALSE;
 		} catch (com.sun.jersey.api.client.ClientHandlerException e) {
@@ -104,7 +104,7 @@ public class ServerConnection {
 	 * @return Response Code, null wenn nicht vorhanden
 	 */
 	public ClientResponse deluser(String mail) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			webResource.path("user/delete").path(mail).type(MediaType.APPLICATION_XML).delete();
 			return webResource.path("user/get").path(mail).get(ClientResponse.class);
 		}
@@ -120,7 +120,7 @@ public class ServerConnection {
 	 * @return das gewünschte Modul, null wenn nicht vorhanden
 	 */
 	public Modul getModul(String name) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/get").path(name).accept(MediaType.APPLICATION_XML).get(Modul.class);
 		} else {
 			return null;
@@ -136,7 +136,7 @@ public class ServerConnection {
 	 * @return das Modul als XML, null wenn nicht vorhanden
 	 */
 	public String getModulXML(String name) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			JAXBContext context;
 			try {
 				context = JAXBContext.newInstance(Modul.class);
@@ -160,7 +160,7 @@ public class ServerConnection {
 	}
 	
 	public ArrayList<Feld> getDefaultFelder(){
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("feld/get").accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Feld>>() {
 					});
@@ -169,7 +169,7 @@ public class ServerConnection {
 	}
 
 	public ClientResponse setDefaultFelder(ArrayList<Feld> felder) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("feld/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, new GenericEntity<ArrayList<Feld>>(felder){});
 		}
 		return null;
@@ -187,7 +187,7 @@ public class ServerConnection {
 		String accepted = "false";
 		if (b)
 			accepted = "true";
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/get/List").path(accepted).accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Modul>>() {
 					});
@@ -203,7 +203,7 @@ public class ServerConnection {
 	 * @return Liste von Modulhandbühern
 	 */
 	public ArrayList<Modulhandbuch> getModulhandbuch(String studiengang) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modulhandbuch/get/allat").path(studiengang).accept(MediaType.APPLICATION_XML)
 					.get(new GenericType<ArrayList<Modulhandbuch>>() {
 					});
@@ -219,7 +219,7 @@ public class ServerConnection {
 	 * @return Version des Modules
 	 */
 	public int getModulVersion(String name) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			String id = webResource.path("modul/get/Version").path(name).accept(MediaType.APPLICATION_XML).get(String.class);
 			return Integer.parseInt(id);
 		}
@@ -237,7 +237,7 @@ public class ServerConnection {
 	public ArrayList<User> getStellvertreter(String eMail) {
 		if (eMail.isEmpty())
 			return new ArrayList<User>();
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("user/get/stellv").path(eMail).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
 			});
 		}
@@ -256,7 +256,7 @@ public class ServerConnection {
 		}else{
 			boolst = "false";
 		}
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("studiengang/get/all").path(boolst).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Studiengang>>() {
 			});
 		}
@@ -271,7 +271,7 @@ public class ServerConnection {
 	 * @return ID des Studienganges
 	 */
 	public int getStudiengangID(String name) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			String id = webResource.path("studiengang/get/ID").path(name).accept(MediaType.APPLICATION_XML).get(String.class);
 			return Integer.parseInt(id);
 		}
@@ -284,7 +284,7 @@ public class ServerConnection {
 	 * @return Liste mit Zuordnungen
 	 */
 //	public ArrayList<Zuordnung> getZuordnungen() {
-//		if (connect(email, password) == SUCCES) {
+//		if (connect(email, password) == SUCCESS) {
 //			return webResource.path("zuordnung/getList").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Zuordnung>>() {
 //			});
 //		}
@@ -310,7 +310,7 @@ public class ServerConnection {
 	 * @return Gibt den User zurück, null wenn fehlgeschlagen
 	 */
 	public User login(String eMail, String password) {
-		if (connect(eMail, password) == SUCCES) {
+		if (connect(eMail, password) == SUCCESS) {
 			return webResource.path("login").path(eMail).path(password).accept(MediaType.APPLICATION_XML).get(User.class);
 		} else {
 			return null;
@@ -326,14 +326,14 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse setModul(Modul neu) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
 		}
 		return null;
 	}
 	
 	public ClientResponse setModulHandbuchAccepted(Modulhandbuch mb) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("/modulhandbuch/post/accept/").type(MediaType.APPLICATION_XML).post(ClientResponse.class, mb);
 		}
 		return null;
@@ -347,7 +347,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse setStellvertreter(StellvertreterList sl) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("user/post/stellv").type(MediaType.APPLICATION_XML).post(ClientResponse.class, sl);
 		}
 		return null;
@@ -361,7 +361,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse setStudiengang(String name, String abschluss) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("studiengang/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, new Studiengang(name,abschluss));
 		}
 		return null;
@@ -376,7 +376,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 //	public ClientResponse setZuordnung(Zuordnung z) {
-//		if (connect(email, password) == SUCCES) {
+//		if (connect(email, password) == SUCCESS) {
 //			return webResource.path("zuordnung/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, z);
 //		}
 //		return null;
@@ -388,7 +388,7 @@ public class ServerConnection {
 	 * @return eine Liste von Usern
 	 */
 	public ArrayList<User> userload(String s) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("user/get/all").path(s).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<User>>() {
 			});
 		} else {
@@ -404,7 +404,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse usersave(User tmp) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("user/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, tmp);
 		}
 		return null;
@@ -421,7 +421,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse userupdate(User tmp, String mail) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			UserUpdateContainer uuc = new UserUpdateContainer(tmp, mail);
 			return webResource.path("user/update").type(MediaType.APPLICATION_XML).post(ClientResponse.class, uuc);
 		}
@@ -437,7 +437,7 @@ public class ServerConnection {
 	 *         Stellvertretern
 	 */
 	public ArrayList<String> getUserRelation(String eMail) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("/user/get/Relation/").path(eMail).accept(MediaType.APPLICATION_XML).get(UserRelation.class)
 					.getRelation();
 		}
@@ -456,7 +456,7 @@ public class ServerConnection {
 	 * @return
 	 */
 	public ArrayList<Modul> getselectedModul(String studiengang, String modultyp, String modulhandbuch) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("/modul/get/selectedModul/").path(studiengang).path(modultyp).path(modulhandbuch)
 					.accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Modul>>() {
 					});
@@ -471,7 +471,7 @@ public class ServerConnection {
 	 * @return Modul
 	 */
 	public Modul getModul(String name, int v) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/get").path(name).path(v + "").accept(MediaType.APPLICATION_XML).get(Modul.class);
 		} else {
 			return null;
@@ -484,7 +484,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse acceptModul(Modul m) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/accept").type(MediaType.APPLICATION_XML).post(ClientResponse.class, m);
 		} else {
 			return null;
@@ -620,7 +620,7 @@ public class ServerConnection {
 	 * @return Status, ob es in Bearbeitung ist
 	 */
 	public boolean getModulInEdit(String name) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			String b = webResource.path("modul/get/InEdit").path(name).accept(MediaType.APPLICATION_XML).get(String.class);
 			if (b.equals("true")) {
 				return true;
@@ -635,7 +635,7 @@ public class ServerConnection {
 	 * @return Response Code
 	 */
 	public ClientResponse setModulInEdit(Modul m) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/set/InEdit").type(MediaType.APPLICATION_XML).post(ClientResponse.class, m);
 		} else {
 			return null;
@@ -643,7 +643,7 @@ public class ServerConnection {
 	}
 	
 	public ClientResponse setNachricht(Nachricht n) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("nachrichten/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, n);
 		} else {
 			return null;
@@ -651,7 +651,7 @@ public class ServerConnection {
 	}
 	
 	public ArrayList<Nachricht> getNachrichten(String mail) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("/nachrichten/get").path(mail)
 					.accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Nachricht>>() {
 					});
@@ -661,14 +661,14 @@ public class ServerConnection {
 
 	public ClientResponse savedate(Date date) {
 		String d = Long.toString(date.getTime());
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("/datum/set").type(MediaType.APPLICATION_XML).post(ClientResponse.class, d);
 		}
 		return null;
 	}
 	
 	public Date getDate() {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			String d = webResource.path("/datum/get").accept(MediaType.APPLICATION_XML).get(String.class);
 			long l = Long.parseLong(d);
 			return new Date(l);
@@ -677,7 +677,7 @@ public class ServerConnection {
 	}
 	
 	public ArrayList<ArrayList<User>> getModulverwalter(String modname){
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("/modverwa/getall").path(modname).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<ArrayList<User>>>() {
 					});
 		}
@@ -686,14 +686,14 @@ public class ServerConnection {
 	}
 	
 	public ArrayList<String> getallModulnames(){
-		if(connect(email, password) == SUCCES){
+		if(connect(email, password) == SUCCESS){
 			return webResource.path("/modnames/getall").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<String>>(){});
 		}
 		return null;
 	}
 
 	public void deleteNachricht(Nachricht nachricht) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			String id = Integer.toString(nachricht.getId());
 			webResource.path("nachrichten/delete").path(id).type(MediaType.APPLICATION_XML).delete();
 		//	return webResource.path("user/get").path(mail).get(ClientResponse.class);
@@ -702,23 +702,31 @@ public class ServerConnection {
 	}
 
 	public ClientResponse updateNachricht(Nachricht n) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("nachrichten/update").type(MediaType.APPLICATION_XML).put(ClientResponse.class, n);
 		}
 		return null;
 	}
 	
 	public ArrayList<pordnung> getPOs(){
-		if(connect(email, password) == SUCCES){
+		if(connect(email, password) == SUCCESS){
 			return webResource.path("/po/get").accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<pordnung>>(){});
 		}
 		return null;
 	}
 
 	public ClientResponse setModulHandbuchAccepted(Studiengang s) {
-		if (connect(email, password) == SUCCES) {
+		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modulhandbuch/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, s);
 		} else {
+			return null;
+		}
+	}
+	
+	public ArrayList<String> getFach(){
+		if(connect(email, password) == SUCCESS){
+			return webResource.path("/fach/get").type(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<String>>(){});
+		}else {
 			return null;
 		}
 	}

@@ -645,6 +645,12 @@ public class MessageResource {
 		return new sql().getallpo();
 	}
 	
-	
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	@Path("/fach/get")
+	public ArrayList<String> getFach(){
+		System.out.println("Fächer abgefragt");
+		return new sql().getFach();
+	}
 	
 }

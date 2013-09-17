@@ -41,6 +41,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
+import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
@@ -88,7 +89,6 @@ public class mainscreen {
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
 	private ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
-
 
 	// Modelle
 	private DefaultTableModel tmodel;
@@ -191,7 +191,7 @@ public class mainscreen {
 
 	private DefaultListModel modListModel;
 
-	private ArrayList<Modulhandbuch> nichtAckMBs=new ArrayList<Modulhandbuch>();
+	private ArrayList<Modulhandbuch> nichtAckMBs = new ArrayList<Modulhandbuch>();
 
 	private JList modbuchList;
 
@@ -363,15 +363,14 @@ public class mainscreen {
 			}
 
 		});
-		
+
 		JButton btnModulhandbuchAkzeptieren = new JButton("Modulhandbuch akzeptieren");
 		btnModulhandbuchAkzeptieren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int id = modbuchList.getSelectedIndex();
-				if(id!=-1){
-					int x = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modulhandbuch akzeptieren möchten?" +
-							"\n Weitere Änderungen sind dann nicht mehr möglich.",
-							"Feld entfernen", JOptionPane.OK_CANCEL_OPTION);
+				if (id != -1) {
+					int x = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modulhandbuch akzeptieren möchten?"
+							+ "\n Weitere Änderungen sind dann nicht mehr möglich.", "Feld entfernen", JOptionPane.OK_CANCEL_OPTION);
 					if (x == 0) {
 						Modulhandbuch m = nichtAckMBs.get(id);
 						x = serverConnection.setModulHandbuchAccepted(m).getStatus();
@@ -380,13 +379,14 @@ public class mainscreen {
 							modListModel.clear();
 							studienlist = serverConnection.getStudiengaenge(false);
 							nichtAckMBs.clear();
-							for (int i=0;i<studienlist.size();i++){
+							for (int i = 0; i < studienlist.size(); i++) {
 								Studiengang s = studienlist.get(i);
 								ArrayList<Modulhandbuch> mb = s.getModbuch();
-								for(int j=0;j<mb.size();j++){
+								for (int j = 0; j < mb.size(); j++) {
 									m = mb.get(i);
 									nichtAckMBs.add(m);
-									modListModel.addElement(s.getAbschluss()+" "+s.getName()+", PO "+m.getPruefungsordnungsjahr()+", Modulhandbuch "+m.getJahrgang());
+									modListModel.addElement(s.getAbschluss() + " " + s.getName() + ", PO " + m.getPruefungsordnungsjahr()
+											+ ", Modulhandbuch " + m.getJahrgang());
 								}
 							}
 						}
@@ -394,6 +394,18 @@ public class mainscreen {
 				}
 			}
 		});
+
+		JButton btnNeuesModulhandbuch = new JButton("neues Modulhandbuch");
+		btnNeuesModulhandbuch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String jahrgang = null;
+				String prosa = null;
+				int pordnung = 0;
+				ArrayList<Fach> fach = null;
+				Modulhandbuch mb = new Modulhandbuch(0, jahrgang, prosa, pordnung, fach) ;
+			}
+		});
+		buttons1.add(btnNeuesModulhandbuch);
 		btnModulhandbuchAkzeptieren.setToolTipText("Ausgew\u00E4hltes Modulhandbuch akzeptieren");
 		buttons1.add(btnModulhandbuchAkzeptieren);
 		buttons1.add(btnNeueZuordnung);
@@ -422,28 +434,28 @@ public class mainscreen {
 			}
 		});
 		buttons1.add(btnZurck_1);
-		
+
 		JPanel pnl_contents = new JPanel();
 		pnl_modbuch.add(pnl_contents, BorderLayout.CENTER);
 		pnl_contents.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel pnl_buch = new JPanel();
 		pnl_contents.add(pnl_buch);
 		pnl_buch.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane_2 = new JScrollPane();
 		pnl_buch.add(scrollPane_2, BorderLayout.CENTER);
-		
+
 		modListModel = new DefaultListModel();
-		
+
 		modbuchList = new JList(modListModel);
 		modbuchList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+
 		scrollPane_2.setViewportView(modbuchList);
-		
+
 		JLabel lblNichtAkzeptierteModulhandbcher = new JLabel("Nicht akzeptierte Modulhandb\u00FCcher");
 		pnl_buch.add(lblNichtAkzeptierteModulhandbcher, BorderLayout.NORTH);
-		
+
 		JPanel pnl_deadline = new JPanel();
 		pnl_contents.add(pnl_deadline, BorderLayout.NORTH);
 		pnl_deadline.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -455,9 +467,9 @@ public class mainscreen {
 		pnl_deadline.add(calender);
 		calender.getCalendarButton().setText("Datum w\u00E4hlen");
 		calender.getCalendarButton().setVerticalAlignment(SwingConstants.BOTTOM);
-		
-				JButton savedate = new JButton("Datum setzen");
-				pnl_deadline.add(savedate);
+
+		JButton savedate = new JButton("Datum setzen");
+		pnl_deadline.add(savedate);
 		// JButton test = new JButton("test");
 		// buttons1.add(test);
 		// test.addActionListener(new ActionListener() {
@@ -498,7 +510,7 @@ public class mainscreen {
 		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		// pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
 		//
-		
+
 		JPanel pnl_studiengang = new JPanel();
 		tabbedPane.addTab("Studieng\u00E4nge & PO", null, pnl_studiengang, "Studieng\u00E4nge und Pr\u00FCfungsordnungen verwalten");
 		pnl_studiengang.setLayout(new BorderLayout(0, 0));
@@ -766,7 +778,6 @@ public class mainscreen {
 		});
 		panel_1.add(btnFeldEntfernen);
 
-		
 	}
 
 	protected ArrayList<Feld> tableToList() {
@@ -1258,16 +1269,17 @@ public class mainscreen {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
 				studienlist = serverConnection.getStudiengaenge(false);
-				for (int i=0;i<studienlist.size();i++){
+				for (int i = 0; i < studienlist.size(); i++) {
 					Studiengang s = studienlist.get(i);
 					ArrayList<Modulhandbuch> mb = s.getModbuch();
-					for(int j=0;j<mb.size();j++){
+					for (int j = 0; j < mb.size(); j++) {
 						Modulhandbuch m = mb.get(j);
 						nichtAckMBs.add(m);
-						modListModel.addElement(s.getAbschluss()+" "+s.getName()+", PO "+m.getPruefungsordnungsjahr()+", Modulhandbuch "+m.getJahrgang());
+						modListModel.addElement(s.getAbschluss() + " " + s.getName() + ", PO " + m.getPruefungsordnungsjahr()
+								+ ", Modulhandbuch " + m.getJahrgang());
 					}
 				}
-				
+
 				defaultFelder = serverConnection.getDefaultFelder();
 				addToTableFelder();
 				studienlist = serverConnection.getStudiengaenge(true);

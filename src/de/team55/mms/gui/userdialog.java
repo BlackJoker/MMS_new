@@ -47,6 +47,7 @@ public class userdialog extends JDialog {
 	private JCheckBox cb_ModErst;
 	private JCheckBox cb_ModLes;
 	private JCheckBox cb_BV;
+	private JCheckBox cb_Redak;
 
 	private DefaultListModel<User> lm = new DefaultListModel<User>();
 
@@ -131,6 +132,7 @@ public class userdialog extends JDialog {
 		usr.setCreateModule(cb_ModErst.isSelected());
 		usr.setAcceptModule(cb_ModAnn.isSelected());
 		usr.setManageUsers(cb_BV.isSelected());
+		usr.setRedaktion(cb_Redak.isSelected());
 		return usr;
 	}
 
@@ -250,6 +252,9 @@ public class userdialog extends JDialog {
 
 		cb_ModLes = new JCheckBox("Verwaltung", usr.getManageSystem());
 		pnl_checkboxes.add(cb_ModLes);
+		
+		cb_Redak = new JCheckBox("Redaktion", usr.getRedaktion());
+		pnl_checkboxes.add(cb_Redak);
 
 		// Wenn der Benutzer nicht vom Admin bearbeitet wird
 		// können keine Rechte geändert werden
@@ -258,6 +263,7 @@ public class userdialog extends JDialog {
 			cb_ModErst.setEnabled(false);
 			cb_ModAnn.setEnabled(false);
 			cb_ModLes.setEnabled(false);
+			cb_Redak.setEnabled(false);
 		}
 
 		JPanel south = new JPanel();
@@ -294,31 +300,31 @@ public class userdialog extends JDialog {
 
 			pnl_list.add(remove);
 
-			south.add(pnl_list, BorderLayout.NORTH);
-
-			ArrayList<User> userlist = serverConnection.userload("true");
-
-			DefaultComboBoxModel<User> cbmodel = new DefaultComboBoxModel<User>();
-			for (int i = 0; i < userlist.size(); i++) {
-				User s = userlist.get(i);
-				if (!s.geteMail().equals(usr.geteMail()))
-					cbmodel.addElement(s);
-			}
-
-			// Zur Auswahl stehende Benutzer
-			final JComboBox<User> cb_Z = new JComboBox<User>(cbmodel);
-			pnl_user.add(cb_Z);
-
-			JButton z_btn = new JButton("Stellvertreter auswählen");
-			z_btn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (!lm.contains(cb_Z.getSelectedItem()))
-						lm.addElement((User) cb_Z.getSelectedItem());
-					pack();
-				}
-			});
-			pnl_user.add(z_btn);
+//			south.add(pnl_list, BorderLayout.NORTH);
+//
+//			ArrayList<User> userlist = serverConnection.userload("true");
+//
+//			DefaultComboBoxModel<User> cbmodel = new DefaultComboBoxModel<User>();
+//			for (int i = 0; i < userlist.size(); i++) {
+//				User s = userlist.get(i);
+//				if (!s.geteMail().equals(usr.geteMail()))
+//					cbmodel.addElement(s);
+//			}
+//
+//			// Zur Auswahl stehende Benutzer
+//			final JComboBox<User> cb_Z = new JComboBox<User>(cbmodel);
+//			pnl_user.add(cb_Z);
+//
+//			JButton z_btn = new JButton("Stellvertreter auswählen");
+//			z_btn.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					if (!lm.contains(cb_Z.getSelectedItem()))
+//						lm.addElement((User) cb_Z.getSelectedItem());
+//					pack();
+//				}
+//			});
+//			pnl_user.add(z_btn);
 		}
 		JPanel pnl_footer = new JPanel();
 		south.add(pnl_footer, BorderLayout.SOUTH);

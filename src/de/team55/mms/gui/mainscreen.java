@@ -105,6 +105,8 @@ public class mainscreen {
 	// Map der Dynamischen Buttons
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
+	ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
+
 
 	// Modelle
 	private DefaultTableModel tmodel;
@@ -583,6 +585,13 @@ public class mainscreen {
 
 	@SuppressWarnings("unchecked")
 	protected void addToTable(String name, boolean dezernat, int pos) {
+		defaultFelder.add(new Feld(name,pos+"",dezernat));
+		Collections.sort(defaultFelder, new Comparator<Feld>() {
+			public int compare(Feld f1, Feld f2) {
+				return f1.getValue().compareTo(f2.getValue());
+			}
+		});
+		System.out.println(defaultFelder);
 		Vector data = tableFelder.getDataVector();
 		pos = pos - 1;
 		if (pos < 0) {

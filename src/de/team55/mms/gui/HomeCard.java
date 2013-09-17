@@ -95,6 +95,8 @@ public class HomeCard extends JPanel {
 		refreshMessageTable();
 
 		tblmessages = new JTable(messagemodel);
+		tblmessages.setAutoCreateColumnsFromModel(false);
+
 		scrollPane.setViewportView(tblmessages);
 		tblmessages.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tblmessages.setFillsViewportHeight(true);
@@ -272,6 +274,10 @@ public class HomeCard extends JPanel {
 	}
 
 	private void addToTable(Nachricht neu) {
+		tblmessages.getColumnModel().getColumn(0).setPreferredWidth(20);
+		tblmessages.getColumnModel().getColumn(0).setMaxWidth(20);
+		tblmessages.getColumnModel().getColumn(3).setPreferredWidth(180);
+		tblmessages.getColumnModel().getColumn(3).setMaxWidth(180);
 		if (neu.isGelesen()) {
 			messagemodel.addRow(new Object[] { false, neu.getAbsender(), neu.getBetreff(), neu.getDatumString() });
 		} else {

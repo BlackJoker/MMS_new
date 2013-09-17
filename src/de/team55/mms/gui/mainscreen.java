@@ -98,7 +98,7 @@ public class mainscreen {
 	private ArrayList<Studiengang> studienlist = null; // Liste mit
 														// Studiengängen
 	private ArrayList<Studiengang> prototyplist = null; // Liste mit
-	//prototyp Studiengängen
+	// prototyp Studiengängen
 	private ArrayList<Modul> selectedmodullist = null; // Liste der Module im
 														// durchstöbern segment
 	// Liste der Modulhandbuecher des ausgewählten Studiengangs
@@ -366,11 +366,15 @@ public class mainscreen {
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
 		};
 		table.setModel(tableFelder);
-		table.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table.getColumnModel().getColumn(0).setMinWidth(75);
-		table.getColumnModel().getColumn(1).setMaxWidth(75);
+		table.setAutoCreateColumnsFromModel(false);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_1.setViewportView(table);
 
@@ -431,7 +435,7 @@ public class mainscreen {
 					try {
 						pos = Integer.parseInt(txtPos.getText());
 					} catch (NumberFormatException nfe) {
-						pos=-1;
+						pos = -1;
 						txtPos.setText((tableFelder.getRowCount() + 1) + "");
 					}
 				} while ((name.isEmpty() || (pos == -1)) && (n == 0));
@@ -533,9 +537,9 @@ public class mainscreen {
 		cards.add(prototyp, "protoshow");
 		JButton btnPrototyp = new JButton("MHBProttyp");
 		buttons1.add(btnPrototyp);
-		
+
 		btnPrototyp.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
@@ -618,7 +622,6 @@ public class mainscreen {
 		// }
 		// });
 		// System.out.println(defaultFelder);
-		defaultFelder = new ArrayList<Feld>();
 		Vector data = tableFelder.getDataVector();
 		pos = pos - 1;
 		if (pos < 0) {
@@ -637,9 +640,14 @@ public class mainscreen {
 			data.setElementAt(tmp, i);
 			String label = (String) tmp.elementAt(1);
 			boolean dez = (boolean) tmp.elementAt(2);
-			defaultFelder.add(new Feld(label, "", dez));
 		}
-		System.out.println(defaultFelder);
+		int w = table.getWidth()-120;
+		table.getColumnModel().getColumn(0).setPreferredWidth(50);
+		table.getColumnModel().getColumn(0).setMaxWidth(50);
+		table.getColumnModel().getColumn(1).setPreferredWidth(w);
+		table.getColumnModel().getColumn(2).setPreferredWidth(70);
+		table.getColumnModel().getColumn(2).setMaxWidth(70);
+
 		tableFelder.setDataVector(data, columnIdentifiers);
 	}
 
@@ -1083,6 +1091,7 @@ public class mainscreen {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
 				defaultFelder = serverConnection.getDefaultFelder();
+				addToTableFelder();
 				studienlist = serverConnection.getStudiengaenge(true);
 				studimodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
@@ -1138,6 +1147,15 @@ public class mainscreen {
 			}
 
 		});
+	}
+
+	protected void addToTableFelder() {
+		tableFelder.setRowCount(0);
+		for (int i = 0; i < defaultFelder.size(); i++) {
+			Feld f = defaultFelder.get(i);
+			addToTable(f.getLabel(), f.isDezernat(), i);
+		}
+
 	}
 
 	/**

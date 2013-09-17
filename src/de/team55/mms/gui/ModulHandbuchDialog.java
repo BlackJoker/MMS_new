@@ -146,10 +146,7 @@ public class ModulHandbuchDialog extends JDialog {
 		}
 	}
 
-	public int showDialog(JFrame frame, ArrayList<Studiengang> studienlist, ArrayList<pordnung> pos) {
-		for(int i = 0;i<studienlist.size();i++){
-			stud.addElement(studienlist.get(i));
-		}
+	public int showDialog(JFrame frame, ArrayList<pordnung> pos) {
 		for(int i = 0;i<pos.size();i++){
 			poMod.addElement(pos.get(i));
 		}

@@ -11,22 +11,12 @@ import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.AllPermission;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -34,8 +24,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -49,27 +37,19 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import com.toedter.calendar.JDateChooser;
 
+import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
-import de.team55.mms.data.Nachricht;
 import de.team55.mms.data.Studiengang;
 import de.team55.mms.data.User;
-//import de.team55.mms.data.Zuordnung;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
-
-import javax.swing.UIManager;
+import javax.swing.AbstractListModel;
 
 public class mainscreen {
 
@@ -108,7 +88,7 @@ public class mainscreen {
 	// Map der Dynamischen Buttons
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
-	ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
+	private ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
 
 	// Modelle
 	private DefaultTableModel tmodel;
@@ -209,6 +189,12 @@ public class mainscreen {
 
 	private Vector<String> columnIdentifiers;
 
+	private DefaultListModel modListModel;
+
+	private ArrayList<Modulhandbuch> nichtAckMBs = new ArrayList<Modulhandbuch>();
+
+	private JList modbuchList;
+
 	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
@@ -271,8 +257,262 @@ public class mainscreen {
 		cards.add(pnl_manage, "manage");
 		pnl_manage.setLayout(new BoxLayout(pnl_manage, BoxLayout.Y_AXIS));
 
+		columnIdentifiers = new Vector<String>();
+		columnIdentifiers.add("Position");
+		columnIdentifiers.add("Name");
+		columnIdentifiers.add("Dezernat 2");
+		tableFelder = new DefaultTableModel(new Vector(), columnIdentifiers) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class, Boolean.class };
+
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+		};
+		prototyp = new ProtoLookCard();
+		cards.add(prototyp, "protoshow");
+
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		pnl_manage.add(tabbedPane);
+
+		JPanel pnl_modbuch = new JPanel();
+		tabbedPane.addTab("Modulhandb\u00FCcher", null, pnl_modbuch, "Modulhandb\u00FCcher und Stichtag verwalten");
+		pnl_modbuch.setLayout(new BorderLayout(0, 0));
+
+		// Liste mit Zuordnungen (Modultypen)
+		// JList<Zuordnung> list1 = new JList<Zuordnung>(typenmodel);
+
+		JPanel buttons1 = new JPanel();
+		pnl_modbuch.add(buttons1, BorderLayout.SOUTH);
+
+		// Anlegen einer neuen Zuordnung
+		JButton btnNeueZuordnung = new JButton("Modul Verwalter");
+		btnNeueZuordnung.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// try {
+				modverwaltung();
+				showCard("modverwaltung");
+				// JTextField neu_Name = new JTextField();
+				// JTextField neu_Abschluss = new JTextField();
+				// JComboBox<Studiengang> neu_sgbox = new
+				// JComboBox<Studiengang>(cbmodel);
+				//
+				// Object[] message = { "Name des Types:", neu_Name,
+				// "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
+				//
+				// // Dialog anzeigen, in dem Daten eingetragen werden
+				// int option = JOptionPane.showConfirmDialog(frame, message,
+				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+				// if (option == JOptionPane.OK_OPTION) {
+				//
+				// // Teste, ob alle Felder ausgefüllt werden
+				// while ((neu_Name.getText().isEmpty() ||
+				// (neu_sgbox.getSelectedItem() == null) ||
+				// neu_Abschluss.getText().isEmpty())
+				// && (option == JOptionPane.OK_OPTION)) {
+				// Object[] messageEmpty = {
+				// "Bitte alle Felder ausf\u00fcllen!", "Name des Types:",
+				// neu_Name, "Abschluss:",
+				// neu_Abschluss, "Studiengang:", neu_sgbox };
+				// option = JOptionPane.showConfirmDialog(frame, messageEmpty,
+				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
+				// }
+				// // Wenn ok gedrückt wird
+				// if (option == JOptionPane.OK_OPTION) {
+				// Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
+				// // Zuordnung z = new Zuordnung(neu_Name.getText(),
+				// // s.getName(), s.getId(), neu_Abschluss.getText());
+				//
+				// // Teste, ob Zuordnung schon vorhanden
+				// boolean neu = true;
+				// // for (int i = 0; i < typen.size(); i++) {
+				// // if (typen.get(i).equals(z)) {
+				// // neu = false;
+				// // break;
+				// // }
+				// // }
+				//
+				// // Falls neu, in Datenbank eintragen und Liste und
+				// // Model aktualisieren
+				// if (neu) {
+				// // serverConnection.setZuordnung(z);
+				// // typen = serverConnection.getZuordnungen();
+				// // typenmodel.removeAllElements();
+				// // for (int i = 0; i < typen.size(); i++) {
+				// // typenmodel.addElement(typen.get(i));
+				// // }
+				// }
+				// // Ansonsten Fehler ausgeben
+				// else {
+				// JOptionPane.showMessageDialog(frame,
+				// "Zuordnung ist schon vorhanden", "Fehler",
+				// JOptionPane.ERROR_MESSAGE);
+				// }
+				// }
+				// }
+				//
+				// } catch (NullPointerException np) {
+				// // Bei abbruch nichts tuen
+				// }
+			}
+
+		});
+
+		JButton btnModulhandbuchAkzeptieren = new JButton("Modulhandbuch akzeptieren");
+		btnModulhandbuchAkzeptieren.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int id = modbuchList.getSelectedIndex();
+				if (id != -1) {
+					int x = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modulhandbuch akzeptieren möchten?"
+							+ "\n Weitere Änderungen sind dann nicht mehr möglich.", "Feld entfernen", JOptionPane.OK_CANCEL_OPTION);
+					if (x == 0) {
+						Modulhandbuch m = nichtAckMBs.get(id);
+						x = serverConnection.setModulHandbuchAccepted(m).getStatus();
+						System.out.println(x);
+						if (x == 201) {
+							modListModel.clear();
+							studienlist = serverConnection.getStudiengaenge(false);
+							nichtAckMBs.clear();
+							for (int i = 0; i < studienlist.size(); i++) {
+								Studiengang s = studienlist.get(i);
+								ArrayList<Modulhandbuch> mb = s.getModbuch();
+								for (int j = 0; j < mb.size(); j++) {
+									m = mb.get(i);
+									nichtAckMBs.add(m);
+									modListModel.addElement(s.getAbschluss() + " " + s.getName() + ", PO " + m.getPruefungsordnungsjahr()
+											+ ", Modulhandbuch " + m.getJahrgang());
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+
+		JButton btnNeuesModulhandbuch = new JButton("neues Modulhandbuch");
+		btnNeuesModulhandbuch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String jahrgang = null;
+				String prosa = null;
+				int pordnung = 0;
+				ArrayList<Fach> fach = null;
+				Modulhandbuch mb = new Modulhandbuch(0, jahrgang, prosa, pordnung, fach) ;
+			}
+		});
+		buttons1.add(btnNeuesModulhandbuch);
+		btnModulhandbuchAkzeptieren.setToolTipText("Ausgew\u00E4hltes Modulhandbuch akzeptieren");
+		buttons1.add(btnModulhandbuchAkzeptieren);
+		buttons1.add(btnNeueZuordnung);
+		JButton btnPrototyp = new JButton("MHBProttyp");
+		buttons1.add(btnPrototyp);
+
+		btnPrototyp.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				prototyplist = serverConnection.getStudiengaenge(false);
+				prototyp.setConnection(serverConnection);
+				prototyp.setStudienlist(prototyplist);
+				prototyp.buildTree();
+				showCard("protoshow");
+			}
+		});
+
+		JButton btnZurck_1 = new JButton("Zur\u00FCck");
+		btnZurck_1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Zurück zur Start Card
+				showCard("welcome page");
+			}
+		});
+		buttons1.add(btnZurck_1);
+
+		JPanel pnl_contents = new JPanel();
+		pnl_modbuch.add(pnl_contents, BorderLayout.CENTER);
+		pnl_contents.setLayout(new BorderLayout(0, 0));
+
+		JPanel pnl_buch = new JPanel();
+		pnl_contents.add(pnl_buch);
+		pnl_buch.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane_2 = new JScrollPane();
+		pnl_buch.add(scrollPane_2, BorderLayout.CENTER);
+
+		modListModel = new DefaultListModel();
+
+		modbuchList = new JList(modListModel);
+		modbuchList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		scrollPane_2.setViewportView(modbuchList);
+
+		JLabel lblNichtAkzeptierteModulhandbcher = new JLabel("Nicht akzeptierte Modulhandb\u00FCcher");
+		pnl_buch.add(lblNichtAkzeptierteModulhandbcher, BorderLayout.NORTH);
+
+		JPanel pnl_deadline = new JPanel();
+		pnl_contents.add(pnl_deadline, BorderLayout.NORTH);
+		pnl_deadline.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		// worklist = serverConnection.userload();
+		JLabel lblZuordnungen = new JLabel("Deadline");
+		lblZuordnungen.setHorizontalAlignment(SwingConstants.LEFT);
+		pnl_deadline.add(lblZuordnungen);
+		lblZuordnungen.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		pnl_deadline.add(calender);
+		calender.getCalendarButton().setText("Datum w\u00E4hlen");
+		calender.getCalendarButton().setVerticalAlignment(SwingConstants.BOTTOM);
+
+		JButton savedate = new JButton("Datum setzen");
+		pnl_deadline.add(savedate);
+		// JButton test = new JButton("test");
+		// buttons1.add(test);
+		// test.addActionListener(new ActionListener() {
+		//
+		// @Override
+		// public void actionPerformed(ActionEvent arg0) {
+		// // TODO Auto-generated method stub
+		// calender.setDate(serverConnection.getDate());
+		// }
+		// });
+		savedate.addActionListener(new ActionListener() {
+			String dateString;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					serverConnection.savedate(calender.getDate());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie ein gültiges Datum aus!", "Datenfehler",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		// JScrollPane scrollPane_1 = new JScrollPane(x,
+		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
+		//
+		// JScrollPane scrollPane_2 = new JScrollPane(y,
+		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
+		//
+		// JScrollPane scrollPane_3 = new JScrollPane(z,
+		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
+		//
+
 		JPanel pnl_studiengang = new JPanel();
-		pnl_manage.add(pnl_studiengang);
+		tabbedPane.addTab("Studieng\u00E4nge & PO", null, pnl_studiengang, "Studieng\u00E4nge und Pr\u00FCfungsordnungen verwalten");
 		pnl_studiengang.setLayout(new BorderLayout(0, 0));
 
 		// Liste mit Studiengängen in ScrollPane
@@ -349,38 +589,20 @@ public class mainscreen {
 		pnl_studiengang.add(lblStudiengnge, BorderLayout.NORTH);
 
 		JPanel pnl_felder = new JPanel();
-		pnl_manage.add(pnl_felder);
+		tabbedPane.addTab("Standard Felder", null, pnl_felder, "Standard Felder von Modulen verwalten");
 		pnl_felder.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		pnl_felder.add(scrollPane_1, BorderLayout.CENTER);
 
-		columnIdentifiers = new Vector<String>();
-		columnIdentifiers.add("Position");
-		columnIdentifiers.add("Name");
-		columnIdentifiers.add("Dezernat 2");
-
 		table = new JTable();
-		tableFelder = new DefaultTableModel(new Vector(), columnIdentifiers) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class, Boolean.class };
-
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// all cells false
-				return false;
-			}
-		};
 		table.setModel(tableFelder);
 		table.setAutoCreateColumnsFromModel(false);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_1.setViewportView(table);
 
-		JPanel panel = new JPanel();
-		pnl_felder.add(panel, BorderLayout.SOUTH);
+		JPanel panel_1 = new JPanel();
+		pnl_felder.add(panel_1, BorderLayout.SOUTH);
 
 		JButton btnNeuesStandardFeld = new JButton("Neues Standard Feld");
 		btnNeuesStandardFeld.addActionListener(new ActionListener() {
@@ -450,7 +672,7 @@ public class mainscreen {
 
 			}
 		});
-		panel.add(btnNeuesStandardFeld);
+		panel_1.add(btnNeuesStandardFeld);
 
 		JButton btnFeldBearbeiten = new JButton("Feld bearbeiten");
 		btnFeldBearbeiten.addActionListener(new ActionListener() {
@@ -535,7 +757,7 @@ public class mainscreen {
 			}
 
 		});
-		panel.add(btnFeldBearbeiten);
+		panel_1.add(btnFeldBearbeiten);
 
 		JButton btnFeldEntfernen = new JButton("Feld entfernen");
 		btnFeldEntfernen.addActionListener(new ActionListener() {
@@ -554,170 +776,8 @@ public class mainscreen {
 				}
 			}
 		});
-		panel.add(btnFeldEntfernen);
+		panel_1.add(btnFeldEntfernen);
 
-		JPanel pnl_zuordnungen = new JPanel();
-		pnl_manage.add(pnl_zuordnungen);
-		pnl_zuordnungen.setLayout(new BorderLayout(0, 0));
-
-		// Liste mit Zuordnungen (Modultypen)
-		// JList<Zuordnung> list1 = new JList<Zuordnung>(typenmodel);
-
-		JPanel buttons1 = new JPanel();
-		pnl_zuordnungen.add(buttons1, BorderLayout.SOUTH);
-
-		// Anlegen einer neuen Zuordnung
-		JButton btnNeueZuordnung = new JButton("Modul Verwalter");
-		btnNeueZuordnung.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// try {
-				modverwaltung();
-				showCard("modverwaltung");
-				// JTextField neu_Name = new JTextField();
-				// JTextField neu_Abschluss = new JTextField();
-				// JComboBox<Studiengang> neu_sgbox = new
-				// JComboBox<Studiengang>(cbmodel);
-				//
-				// Object[] message = { "Name des Types:", neu_Name,
-				// "Abschluss:", neu_Abschluss, "Studiengang:", neu_sgbox };
-				//
-				// // Dialog anzeigen, in dem Daten eingetragen werden
-				// int option = JOptionPane.showConfirmDialog(frame, message,
-				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-				// if (option == JOptionPane.OK_OPTION) {
-				//
-				// // Teste, ob alle Felder ausgefüllt werden
-				// while ((neu_Name.getText().isEmpty() ||
-				// (neu_sgbox.getSelectedItem() == null) ||
-				// neu_Abschluss.getText().isEmpty())
-				// && (option == JOptionPane.OK_OPTION)) {
-				// Object[] messageEmpty = {
-				// "Bitte alle Felder ausf\u00fcllen!", "Name des Types:",
-				// neu_Name, "Abschluss:",
-				// neu_Abschluss, "Studiengang:", neu_sgbox };
-				// option = JOptionPane.showConfirmDialog(frame, messageEmpty,
-				// "Neuen Typ anlegen", JOptionPane.OK_CANCEL_OPTION);
-				// }
-				// // Wenn ok gedrückt wird
-				// if (option == JOptionPane.OK_OPTION) {
-				// Studiengang s = (Studiengang) neu_sgbox.getSelectedItem();
-				// // Zuordnung z = new Zuordnung(neu_Name.getText(),
-				// // s.getName(), s.getId(), neu_Abschluss.getText());
-				//
-				// // Teste, ob Zuordnung schon vorhanden
-				// boolean neu = true;
-				// // for (int i = 0; i < typen.size(); i++) {
-				// // if (typen.get(i).equals(z)) {
-				// // neu = false;
-				// // break;
-				// // }
-				// // }
-				//
-				// // Falls neu, in Datenbank eintragen und Liste und
-				// // Model aktualisieren
-				// if (neu) {
-				// // serverConnection.setZuordnung(z);
-				// // typen = serverConnection.getZuordnungen();
-				// // typenmodel.removeAllElements();
-				// // for (int i = 0; i < typen.size(); i++) {
-				// // typenmodel.addElement(typen.get(i));
-				// // }
-				// }
-				// // Ansonsten Fehler ausgeben
-				// else {
-				// JOptionPane.showMessageDialog(frame,
-				// "Zuordnung ist schon vorhanden", "Fehler",
-				// JOptionPane.ERROR_MESSAGE);
-				// }
-				// }
-				// }
-				//
-				// } catch (NullPointerException np) {
-				// // Bei abbruch nichts tuen
-				// }
-			}
-
-		});
-		buttons1.add(btnNeueZuordnung);
-		prototyp = new ProtoLookCard();
-		cards.add(prototyp, "protoshow");
-		JButton btnPrototyp = new JButton("MHBProttyp");
-		buttons1.add(btnPrototyp);
-
-		btnPrototyp.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				prototyplist = serverConnection.getStudiengaenge(false);
-				prototyp.setConnection(serverConnection);
-				prototyp.setStudienlist(prototyplist);
-				prototyp.buildTree();
-				showCard("protoshow");
-			}
-		});
-		// worklist = serverConnection.userload();
-		JLabel lblZuordnungen = new JLabel("Deadline");
-		lblZuordnungen.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		pnl_zuordnungen.add(lblZuordnungen, BorderLayout.NORTH);
-		calender.getCalendarButton().setText("Datum w\u00E4hlen");
-		calender.getCalendarButton().setVerticalAlignment(SwingConstants.BOTTOM);
-
-		pnl_zuordnungen.add(calender, BorderLayout.CENTER);
-
-		JButton savedate = new JButton("Datum setzen");
-		buttons1.add(savedate);
-
-		JButton btnZurck_1 = new JButton("Zur\u00FCck");
-		btnZurck_1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Zurück zur Start Card
-				showCard("welcome page");
-			}
-		});
-		buttons1.add(btnZurck_1);
-		// JButton test = new JButton("test");
-		// buttons1.add(test);
-		// test.addActionListener(new ActionListener() {
-		//
-		// @Override
-		// public void actionPerformed(ActionEvent arg0) {
-		// // TODO Auto-generated method stub
-		// calender.setDate(serverConnection.getDate());
-		// }
-		// });
-		savedate.addActionListener(new ActionListener() {
-			String dateString;
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				try {
-					serverConnection.savedate(calender.getDate());
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(frame, "Bitte wählen Sie ein gültiges Datum aus!", "Datenfehler",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-
-		// JScrollPane scrollPane_1 = new JScrollPane(x,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_1, BorderLayout.CENTER);
-		//
-		// JScrollPane scrollPane_2 = new JScrollPane(y,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_2, BorderLayout.CENTER);
-		//
-		// JScrollPane scrollPane_3 = new JScrollPane(z,
-		// ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		// ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		// pnl_zuordnungen.add(scrollPane_3, BorderLayout.CENTER);
-		//
 	}
 
 	protected ArrayList<Feld> tableToList() {
@@ -1208,6 +1268,18 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
+				studienlist = serverConnection.getStudiengaenge(false);
+				for (int i = 0; i < studienlist.size(); i++) {
+					Studiengang s = studienlist.get(i);
+					ArrayList<Modulhandbuch> mb = s.getModbuch();
+					for (int j = 0; j < mb.size(); j++) {
+						Modulhandbuch m = mb.get(j);
+						nichtAckMBs.add(m);
+						modListModel.addElement(s.getAbschluss() + " " + s.getName() + ", PO " + m.getPruefungsordnungsjahr()
+								+ ", Modulhandbuch " + m.getJahrgang());
+					}
+				}
+
 				defaultFelder = serverConnection.getDefaultFelder();
 				addToTableFelder();
 				studienlist = serverConnection.getStudiengaenge(true);

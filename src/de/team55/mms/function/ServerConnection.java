@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -168,7 +169,7 @@ public class ServerConnection {
 
 	public ClientResponse setDefaultFelder(ArrayList<Feld> felder) {
 		if (connect(email, password) == SUCCES) {
-			return webResource.path("feld/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, felder);
+			return webResource.path("feld/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, new GenericEntity<ArrayList<Feld>>(felder){});
 		}
 		return null;
 	}

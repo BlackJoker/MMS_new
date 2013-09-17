@@ -53,6 +53,7 @@ import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -443,6 +444,8 @@ public class mainscreen {
 				if (n == 0) {
 					boolean dezernat = chckbxDezernat.isSelected();
 					addToTable(name, dezernat, pos);
+					defaultFelder = tableToList();
+					int x = serverConnection.setDefaultFelder(defaultFelder).getStatus();
 				}
 
 			}
@@ -613,6 +616,19 @@ public class mainscreen {
 		//
 	}
 
+	protected ArrayList<Feld> tableToList() {
+		ArrayList<Feld> felder = new ArrayList<Feld>();
+		Vector data = tableFelder.getDataVector();
+		for (int i = 0; i < data.size(); i++) {
+			Vector tmp = (Vector) data.elementAt(i);
+			String label = (String) tmp.elementAt(1);
+			boolean dez = (boolean) tmp.elementAt(2);
+			felder.add(new Feld(label,"",dez));
+		}
+		// TODO Auto-generated method stub
+		return felder;
+	}
+
 	@SuppressWarnings("unchecked")
 	protected void addToTable(String name, boolean dezernat, int pos) {
 		// defaultFelder.add(new Feld(name,pos+"",dezernat));
@@ -638,8 +654,6 @@ public class mainscreen {
 			Vector tmp = (Vector) data.elementAt(i);
 			tmp.setElementAt(i + 1, 0);
 			data.setElementAt(tmp, i);
-			String label = (String) tmp.elementAt(1);
-			boolean dez = (boolean) tmp.elementAt(2);
 		}
 		int w = table.getWidth()-120;
 		table.getColumnModel().getColumn(0).setPreferredWidth(50);

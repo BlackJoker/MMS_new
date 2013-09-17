@@ -1474,7 +1474,7 @@ public class sql {
 			state = this.con.prepareStatement("TRUNCATE TABLE default_felder;");
 			state.executeUpdate();
 			for(int i = 0; i < felder.size(); i++){
-				state = this.con.prepareStatement("INSERT INTO default_felder VALUES (?, ?);");
+				state = this.con.prepareStatement("INSERT INTO default_felder(label,dezernat) VALUES (?, ?);");
 				state.setString(1, felder.get(i).getLabel());
 				state.setBoolean(2, felder.get(i).isDezernat());
 				state.executeUpdate();

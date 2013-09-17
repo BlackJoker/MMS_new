@@ -33,7 +33,7 @@ public class sql {
 	private Connection con = null;
 	private static boolean connected = false;
 	private int FAILED = 0;
-	private int SUCCES = 1;
+	private int SUCCESS = 1;
 
 	/**
 	 * Verbindet zur Datenbank
@@ -513,7 +513,7 @@ public class sql {
 				state.setString(3, name);
 				state.setInt(4, (version-1));
 				state.close();
-				ok = SUCCES;
+				ok = SUCCESS;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
 				e.printStackTrace();
@@ -538,7 +538,7 @@ public class sql {
 			try {
 				state = this.con.createStatement();
 				state.executeUpdate("INSERT INTO studiengang (name, abschluss) VALUES ('" + name + "', '" + abschluss + "');");
-				status = SUCCES;
+				status = SUCCESS;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
 				e.printStackTrace();
@@ -634,7 +634,7 @@ public class sql {
 					state.executeUpdate();
 					con.commit();
 					state.close();
-					ok = SUCCES;
+					ok = SUCCESS;
 
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -721,7 +721,7 @@ public class sql {
 						state.executeUpdate();
 						con.commit();
 						state.close();
-						ok = SUCCES;
+						ok = SUCCESS;
 
 					} else {
 						ok = FAILED;
@@ -877,7 +877,7 @@ public class sql {
 				res = state.executeQuery("SELECT IFNULL(id,0) AS id FROM user WHERE email='" + email + "';");
 				if (res.first()) {
 					if (res.getInt("id") == 0)
-						status = SUCCES;
+						status = SUCCESS;
 				}
 				res.close();
 				state.close();
@@ -939,7 +939,7 @@ public class sql {
 					state.setString(2, userlis.get(i).geteMail());
 					state.executeUpdate();
 				}
-				status = SUCCES;
+				status = SUCCESS;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
 				e.printStackTrace();
@@ -1202,7 +1202,7 @@ public class sql {
 				state.setInt(1, id);
 				state.executeUpdate();
 				state.close();
-				ok = SUCCES;
+				ok = SUCCESS;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
 				e.printStackTrace();
@@ -1265,7 +1265,7 @@ public class sql {
 				state.setInt(3, m.getVersion());
 				state.executeUpdate();
 				state.close();
-				ok = SUCCES;
+				ok = SUCCESS;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
 				e.printStackTrace();
@@ -1469,7 +1469,7 @@ public class sql {
 	public int setDefaultFelder(ArrayList<Feld> felder){
 		int status = FAILED;
 		PreparedStatement state = null;
-
+		if(connect() == true){
 		try{
 			state = this.con.prepareStatement("TRUNCATE TABLE default_felder;");
 			state.executeUpdate();
@@ -1479,12 +1479,13 @@ public class sql {
 				state.setBoolean(2, felder.get(i).isDezernat());
 				state.executeUpdate();
 			}
-			status = SUCCES;
+			status = SUCCESS;
 		}catch(SQLException e){
 			e.printStackTrace();
+			status = FAILED;
 		}
-		
-		
+		disconnect();
+		}
 		return status;
 	}
 	
@@ -1498,7 +1499,7 @@ public class sql {
 		String sql;
 		ResultSet res = null;
 		Statement state = null;
-		
+		if(connect() == true){
 		try {
 			state = this.con.createStatement();
 			sql = "SELECT * FROM default_felder;";
@@ -1509,11 +1510,12 @@ public class sql {
 				felder.add(new Feld(label, "", dezernat));
 			}
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			disconnect();
 		}
-		
 		
 		return felder;
 	}
@@ -1532,7 +1534,7 @@ public class sql {
 //			state = this.con.createStatement();
 //			sql = "DELETE FROM default_felder WHERE id ="+id+";";
 //			state.executeQuery(sql);
-//			status = SUCCES;
+//			status = SUCCESS;
 //		} catch (SQLException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -1566,7 +1568,7 @@ public class sql {
 				state.setTimestamp(6, dateConverterUtil2SQL(n.getDatum()));
 				System.out.println(state);
 				state.executeUpdate();
-				status = SUCCES;
+				status = SUCCESS;
 			} catch (SQLException e) {
 				// TODO fehler fenster aufrufen
 				//e.printStackTrace();
@@ -1629,10 +1631,11 @@ public class sql {
 				state.setTimestamp(1, dateConverterUtil2SQL(date));
 				state.executeUpdate();
 				state.close();
-				status = SUCCES;
+				status = SUCCESS;
 				state.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+				status = FAILED;
 			}
 			disconnect();
 		}
@@ -1769,7 +1772,7 @@ public class sql {
 				state.setInt(7, n.getId());
 				System.out.println(state);
 				state.executeUpdate();
-				status = SUCCES;
+				status = SUCCESS;
 				state.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1778,6 +1781,10 @@ public class sql {
 			disconnect();
 		}
 		return status;
+	}
+	
+	public int setPO(String studiengang){
+		return -1;
 	}
 
 

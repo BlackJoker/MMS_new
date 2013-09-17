@@ -299,7 +299,13 @@ public class HomeCard extends JPanel {
 			User u = neueUser.get(i);
 			String name = u.getTitel() + " " + u.getVorname() + " " + u.getNachname();
 			name.trim();
-
+			boolean neu = true;
+			for(int j = 0;j<nachrichten.size();j++){
+				if(nachrichten.get(j).getNachricht().equals(u.getId() + "")){
+					neu=false;
+				}
+			}
+			if(neu){
 			Nachricht n = new Nachricht();
 			n.setAbsender(user.geteMail());
 			n.setAbsenderID(u.getId());
@@ -309,6 +315,7 @@ public class HomeCard extends JPanel {
 			n.setGelesen(false);
 			n.setDatum(new Date());
 			serverConnection.setNachricht(n);
+			}
 		}
 		nachrichten = serverConnection.getNachrichten(user.geteMail());
 		messageCount=0;

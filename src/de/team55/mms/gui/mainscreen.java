@@ -107,7 +107,6 @@ public class mainscreen {
 	private ArrayList<String> defaultlabels = new ArrayList<String>();
 	ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
 
-
 	// Modelle
 	private DefaultTableModel tmodel;
 	private DefaultTableModel studmodel;
@@ -413,20 +412,27 @@ public class mainscreen {
 				Object[] options = { "Annehmen", "Abbrechen" };
 				int pos = -1;
 				txtPos.setText((tableFelder.getRowCount() + 1) + "");
-				int n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-						null, options, // the titles of buttons
-						options[1]); // default button title
-				String name = txtName.getText();
-				try {
-					pos = Integer.parseInt(txtPos.getText());
-					while ((name.isEmpty() || (pos == -1)) && (n == 0)) {
-						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION,
-								JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-						name = txtName.getText();
+				int n = 0;
+				String name = "";
+				// int n = JOptionPane.showOptionDialog(frame, panel,
+				// "Neues Feld", JOptionPane.YES_NO_OPTION,
+				// JOptionPane.QUESTION_MESSAGE,
+				// null, options, // the titles of buttons
+				// options[1]); // default button title
+				// String name = txtName.getText();
+
+				do {
+					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+							null, options, options[1]);
+					name = txtName.getText();
+					try {
 						pos = Integer.parseInt(txtPos.getText());
+					} catch (NumberFormatException nfe) {
+						pos=-1;
+						txtPos.setText((tableFelder.getRowCount() + 1) + "");
 					}
-				} catch (NumberFormatException nfe) {
-				}
+				} while ((name.isEmpty() || (pos == -1)) && (n == 0));
+
 				if (n == 0) {
 					boolean dezernat = chckbxDezernat.isSelected();
 					addToTable(name, dezernat, pos);
@@ -585,13 +591,14 @@ public class mainscreen {
 
 	@SuppressWarnings("unchecked")
 	protected void addToTable(String name, boolean dezernat, int pos) {
-		defaultFelder.add(new Feld(name,pos+"",dezernat));
-		Collections.sort(defaultFelder, new Comparator<Feld>() {
-			public int compare(Feld f1, Feld f2) {
-				return f1.getValue().compareTo(f2.getValue());
-			}
-		});
-		System.out.println(defaultFelder);
+		// defaultFelder.add(new Feld(name,pos+"",dezernat));
+		// Collections.sort(defaultFelder, new Comparator<Feld>() {
+		// public int compare(Feld f1, Feld f2) {
+		// return f1.getValue().compareTo(f2.getValue());
+		// }
+		// });
+		// System.out.println(defaultFelder);
+		defaultFelder = new ArrayList<Feld>();
 		Vector data = tableFelder.getDataVector();
 		pos = pos - 1;
 		if (pos < 0) {
@@ -608,7 +615,11 @@ public class mainscreen {
 			Vector tmp = (Vector) data.elementAt(i);
 			tmp.setElementAt(i + 1, 0);
 			data.setElementAt(tmp, i);
+			String label = (String) tmp.elementAt(1);
+			boolean dez = (boolean) tmp.elementAt(2);
+			defaultFelder.add(new Feld(label, "", dez));
 		}
+		System.out.println(defaultFelder);
 		tableFelder.setDataVector(data, columnIdentifiers);
 	}
 
@@ -1640,7 +1651,7 @@ public class mainscreen {
 					newMessages = welcome.getMessageCount();
 					for (int i = 0; i < time; i++) {
 						if (newMessages > 1) {
-							btnNewButton.setText("Sie haben" + newMessages + "neuen Nachrichten.");
+							btnNewButton.setText("Sie haben " + newMessages + " neuen Nachrichten.");
 						} else if (newMessages == 1) {
 							btnNewButton.setText("Sie haben eine neue Nachricht.");
 						} else {

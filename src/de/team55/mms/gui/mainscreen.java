@@ -409,26 +409,25 @@ public class mainscreen {
 
 				// Abfrage des Namen des Feldes
 				Object[] options = { "Annehmen", "Abbrechen" };
-				int pos=-1;
-				txtPos.setText((tableFelder.getRowCount()+1) + "");
-				int n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						options, // the titles of buttons
+				int pos = -1;
+				txtPos.setText((tableFelder.getRowCount() + 1) + "");
+				int n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+						null, options, // the titles of buttons
 						options[1]); // default button title
 				String name = txtName.getText();
 				try {
 					pos = Integer.parseInt(txtPos.getText());
-					while ((name.isEmpty()||(pos==-1)) && (n == 0)) {
-						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-								null, options, // the titles of buttons
-								options[0]);
+					while ((name.isEmpty() || (pos == -1)) && (n == 0)) {
+						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 						name = txtName.getText();
 						pos = Integer.parseInt(txtPos.getText());
 					}
 				} catch (NumberFormatException nfe) {
 				}
-				if(n==0){
-				boolean dezernat = chckbxDezernat.isSelected();
-				addToTable(name, dezernat, pos);
+				if (n == 0) {
+					boolean dezernat = chckbxDezernat.isSelected();
+					addToTable(name, dezernat, pos);
 				}
 
 			}
@@ -585,20 +584,20 @@ public class mainscreen {
 	@SuppressWarnings("unchecked")
 	protected void addToTable(String name, boolean dezernat, int pos) {
 		Vector data = tableFelder.getDataVector();
-		pos=pos-1;
-		if(pos<0){
-			pos=0;
-		} else if(pos>data.size()){
-			pos=data.size();
+		pos = pos - 1;
+		if (pos < 0) {
+			pos = 0;
+		} else if (pos > data.size()) {
+			pos = data.size();
 		}
 		Vector row = new Vector();
 		row.add(pos);
 		row.add(name);
 		row.add(dezernat);
 		data.insertElementAt(row, pos);
-		for(int i = 0;i<data.size();i++){
-			Vector tmp=	(Vector) data.elementAt(i);
-			tmp.setElementAt(i+1, 0);
+		for (int i = 0; i < data.size(); i++) {
+			Vector tmp = (Vector) data.elementAt(i);
+			tmp.setElementAt(i + 1, 0);
 			data.setElementAt(tmp, i);
 		}
 		tableFelder.setDataVector(data, columnIdentifiers);

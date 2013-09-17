@@ -229,7 +229,7 @@ public class LookCard extends JPanel {
 		int pruefjahr = ModHB.getPruefungsordnungsjahr();
 
 		String pdfname = abschluss + "-" + studname + "-PO" + pruefjahr + "-" + jahrgang;
-		String titel = ("Modulhandbuch: " + abschluss + "" + studname + " FSPO " + pruefjahr + " " + jahrgang);
+		String titel = ("Modulhandbuch: " + abschluss + " " + studname + " FSPO " + pruefjahr + " " + jahrgang);
 
 		Document document = new Document();
 

@@ -407,11 +407,10 @@ public class mainscreen {
 				ArrayList<Fach> fach = new ArrayList<Fach>();
 				Studiengang s = new Studiengang();
 				ModulHandbuchDialog dialog = new ModulHandbuchDialog();
-				studienlist = serverConnection.getStudiengaenge(false);
 				ArrayList<pordnung> pos = serverConnection.getPOs();
 				int x = 0;
 				do  {
-					x= dialog.showDialog(frame, studienlist, pos);
+					x= dialog.showDialog(frame, pos);
 					try{
 						pordnung=dialog.getPO();
 						prosa=dialog.getProsa();

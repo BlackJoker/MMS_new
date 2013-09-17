@@ -431,7 +431,7 @@ public class mainscreen {
 
 				do {
 					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-							null, options, options[1]);
+							null, options, options[0]);
 					name = txtName.getText();
 					try {
 						pos = Integer.parseInt(txtPos.getText());
@@ -451,82 +451,109 @@ public class mainscreen {
 			}
 		});
 		panel.add(btnNeuesStandardFeld);
-		
+
 		JButton btnFeldBearbeiten = new JButton("Feld bearbeiten");
 		btnFeldBearbeiten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int row = table.getSelectedRow();
 				if (row != -1) {
 					// Daten aus der Tabelle abrufen und User erzeugen
-					int pos =  Integer.parseInt(table.getValueAt(row, 0).toString());
-					Feld f = defaultFelder.get(pos-1);
+					int pos = row;
+					System.out.println(defaultFelder);
+					Feld f = defaultFelder.get(pos);
+					Feld f2 = f;
 					System.out.println(f);
-//					defaultFelder.remove(pos-1);
-//					String name = (String) table.getValueAt(row, 1);
-//					boolean dez = (boolean) table.getValueAt(row, 2);
-//					JPanel panel = new JPanel();
-//					JPanel p = new JPanel();
-//					panel.add(p);
-//					p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
-//
-//					JPanel pnl_name = new JPanel();
-//					pnl_name.setToolTipText("Bestimmt den Namen des neuen Feldes");
-//					p.add(pnl_name);
-//					pnl_name.setLayout(new GridLayout(0, 2, 5, 5));
-//					JLabel lblNameDesFeldes = new JLabel("Name des Feldes:");
-//					pnl_name.add(lblNameDesFeldes);
-//					JTextField txtName = new JTextField(name);
-//					pnl_name.add(txtName);
-//
-//					JPanel pnl_pos = new JPanel();
-//					pnl_pos.setToolTipText("Bestimmt die Reihenfolge der Felder");
-//					p.add(pnl_pos);
-//					JTextField txtPos = new JTextField();
-//					JLabel lbl_pos = new JLabel("An Position:");
-//					lbl_pos.setToolTipText("");
-//					pnl_pos.setLayout(new GridLayout(0, 2, 5, 5));
-//					pnl_pos.add(lbl_pos);
-//					pnl_pos.add(txtPos);
-//
-//					JPanel pnl_dezernat = new JPanel();
-//					JCheckBox chckbxDezernat = new JCheckBox("Muss vom Dezernat 2 gepr\u00FCft werden");
-//					p.add(pnl_dezernat);
-//					chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");
-//
-//					pnl_dezernat.add(chckbxDezernat);
-//
-//					// Abfrage des Namen des Feldes
-//					Object[] options = { "Annehmen", "Abbrechen" };
-//					txtPos.setText(pos+"");
-//					int n = 0;
-//
-//					do {
-//						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-//								null, options, options[1]);
-//						name = txtName.getText();
-//						try {
-//							pos = Integer.parseInt(txtPos.getText());
-//						} catch (NumberFormatException nfe) {
-//							pos = -1;
-//							txtPos.setText((tableFelder.getRowCount() + 1) + "");
-//						}
-//					} while ((name.isEmpty() || (pos == -1)) && (n == 0));
-//
-//					if (n == 0) {
-//						boolean dezernat = chckbxDezernat.isSelected();
-//						addToTable(name, dezernat, pos);
-//						defaultFelder = tableToList();
-//						int x = serverConnection.setDefaultFelder(defaultFelder).getStatus();
-//						addToTableFelder();
-//					}
+
+					String name = (String) table.getValueAt(row, 1);
+					boolean dez = (boolean) table.getValueAt(row, 2);
+					JPanel panel = new JPanel();
+					JPanel p = new JPanel();
+					panel.add(p);
+					p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+
+					JPanel pnl_name = new JPanel();
+					pnl_name.setToolTipText("Bestimmt den Namen des neuen Feldes");
+					p.add(pnl_name);
+					pnl_name.setLayout(new GridLayout(0, 2, 5, 5));
+					JLabel lblNameDesFeldes = new JLabel("Name des Feldes:");
+					pnl_name.add(lblNameDesFeldes);
+					JTextField txtName = new JTextField(name);
+					pnl_name.add(txtName);
+
+					JPanel pnl_pos = new JPanel();
+					pnl_pos.setToolTipText("Bestimmt die Reihenfolge der Felder");
+					p.add(pnl_pos);
+					JTextField txtPos = new JTextField();
+					JLabel lbl_pos = new JLabel("An Position:");
+					pnl_pos.setLayout(new GridLayout(0, 2, 5, 5));
+					pnl_pos.add(lbl_pos);
+					pnl_pos.add(txtPos);
+
+					JPanel pnl_dezernat = new JPanel(dez);
+					JCheckBox chckbxDezernat = new JCheckBox("Muss vom Dezernat 2 gepr\u00FCft werden");
+					p.add(pnl_dezernat);
+					chckbxDezernat.setToolTipText("Gibt an, ob das Feld vom Dezernat 2 gepr\u00FCft werden muss.");
+
+					pnl_dezernat.add(chckbxDezernat);
+
+					// Abfrage des Namen des Feldes
+					Object[] options = { "Annehmen", "Abbrechen" };
+					txtPos.setText((pos + 1) + "");
+					int n = 0;
+
+					do {
+						n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION,
+								JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+						name = txtName.getText();
+						try {
+							pos = Integer.parseInt(txtPos.getText()) - 1;
+						} catch (NumberFormatException nfe) {
+							pos = -1;
+							txtPos.setText((tableFelder.getRowCount() + 1) + "");
+						}
+					} while ((name.isEmpty() || (pos == -1)) && (n == 0));
+
+					if (n == 0) {
+						dez = chckbxDezernat.isSelected();
+						f.setDezernat(dez);
+						f.setLabel(name);
+						if (pos >= defaultFelder.size()) {
+							pos = defaultFelder.size() - 1;
+						} else if (pos < 0) {
+							pos = 0;
+						}
+						defaultFelder.remove(f2);
+						defaultFelder.add(pos, f);
+
+						int x = serverConnection.setDefaultFelder(defaultFelder).getStatus();
+						if (x == 201) {
+							addToTableFelder();
+						}
+					}
 
 				}
-				}
-			
+			}
+
 		});
 		panel.add(btnFeldBearbeiten);
-		
+
 		JButton btnFeldEntfernen = new JButton("Feld entfernen");
+		btnFeldEntfernen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int row = table.getSelectedRow();
+				if (row != -1) {
+					int x = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Feld entfernen möchten?",
+							"Feld entfernen", JOptionPane.OK_CANCEL_OPTION);
+					if (x == 0) {
+						defaultFelder.remove(row);
+						x = serverConnection.setDefaultFelder(defaultFelder).getStatus();
+						if (x == 201) {
+							addToTableFelder();
+						}
+					}
+				}
+			}
+		});
 		panel.add(btnFeldEntfernen);
 
 		JPanel pnl_zuordnungen = new JPanel();
@@ -700,7 +727,7 @@ public class mainscreen {
 			Vector tmp = (Vector) data.elementAt(i);
 			String label = (String) tmp.elementAt(1);
 			boolean dez = (boolean) tmp.elementAt(2);
-			felder.add(new Feld(label,"",dez));
+			felder.add(new Feld(label, "", dez));
 		}
 		// TODO Auto-generated method stub
 		return felder;
@@ -732,7 +759,7 @@ public class mainscreen {
 			tmp.setElementAt(i + 1, 0);
 			data.setElementAt(tmp, i);
 		}
-		int w = table.getWidth()-120;
+		int w = table.getWidth() - 120;
 		table.getColumnModel().getColumn(0).setPreferredWidth(50);
 		table.getColumnModel().getColumn(0).setMaxWidth(50);
 		table.getColumnModel().getColumn(1).setPreferredWidth(w);
@@ -1244,7 +1271,7 @@ public class mainscreen {
 		tableFelder.setRowCount(0);
 		for (int i = 0; i < defaultFelder.size(); i++) {
 			Feld f = defaultFelder.get(i);
-			addToTable(f.getLabel(), f.isDezernat(), i);
+			addToTable(f.getLabel(), f.isDezernat(), i + 1);
 		}
 
 	}

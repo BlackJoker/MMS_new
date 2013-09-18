@@ -490,7 +490,7 @@ public class sql {
 			int version = neu.getVersion();
 			ArrayList<Feld> felder = neu.getFelder();
 			try {
-				state = con.prepareStatement("INSERT INTO module (modulname, version, datum, kommentar, status) VALUES(?,?,?,?,?,?)");
+				state = con.prepareStatement("INSERT INTO module (modulname, version, datum, kommentar, status) VALUES(?,?,?,?,?)");
 				state.setString(1, name);
 				state.setInt(2, version);
 				state.setTimestamp(3, dateConverterUtil2SQL(neu.getDatum()));

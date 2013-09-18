@@ -10,8 +10,8 @@ public class FachTransfer {
 	public FachTransfer(){}
 	
 	public FachTransfer(String old, String neu){
-		this.setNeu(neu);
 		this.setOld(old);
+		this.setNeu(neu);
 	}
 
 	public String getNeu() {

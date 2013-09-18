@@ -934,9 +934,9 @@ public class mainscreen {
 				pnl_name.add(txtName);
 				Object[] options = { "Annehmen", "Abbrechen" };
 				int n = 0;
-				txtName.setText(fachlist.getSelectedValue().getName());
+
 				String name = "";
-				String old = "";
+				
 				
 				do {
 					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -947,10 +947,8 @@ public class mainscreen {
 				if (n == 0) {
 					Fach neu = new Fach(name);
 					fachmodel.addElement(neu);
-					fachmodel.removeElement(old);
-					fachzws.remove(old);
 					fachzws.add(neu);
-					serverConnection.updateFach(new FachTransfer(old, neu.getName()));
+					serverConnection.setFach(neu);
 				}
 				
 			}
@@ -976,8 +974,10 @@ public class mainscreen {
 				pnl_name.add(txtName);
 				Object[] options = { "Annehmen", "Abbrechen" };
 				int n = 0;
-				txtName.setText("");
+				txtName.setText(fachlist.getSelectedValue().getName());
 				String name = "";
+				String old = fachlist.getSelectedValue().getName();
+				Fach old2 = fachlist.getSelectedValue();
 				
 				do {
 					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -985,11 +985,14 @@ public class mainscreen {
 					name = txtName.getText();
 				} while (name.isEmpty() && (n == 0));
 				
+
 				if (n == 0) {
 					Fach neu = new Fach(name);
 					fachmodel.addElement(neu);
+					fachmodel.removeElement(old2);
+					fachzws.remove(old2);
 					fachzws.add(neu);
-					serverConnection.setFach(neu);
+					serverConnection.updateFach(new FachTransfer(old, neu.getName()));
 				}
 			}
 		});

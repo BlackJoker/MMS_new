@@ -1,5 +1,8 @@
 package de.team55.mms.data;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "FachTransfer")
 public class FachTransfer {
 	private String neu;
 	private String old;

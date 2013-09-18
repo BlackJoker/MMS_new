@@ -438,10 +438,10 @@ public class ServerConnection {
 	 * @return Liefert eine Liste mit Benutzernamen von Vorgesetzten und
 	 *         Stellvertretern
 	 */
-	public ArrayList<String> getUserRelation(String eMail) {
+	public ArrayList<Modul> getUserRelation(String eMail) {
 		if (connect(email, password) == SUCCESS) {
-			return webResource.path("/user/get/Relation/").path(eMail).accept(MediaType.APPLICATION_XML).get(UserRelation.class)
-					.getRelation();
+			return webResource.path("/user/get/Relation/").path(eMail).accept(MediaType.APPLICATION_XML).get(new GenericType<ArrayList<Modul>>() {
+			});
 		}
 		return null;
 	}

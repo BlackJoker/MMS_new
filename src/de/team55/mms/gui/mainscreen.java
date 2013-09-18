@@ -137,6 +137,7 @@ public class mainscreen {
 	private static ProtoLookCard prototyp;
 	private int messages = 0;
 	private JDateChooser calender = new JDateChooser();
+	private static JPanel nModCard;
 
 	// zum testen von drag and drop und für die Verwaltung der
 	// Modulverantwortlichen
@@ -1343,6 +1344,7 @@ public class mainscreen {
 				studienlist = serverConnection.getStudiengaenge(true);
 				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
 				cbmodel.removeAllElements();
+				
 				for (int i = 0; i < studienlist.size(); i++) {
 					cbmodel.addElement(studienlist.get(i));
 					mbs.addAll(studienlist.get(i).getModbuch());
@@ -1352,8 +1354,11 @@ public class mainscreen {
 				// for (int i = 0; i < typen.size(); i++) {
 				// cbmodel_Z.addElement(typen.get(i));
 				// }
+
+				if(nModCard!=null) nModCard.removeAll();
 				
-				cards.add(new newModulCard(defaultFelder, mbs, serverConnection, current).getPanel(),"newmodule");
+				nModCard = new newModulCard(defaultFelder, mbs, serverConnection, current).getPanel();
+				cards.add(nModCard,"newmodule");
 				showCard("newmodule");
 			}
 

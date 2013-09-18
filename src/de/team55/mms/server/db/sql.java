@@ -1982,5 +1982,30 @@ public class sql {
 		}
 		return faecher;
 	}
+	
+	public ArrayList<Modulhandbuch> selectedModulhandbucher(String Modulname){
+		ArrayList<Modulhandbuch> ruckgabe = new ArrayList<Modulhandbuch>();
+		PreparedStatement state = null;
+		ResultSet res = null;
+		
+		if(connect() == true){
+			try{
+				state = con.prepareStatement("");
+				state.setString(1, Modulname);
+				res = state.executeQuery();
+				
+				
+				
+				while(res.next()){
+					
+				}
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		
+		return ruckgabe;
+	}
 
 }

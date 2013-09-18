@@ -214,6 +214,8 @@ public class mainscreen {
 
 	private ArrayList<Fach> fachzws;
 
+	protected JPanel modeditp;
+
 	// main Frame
 	public mainscreen() {
 		frame = new JFrame();
@@ -2203,8 +2205,8 @@ public class mainscreen {
 						if (m.getUser().equals(current.geteMail())) {
 							rights = true;
 						} else {
-							ArrayList<String> rel = serverConnection.getUserRelation(current.geteMail());
-							if (rel.contains(m.getUser())) {
+							ArrayList<Modul> rel = serverConnection.getUserRelation(current.geteMail());
+							if (rel.contains(m)) {
 								rights = true;
 							}
 						}
@@ -2215,7 +2217,11 @@ public class mainscreen {
 							mod.add(modeditCard(m), BorderLayout.CENTER);
 							m.setInbearbeitung(true);
 							serverConnection.setModulInEdit(m);
-							showCard("modBearbeiten");
+							cards.remove(modeditp);
+							ArrayList<Modulhandbuch> mb = new ArrayList<Modulhandbuch>();
+							modeditp = new newModulCard(m.getFelder(), mb, serverConnection, current).getPanel();
+							cards.add(modeditp, "modul edit");
+							showCard("modul edit");
 						} else {
 							JOptionPane.showMessageDialog(frame,
 									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!", "Zugriff verweigert",
@@ -2325,9 +2331,7 @@ public class mainscreen {
 		final JComboBox<Modulhandbuch> comboBox= new JComboBox<Modulhandbuch>(cbModBuchMo);
 		comboBox.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {
-	        	System.out.println(arg0.getItem());
-	        	lm.removeAllElements();
-	        	
+	        	lm.removeAllElements();	        	
 	        	for(int i=0;i<studienlist.size();i++){
 	        		ArrayList<Modulhandbuch> mbs = studienlist.get(i).getModbuch();
 	        		for(int j=0;j<mbs.size();j++){
@@ -2368,44 +2372,44 @@ public class mainscreen {
 
 		// akzeptierte Module bearbeiten
 		JButton btnModulBearbeiten2 = new JButton("Modul bearbeiten");
-		btnModulBearbeiten2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Modul m = list_ack.getSelectedValue();
-				if (m != null) {
-					// Prüfe, ob Modul in Bearbeitung ist
-					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
-					if (!m.isInbearbeitung()) {
-						// Prüfe, ob User das Recht hat, dieses Modul zu
-						// bearbeiten
-						boolean rights = false;
-						if (m.getUser().equals(current.geteMail())) {
-							rights = true;
-						} else {
-							ArrayList<String> rel = serverConnection.getUserRelation(current.geteMail());
-							if (rel.contains(m.getUser())) {
-								rights = true;
-							}
-						}
-						if (rights) {
-							// Zur Bearbeitung wechseln
-							mod.removeAll();
-							mod.add(modeditCard(m), BorderLayout.CENTER);
-							showCard("modBearbeiten");
-						} else {
-							JOptionPane.showMessageDialog(frame,
-									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!", "Zugriff verweigert",
-									JOptionPane.ERROR_MESSAGE);
-						}
-					} else {
-						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
-								JOptionPane.ERROR_MESSAGE);
-
-					}
-				}
-
-			}
-		});
+//		btnModulBearbeiten2.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				Modul m = list_ack.getSelectedValue();
+//				if (m != null) {
+//					// Prüfe, ob Modul in Bearbeitung ist
+//					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
+//					if (!m.isInbearbeitung()) {
+//						// Prüfe, ob User das Recht hat, dieses Modul zu
+//						// bearbeiten
+//						boolean rights = false;
+//						if (m.getUser().equals(current.geteMail())) {
+//							rights = true;
+//						} else {
+//							ArrayList<String> rel = serverConnection.getUserRelation(current.geteMail());
+//							if (rel.contains(m.getUser())) {
+//								rights = true;
+//							}
+//						}
+//						if (rights) {
+//							// Zur Bearbeitung wechseln
+//							mod.removeAll();
+//							mod.add(modeditCard(m), BorderLayout.CENTER);
+//							showCard("modBearbeiten");
+//						} else {
+//							JOptionPane.showMessageDialog(frame,
+//									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!", "Zugriff verweigert",
+//									JOptionPane.ERROR_MESSAGE);
+//						}
+//					} else {
+//						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
+//								JOptionPane.ERROR_MESSAGE);
+//
+//					}
+//				}
+//
+//			}
+//		});
 		buttonpnl2.add(btnModulBearbeiten2);
 
 		// Zurück zur Startseite
@@ -2427,7 +2431,6 @@ public class mainscreen {
 		final JComboBox<Modulhandbuch> comboBox_1 = new JComboBox<Modulhandbuch>(cbModBuchMo);
 		comboBox_1.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {		
-				System.out.println(arg0.getItem());
 				lm_ack.removeAllElements();
 				for(int i=0;i<studienlist.size();i++){
 	        		ArrayList<Modulhandbuch> mbs = studienlist.get(i).getModbuch();

@@ -42,13 +42,19 @@ public class newModulCard {
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	final Dimension preferredSize = new Dimension(120, 20);
 
-	public newModulCard(ArrayList<Feld> defaultFelder, ArrayList<Modulhandbuch> mbs, final ServerConnection serverConnection, final User current) {
+	public newModulCard(ArrayList<Feld> defaultFelder, ArrayList<Modulhandbuch> mbs, final ServerConnection serverConnection,
+			final User current) {
 
 		// Alle vorhandenen Felder entfernen
 		modul_panel.removeAll();
 		ArrayList<Fach> fs = new ArrayList<Fach>();
-		for(int i=0;i<mbs.size();i++){
-			fs.addAll(mbs.get(i).getFach());
+		for (int i = 0; i < mbs.size(); i++) {
+			ArrayList<Fach> m = mbs.get(i).getFach();
+			for(int k=0;k<m.size();k++){
+				if(!fs.contains(m.get(k))){
+					fs.add(m.get(k));
+				}
+			}
 		}
 
 		// Liste dynamischer Buttons leeren
@@ -56,14 +62,7 @@ public class newModulCard {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
 		}
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		// Liste mit bereits vorhandenen Felder erstellen und mit den
-		// Standartfeldern füllen
-		for (int i = 0; i < defaultFelder.size(); i++) {
-			modul_panel.add(defaultmodulPanel(defaultFelder.get(i)));
-			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		}
 		pnl_newmod.setLayout(new BorderLayout(0, 0));
 
 		JPanel pnl_bottom = new JPanel();
@@ -162,6 +161,7 @@ public class newModulCard {
 		pnl_modbuch.setLayout(new BoxLayout(pnl_modbuch, BoxLayout.X_AXIS));
 
 		JLabel lblModulhandbuch = new JLabel("Modulhandbuch: ");
+		lblModulhandbuch.setPreferredSize(preferredSize);
 		pnl_modbuch.add(lblModulhandbuch);
 
 		final DefaultComboBoxModel<Modulhandbuch> cbModelMb = new DefaultComboBoxModel<Modulhandbuch>();
@@ -170,6 +170,7 @@ public class newModulCard {
 		}
 
 		JComboBox<Modulhandbuch> cb_modbuch = new JComboBox<Modulhandbuch>(cbModelMb);
+		cb_modbuch.setPreferredSize(preferredSize);
 		pnl_modbuch.add(cb_modbuch);
 
 		JPanel pnl_fach = new JPanel();
@@ -178,6 +179,7 @@ public class newModulCard {
 		pnl_fach.setLayout(new BoxLayout(pnl_fach, BoxLayout.X_AXIS));
 
 		JLabel lblFach = new JLabel("Fach:");
+		lblFach.setPreferredSize(preferredSize);
 		pnl_fach.add(lblFach);
 
 		final DefaultComboBoxModel<Fach> cbModelF = new DefaultComboBoxModel<Fach>();
@@ -186,6 +188,7 @@ public class newModulCard {
 		}
 
 		JComboBox<Fach> cb_fach = new JComboBox<Fach>(cbModelF);
+		cb_fach.setPreferredSize(preferredSize);
 		pnl_fach.add(cb_fach);
 
 		// Panel Zuordnung + Platzhalter
@@ -202,7 +205,7 @@ public class newModulCard {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				
+
 				boolean filled = true;
 				Modulhandbuch mb = (Modulhandbuch) cbModelMb.getSelectedItem();
 				Fach f = (Fach) cbModelF.getSelectedItem();
@@ -213,16 +216,20 @@ public class newModulCard {
 					JPanel tmp = (JPanel) modul_panel.getComponent(i);
 					JLabel tmplbl = (JLabel) tmp.getComponent(0);
 					JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
-
-					boolean dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
+					boolean dezernat2=false;
+					try	{
+						dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
+					} catch(ArrayIndexOutOfBoundsException ex){
+						dezernat2=false;
+					}
 					String value = tmptxt.getText();
 					String label = tmplbl.getText();
 					// Prüfe, ob alle Felder ausgefüllt wurden
 					if (value.isEmpty()) {
 						filled = false;
 						break;
-					} else if(label.equals("Name")) {
-						name=label;
+					} else if (label.equals("Name")) {
+						name = label;
 					}
 					felder.add(new Feld(label, value, dezernat2));
 				}
@@ -230,16 +237,16 @@ public class newModulCard {
 				// erzeugen und bei Bestätigung einreichen
 				if (filled == true) {
 					int version = serverConnection.getModulVersion(name) + 1;
-					
+
 					Date d = new Date();
 					Modul neu = new Modul(name, felder, version, d, 0, false, null, "");
 					int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
 							"Bestätigung", JOptionPane.YES_NO_OPTION);
 					if (n == 0) {
-						int x= serverConnection.setModul(neu, f.getName(),mb.getId()).getStatus();
-						if(x==201){
-							x=serverConnection.setModulVerwalter(current,name).getStatus();
-							
+						int x = serverConnection.setModul(neu, f.getName(), mb.getId()).getStatus();
+						if (x == 201) {
+							x = serverConnection.setModulVerwalter(current, name).getStatus();
+
 						}
 					}
 				} // Fehler, wenn nicht alle ausgefüllt wurden
@@ -252,6 +259,13 @@ public class newModulCard {
 		pnl_bottom.add(btnOk);
 
 		pnl_newmod.add(scrollPane);
+
+		// Liste mit bereits vorhandenen Felder erstellen und mit den
+		// Standartfeldern füllen
+		for (int i = 0; i < defaultFelder.size(); i++) {
+			modul_panel.add(defaultmodulPanel(defaultFelder.get(i)));
+			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		}
 
 		btnOk.setToolTipText("Klicken, um ihr Modul einzureichen.");
 		btnNeuesFeld.setToolTipText("Klicken, um ein neues Feld in ihrem Modul zu erstellen.");

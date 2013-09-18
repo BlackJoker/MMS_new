@@ -1519,7 +1519,7 @@ public class mainscreen {
 				// und Listen füllen
 				
 				refreshPoList();
-				
+				modListModel.removeAllElements();
 				studienlist = serverConnection.getStudiengaenge(false);
 				for (int i = 0; i < studienlist.size(); i++) {
 					Studiengang s = studienlist.get(i);

@@ -994,6 +994,28 @@ public class sql {
 		}
 		return status;
 	}
+	
+	public int setoneStellvertreter(User user, String modul) {
+		PreparedStatement state = null;
+		int status = FAILED;
+		if (connect() == true) {
+			try {
+				state = con
+					.prepareStatement("INSERT INTO mod_user_relation (userID, modID) VALUES((SELECT modID from module where modulname =?),(SELECT id from user where email =?))");
+				state.setString(1, modul);
+				state.setString(2, user.geteMail());
+				state.executeUpdate();
+				
+				status = SUCCESS;
+			} catch (SQLException e) {
+				// TODO fehler fenster aufrufen
+				e.printStackTrace();
+			}
+			disconnect();
+		}
+		return status;
+	}
+
 
 	/**
 	 * Liefert eine Liste von Modulverwalter fuer ein bestimmtes Modul aus

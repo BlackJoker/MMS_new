@@ -125,5 +125,9 @@ public class PoDialog extends JDialog {
 		// TODO Auto-generated method stub
 		return txtJahr.getText();
 	}
+	
+	public Studiengang getStudiengang(){
+		return (Studiengang) stud.getSelectedItem();
+	}
 
 }

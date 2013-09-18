@@ -714,6 +714,14 @@ public class ServerConnection {
 		}
 		return null;
 	}
+	
+	public ClientResponse setPO(pordnung p) {
+		if (connect(email, password) == SUCCESS) {
+			return webResource.path("po/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, p);
+		} else {
+			return null;
+		}
+	}
 
 	public ClientResponse setModulHandbuchAccepted(Studiengang s) {
 		if (connect(email, password) == SUCCESS) {

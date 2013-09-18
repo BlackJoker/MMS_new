@@ -205,5 +205,11 @@ public class Modul {
 		this.kommentar = kommentar;
 	}
 
+
+	public int getStudiengangID() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	
 }

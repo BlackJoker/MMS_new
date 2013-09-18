@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,6 +41,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+
 import com.toedter.calendar.JDateChooser;
 
 import de.team55.mms.data.Fach;
@@ -50,7 +53,9 @@ import de.team55.mms.data.User;
 import de.team55.mms.data.pordnung;
 import de.team55.mms.function.SendMail;
 import de.team55.mms.function.ServerConnection;
+
 import javax.swing.AbstractListModel;
+import javax.swing.JComboBox;
 
 public class mainscreen {
 
@@ -105,6 +110,8 @@ public class mainscreen {
 	private DefaultListModel<Modul> lm_ack = new DefaultListModel<Modul>();
 	private DefaultListModel<Studiengang> studimodel = new DefaultListModel<Studiengang>();
 	private DefaultListModel<Fach> fachmodel = new DefaultListModel<Fach>();
+	private DefaultListModel<pordnung> pomodel = new DefaultListModel<pordnung>();
+
 	// private DefaultListModel<Zuordnung> typenmodel = new
 	// DefaultListModel<Zuordnung>();
 
@@ -196,6 +203,10 @@ public class mainscreen {
 	private ArrayList<Modulhandbuch> nichtAckMBs = new ArrayList<Modulhandbuch>();
 
 	private JList modbuchList;
+
+	protected ArrayList<pordnung> poList;
+
+	protected ArrayList<Modul> module;
 
 	// main Frame
 	public mainscreen() {
@@ -378,7 +389,7 @@ public class mainscreen {
 						x = serverConnection.setModulHandbuchAccepted(m).getStatus();
 						System.out.println(x);
 						if (x == 201) {
-							modListModel.clear();
+							modListModel.removeAllElements();
 							studienlist = serverConnection.getStudiengaenge(false);
 							nichtAckMBs.clear();
 							for (int i = 0; i < studienlist.size(); i++) {
@@ -408,10 +419,10 @@ public class mainscreen {
 				ArrayList<Fach> fach = new ArrayList<Fach>();
 				Studiengang s = new Studiengang();
 				ModulHandbuchDialog dialog = new ModulHandbuchDialog();
-				ArrayList<pordnung> pos = serverConnection.getPOs();
+				poList = serverConnection.getPOs();
 				int x = 0;
 				do {
-					x = dialog.showDialog(frame, pos);
+					x = dialog.showDialog(frame, poList);
 					try {
 						pordnung = dialog.getPO();
 						prosa = dialog.getProsa();
@@ -433,7 +444,7 @@ public class mainscreen {
 					s.setModbuch(mbs);
 					x = serverConnection.setModulHandbuchAccepted(s).getStatus();
 					if (x == 201) {
-						modListModel.clear();
+						modListModel.removeAllElements();
 						studienlist = serverConnection.getStudiengaenge(false);
 						nichtAckMBs.clear();
 						for (int i = 0; i < studienlist.size(); i++) {
@@ -648,7 +659,7 @@ public class mainscreen {
 		JScrollPane scrollPane_3 = new JScrollPane();
 		pnl_po.add(scrollPane_3, BorderLayout.CENTER);
 
-		JList list_1 = new JList();
+		JList list_1 = new JList(pomodel);
 		scrollPane_3.setViewportView(list_1);
 
 		JPanel pnl_po_buttons = new JPanel();
@@ -661,12 +672,25 @@ public class mainscreen {
 				studienlist = serverConnection.getStudiengaenge(false);
 				int x = 0;
 				int jahr=0;
+				Studiengang s = new Studiengang();
 				while((x==1)&&(jahr==1)){
 					x=dialog.showDialog(frame, studienlist);
 					try{
-					jahr=Integer.parseInt(dialog.getJahr());
+						jahr=Integer.parseInt(dialog.getJahr());
+						s = dialog.getStudiengang();
 					} catch (NumberFormatException e){
 						jahr=0;
+					}
+				}
+				if(x==1){
+					pordnung po = new pordnung();
+					po.setPjahr(jahr);
+					po.setSid(s.getId());
+					po.setStudabschluss(s.getAbschluss());
+					po.setStudname(s.getName());
+					x=serverConnection.setPO(po).getStatus();
+					if(x==201){
+						refreshPoList();
 					}
 				}
 			}
@@ -899,6 +923,14 @@ public class mainscreen {
 		
 		
 		
+	}
+
+	protected void refreshPoList() {
+		pomodel.removeAllElements();
+		poList = serverConnection.getPOs();
+		for(int i = 0;i<poList.size();i++){
+			pomodel.addElement(poList.get(i));
+		}		
 	}
 
 	protected ArrayList<Feld> tableToList() {
@@ -1389,6 +1421,9 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Zuordnungen und Studiengänge aus Datenbank abrufen
 				// und Listen füllen
+				
+				refreshPoList();
+				
 				studienlist = serverConnection.getStudiengaenge(false);
 				for (int i = 0; i < studienlist.size(); i++) {
 					Studiengang s = studienlist.get(i);
@@ -2181,6 +2216,30 @@ public class mainscreen {
 			}
 		});
 		buttonpnl.add(btnZurck);
+		
+		JPanel panel = new JPanel();
+		nichtakzeptiert.add(panel, BorderLayout.NORTH);
+		
+		JLabel lblStudiengang = new JLabel("Studiengang: ");
+		panel.add(lblStudiengang);
+		
+		final JComboBox comboBox = new JComboBox(cbmodel);
+		comboBox.addItemListener(new ItemListener() {
+	        public void itemStateChanged(ItemEvent arg0) {
+	        	System.out.println(arg0.getItem());
+	        	Studiengang s = (Studiengang) comboBox.getSelectedItem();
+	        	module = serverConnection.getModule(false);
+	        	lm.removeAllElements();
+				for (int i = 0; i < module.size(); i++) {
+					Modul m = module.get(i);
+					if(m.getStudiengangID()==s.getId()){
+						lm.addElement(module.get(i));
+					}
+				}
+					
+	        }
+	    });
+		panel.add(comboBox);
 
 		// akzeptierte Module
 		JPanel akzeptiert = new JPanel();
@@ -2247,6 +2306,29 @@ public class mainscreen {
 			}
 		});
 		buttonpnl2.add(btnZurck2);
+		
+		JPanel panel_1 = new JPanel();
+		akzeptiert.add(panel_1, BorderLayout.NORTH);
+		
+		JLabel label = new JLabel("Studiengang: ");
+		panel_1.add(label);
+		
+		final JComboBox comboBox_1 = new JComboBox(cbmodel);
+		comboBox_1.addItemListener(new ItemListener() {
+	        public void itemStateChanged(ItemEvent arg0) {
+	        	Studiengang s = (Studiengang) comboBox_1.getSelectedItem();
+	        	module = serverConnection.getModule(true);
+				lm_ack.removeAllElements();
+				for (int i = 0; i < module.size(); i++) {
+					Modul m = module.get(i);
+					if(m.getStudiengangID()==s.getId()){
+						lm_ack.addElement(module.get(i));
+					}
+				}
+					
+	        }
+	    });
+		panel_1.add(comboBox_1);
 		cards.add(pnl_modedit, "modulbearbeiten");
 
 	}

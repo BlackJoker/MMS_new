@@ -1389,7 +1389,7 @@ public class sql {
 					}
 					for (int j = 0; j < mhb.size(); j++) {
 						//get fach
-						sql = "SELECT fachname.name FROM fach JOIN fachname on fach.fachid = fachname.id WHERE fach.buchid = " + mhb.get(j).getId() + ";";
+						sql = "SELECT DISTINCT fachname.name FROM fach JOIN fachname on fach.fachid = fachname.id WHERE fach.buchid = " + mhb.get(j).getId() + ";";
 						res = state.executeQuery(sql);
 						while (res.next()) {
 							String name = res.getString("Name");

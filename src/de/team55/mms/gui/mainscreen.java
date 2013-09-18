@@ -309,13 +309,13 @@ public class mainscreen {
 		pnl_modbuch.add(buttons1, BorderLayout.SOUTH);
 
 		// Anlegen einer neuen Zuordnung
-		JButton btnNeueZuordnung = new JButton("Modul Verwalter");
-		btnNeueZuordnung.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// try {
-				modverwaltung();
-				showCard("modverwaltung");
+//		JButton btnNeueZuordnung = new JButton("Modul Verwalter");
+//		btnNeueZuordnung.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// try {
+//				modverwaltung();
+//				showCard("modverwaltung");
 				// JTextField neu_Name = new JTextField();
 				// JTextField neu_Abschluss = new JTextField();
 				// JComboBox<Studiengang> neu_sgbox = new
@@ -378,9 +378,9 @@ public class mainscreen {
 				// } catch (NullPointerException np) {
 				// // Bei abbruch nichts tuen
 				// }
-			}
-
-		});
+//			}
+//
+//		});
 
 		JButton btnModulhandbuchAkzeptieren = new JButton("Modulhandbuch akzeptieren");
 		btnModulhandbuchAkzeptieren.addActionListener(new ActionListener() {
@@ -470,7 +470,7 @@ public class mainscreen {
 		buttons1.add(btnNeuesModulhandbuch);
 		btnModulhandbuchAkzeptieren.setToolTipText("Ausgew\u00E4hltes Modulhandbuch akzeptieren");
 		buttons1.add(btnModulhandbuchAkzeptieren);
-		buttons1.add(btnNeueZuordnung);
+//		buttons1.add(btnNeueZuordnung);
 		JButton btnPrototyp = new JButton("MHBProttyp");
 		buttons1.add(btnPrototyp);
 

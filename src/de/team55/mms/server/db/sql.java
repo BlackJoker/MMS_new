@@ -508,11 +508,16 @@ public class sql {
 					state.setBoolean(5, f.isDezernat());
 					state.executeUpdate();
 				}
+				System.out.println(fach);
+				System.out.println(buchid);
+				System.out.println(name);
+				System.out.println(version);
 				state = con.prepareStatement("INSERT INTO fach (fachid, buchid, modid) VALUES ((SELECT id FROM fachname WHERE name=?) ,? ,(SELECT modID FROM module WHERE modulname =? and version =?)) ;");
 				state.setString(1, fach);
 				state.setInt(2, buchid);
 				state.setString(3, name);
 				state.setInt(4, version);
+				state.executeUpdate();
 				state.close();
 				ok = SUCCESS;
 			} catch (SQLException e) {

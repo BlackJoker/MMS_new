@@ -1116,7 +1116,7 @@ public class sql {
 				state.setString(1, email);
 				res = state.executeQuery();
 				if (res.first()) {
-					String name = res.getString("name");
+					String name = res.getString("modulname");
 					int version = res.getInt("version");
 					Date datum = res.getDate("Datum");
 					Boolean inbearbeitung = res.getBoolean("inbearbeitung");

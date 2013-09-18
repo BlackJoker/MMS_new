@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,22 +42,14 @@ public class newModulCard {
 	private static JPanel modul_panel = new JPanel();
 	private static ArrayList<String> labels = new ArrayList<String>();
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
-	final Dimension preferredSize = new Dimension(120, 20);
+	private final Dimension preferredSize = new Dimension(120, 20);
+	private DefaultComboBoxModel<Fach> cbModelF = new DefaultComboBoxModel<Fach>();
 
 	public newModulCard(ArrayList<Feld> defaultFelder, ArrayList<Modulhandbuch> mbs, final ServerConnection serverConnection,
 			final User current) {
 
 		// Alle vorhandenen Felder entfernen
 		modul_panel.removeAll();
-		ArrayList<Fach> fs = new ArrayList<Fach>();
-		for (int i = 0; i < mbs.size(); i++) {
-			ArrayList<Fach> m = mbs.get(i).getFach();
-			for(int k=0;k<m.size();k++){
-				if(!fs.contains(m.get(k))){
-					fs.add(m.get(k));
-				}
-			}
-		}
 
 		// Liste dynamischer Buttons leeren
 		if (!buttonmap.isEmpty()) {
@@ -169,7 +163,18 @@ public class newModulCard {
 			cbModelMb.addElement(mbs.get(i));
 		}
 
-		JComboBox<Modulhandbuch> cb_modbuch = new JComboBox<Modulhandbuch>(cbModelMb);
+		final JComboBox<Modulhandbuch> cb_modbuch = new JComboBox<Modulhandbuch>(cbModelMb);
+		cb_modbuch.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				cbModelF.removeAllElements();
+				Modulhandbuch m = (Modulhandbuch) cb_modbuch.getSelectedItem();
+				ArrayList<Fach> fs = m.getFach();
+				for (int i = 0; i < fs.size(); i++) {
+					cbModelF.addElement(fs.get(i));
+				}
+
+			}
+		});
 		cb_modbuch.setPreferredSize(preferredSize);
 		pnl_modbuch.add(cb_modbuch);
 
@@ -181,11 +186,6 @@ public class newModulCard {
 		JLabel lblFach = new JLabel("Fach:");
 		lblFach.setPreferredSize(preferredSize);
 		pnl_fach.add(lblFach);
-
-		final DefaultComboBoxModel<Fach> cbModelF = new DefaultComboBoxModel<Fach>();
-		for (int i = 0; i < fs.size(); i++) {
-			cbModelF.addElement(fs.get(i));
-		}
 
 		JComboBox<Fach> cb_fach = new JComboBox<Fach>(cbModelF);
 		cb_fach.setPreferredSize(preferredSize);
@@ -212,15 +212,15 @@ public class newModulCard {
 				ArrayList<Feld> felder = new ArrayList<Feld>();
 				String name = "";
 				// Eintraege der Reihe nach auslesen
-				for (int i = 6; i < modul_panel.getComponentCount(); i = i + 2) {
+				for (int i = 4; i < modul_panel.getComponentCount(); i = i + 2) {
 					JPanel tmp = (JPanel) modul_panel.getComponent(i);
 					JLabel tmplbl = (JLabel) tmp.getComponent(0);
 					JTextArea tmptxt = (JTextArea) tmp.getComponent(1);
-					boolean dezernat2=false;
-					try	{
+					boolean dezernat2 = false;
+					try {
 						dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
-					} catch(ArrayIndexOutOfBoundsException ex){
-						dezernat2=false;
+					} catch (ArrayIndexOutOfBoundsException ex) {
+						dezernat2 = false;
 					}
 					String value = tmptxt.getText();
 					String label = tmplbl.getText();
@@ -228,18 +228,20 @@ public class newModulCard {
 					if (value.isEmpty()) {
 						filled = false;
 						break;
-					} else if (label.equals("Name")) {
-						name = label;
+					} else if (label.equals("Name") || label.equals("Name:")) {
+						name = value;
+					} else {
+						felder.add(new Feld(label, value, dezernat2));
 					}
-					felder.add(new Feld(label, value, dezernat2));
 				}
 				// Wenn alle aussgefüllt wurden, neues Modul
 				// erzeugen und bei Bestätigung einreichen
 				if (filled == true) {
+					System.out.println(name);
 					int version = serverConnection.getModulVersion(name) + 1;
 
 					Date d = new Date();
-					Modul neu = new Modul(name, felder, version, d, 0, false, null, "");
+					Modul neu = new Modul(name, felder, version, d, 0, false, new ArrayList<String>(), "");
 					int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
 							"Bestätigung", JOptionPane.YES_NO_OPTION);
 					if (n == 0) {

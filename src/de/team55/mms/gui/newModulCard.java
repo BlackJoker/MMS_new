@@ -62,6 +62,12 @@ public class newModulCard {
 
 		JPanel pnl_bottom = new JPanel();
 		pnl_newmod.add(pnl_bottom, BorderLayout.SOUTH);
+		
+		cbModelF.removeAllElements();
+		ArrayList<Fach> fs = serverConnection.getFach();
+		for (int i = 0; i < fs.size(); i++) {
+			cbModelF.addElement(fs.get(i));
+		}
 
 		// Button zum erstellen eines neuen Feldes
 		JButton btnNeuesFeld = new JButton("Neues Feld");
@@ -165,17 +171,6 @@ public class newModulCard {
 		}
 
 		final JComboBox<Modulhandbuch> cb_modbuch = new JComboBox<Modulhandbuch>(cbModelMb);
-		cb_modbuch.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent arg0) {
-				cbModelF.removeAllElements();
-				Modulhandbuch m = (Modulhandbuch) cb_modbuch.getSelectedItem();
-				ArrayList<Fach> fs = m.getFach();
-				for (int i = 0; i < fs.size(); i++) {
-					cbModelF.addElement(fs.get(i));
-				}
-
-			}
-		});
 		cb_modbuch.setPreferredSize(preferredSize);
 		pnl_modbuch.add(cb_modbuch);
 

@@ -37,6 +37,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 import de.team55.mms.data.Fach;
+import de.team55.mms.data.FachTransfer;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.ModulVerwalter;
@@ -755,5 +756,14 @@ public class ServerConnection {
 		} else {
 			return null;
 		}
+	}
+
+	public ClientResponse updateFach(FachTransfer fachTransfer) {
+		if (connect(email, password) == SUCCESS) {
+			return webResource.path("fach/update").type(MediaType.APPLICATION_XML).post(ClientResponse.class, fachTransfer);
+		} else {
+			return null;
+		}
+		
 	}
 }

@@ -1,11 +1,13 @@
 package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -129,9 +131,22 @@ public class LookCard extends JPanel {
 						if ((node.getParent().toString().equalsIgnoreCase("Universität Ulm") || node.getParent().getParent().toString()
 								.equalsIgnoreCase("Universität Ulm"))) {
 							if (node.getParent().toString().equalsIgnoreCase("Universität Ulm")) {
-								toPDF(node.toString());
+								
+								if (JOptionPane.showConfirmDialog(null, "Sollen die erzeugten PDF's geöffnet werden?",null,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+									toPDF(node.toString(), true);
+								} else {
+									toPDF(node.toString(), false);
+								}
+								
 							} else {
-								toPDF(node.getParent().toString(), node.toString());
+								
+								if (JOptionPane.showConfirmDialog(null, "Soll die erzeugte PDF geöffnet werden?",null,JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+									toPDF(node.getParent().toString(), node.toString(), true);
+								} else {
+									toPDF(node.getParent().toString(), node.toString(), false);
+								}
+								
+								
 							}
 						} else {
 							JOptionPane.showMessageDialog(frame, "Bitte wählen sie entweder einen Studiengang oder ein Modulhandbuch aus.",
@@ -152,17 +167,17 @@ public class LookCard extends JPanel {
 		this.studienlist = studienlist;
 	}
 
-	public void toPDF(String st) {
+	public void toPDF(String st, boolean op) {
 
 		int stu = 9001;
 		for (int i = 0; i < studienlist.size(); i++) {
 			if (studienlist.get(i).toString().equalsIgnoreCase(st))
 				stu = i;
 		}
-		aMHBPDF(stu);
+		aMHBPDF(stu, op);
 	}
 
-	public void toPDF(String st, String mo) {
+	public void toPDF(String st, String mo, boolean op) {
 		int stu = 9001, mod = -1;
 
 		for (int i = 0; i < studienlist.size(); i++) {
@@ -179,7 +194,7 @@ public class LookCard extends JPanel {
 		}
 
 		try {
-			MHBPDF(stu, mod);
+			MHBPDF(stu, mod, op);
 		} catch (IOException | DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -187,11 +202,11 @@ public class LookCard extends JPanel {
 
 	}
 
-	public void aMHBPDF(int stu) {
+	public void aMHBPDF(int stu, boolean op) {
 
 		for (int i = 0; i < studienlist.get(stu).getModbuch().size(); i++) {
 			try {
-				MHBPDF(stu, i);
+				MHBPDF(stu, i,op);
 			} catch (IOException | DocumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -202,22 +217,16 @@ public class LookCard extends JPanel {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void MHBPDF(int stu, int mod) throws IOException, DocumentException {
-
-		Paragraph tab =(new Paragraph (new Chunk(new VerticalPositionMark(), 80)));// anpassen
-		// Chunk underline = new Chunk("Underline. ");
-		// underline.setUnderline(0.1f, -2f); // 0.1 thick, -2 y-location
+	public void MHBPDF(int stu, int mod, boolean op) throws IOException, DocumentException {
 
 		Font font = FontFactory.getFont("Times-New-Roman", 12, Font.NORMAL);
 		Font fontbold = FontFactory.getFont("Times-New-Roman", 16, Font.BOLD);
 		Font fontunder = FontFactory.getFont("Times-New-Roman", 14, Font.UNDERLINE);
 		Font fontunderBig = FontFactory.getFont("Times-Roman", 20, Font.UNDERLINE);
 
-		// document.add(new Paragraph("Times-Roman, Bold", fontbold));
-		Paragraph cTitle, par, st;
+		Paragraph cTitle, par;
 		Chapter chapter;
 		Section section;
-		// Section subsection;
 
 		String studname = studienlist.get(stu).getName();
 		String abschluss = studienlist.get(stu).getAbschluss();
@@ -286,6 +295,7 @@ public class LookCard extends JPanel {
 		}// erste for-schleife
 
 		document.close();
+		if (op==true){Desktop.getDesktop().open(new File(pdfname+".pdf"));}
 	}
 
 }

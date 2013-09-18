@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.team55.mms.data.Fach;
+import de.team55.mms.data.FachTransfer;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.ModulVerwalter;
@@ -693,6 +694,20 @@ public class MessageResource {
 			return Response.status(201).build();
 		} else {
 			System.out.println("Fach nicht hinzugefügt");
+			return Response.status(500).build();
+		}
+	}
+	
+	@POST
+	@Path("/fach/update")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response updateFach(FachTransfer name) {
+		int status = new sql().updateFach(name.getOld(), name.getNeu());
+		if (status == 1) {
+			System.out.println("Fach geupdated");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Fach nicht geupdated");
 			return Response.status(500).build();
 		}
 	}

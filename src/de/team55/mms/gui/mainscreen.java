@@ -104,6 +104,7 @@ public class mainscreen {
 	private DefaultTableModel modshowmodel;
 	private DefaultTableModel messagemodel;
 	private DefaultComboBoxModel<Studiengang> cbmodel = new DefaultComboBoxModel<Studiengang>();
+	private DefaultComboBoxModel<Modulhandbuch> cbModBuchMo = new DefaultComboBoxModel<Modulhandbuch>();
 	// private DefaultComboBoxModel<Zuordnung> cbmodel_Z = new
 	// DefaultComboBoxModel<Zuordnung>();
 	private DefaultListModel<Modul> lm = new DefaultListModel<Modul>();
@@ -207,6 +208,8 @@ public class mainscreen {
 	protected ArrayList<pordnung> poList;
 
 	protected ArrayList<Modul> module;
+
+	private ArrayList<Fach> fachzws;
 
 	// main Frame
 	public mainscreen() {
@@ -901,12 +904,8 @@ public class mainscreen {
 		JPanel pnl_fach_btns = new JPanel();
 		
 		//angefangen fach hinzuzufügen model muss woanderst gefüllt werden/serverconnection wonaderst 
-		ArrayList<Fach> fachzws = new ArrayList<Fach>();
-		fachzws = serverConnection.getFach();
+		fachzws = new ArrayList<Fach>();
 		
-		for(int i = 0; i < fachzws.size(); i++){
-			fachmodel.addElement(fachzws.get(i));
-		}
 		JList<Fach> fachlist = new JList<Fach>(fachmodel);
 		JButton fach_save = new JButton("neues Fach");
 		JButton fach_edit = new JButton("edit Fach");
@@ -1279,19 +1278,17 @@ public class mainscreen {
 			public void actionPerformed(ActionEvent arg0) {
 				// Abfrage alles nicht nicht akzeptierten Module
 				// Danach Modell füllen
-				ArrayList<Modul> module = serverConnection.getModule(false);
-				lm.removeAllElements();
-				for (int i = 0; i < module.size(); i++) {
-					lm.addElement(module.get(i));
+				studienlist=serverConnection.getStudiengaenge(false);
+				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
+				for(int i=0;i<studienlist.size();i++){
+					mbs.addAll(studienlist.get(i).getModbuch());
+				}
+				cbModBuchMo.removeAllElements();
+				for (int i = 0; i < mbs.size(); i++) {
+					cbModBuchMo.addElement(mbs.get(i));
 				}
 
-				// Abfrage alles nicht akzeptierten Module
-				// Danach Modell füllen
-				module = serverConnection.getModule(true);
-				lm_ack.removeAllElements();
-				for (int i = 0; i < module.size(); i++) {
-					lm_ack.addElement(module.get(i));
-				}
+				
 
 				// Zur card mit Übersicht an Modulen wechseln
 				showCard("modulbearbeiten");
@@ -1434,6 +1431,11 @@ public class mainscreen {
 						modListModel.addElement(s.getAbschluss() + " " + s.getName() + ", PO " + m.getPruefungsordnungsjahr()
 								+ ", Modulhandbuch " + m.getJahrgang());
 					}
+				}
+				
+				fachzws = serverConnection.getFach();
+				for(int i = 0; i < fachzws.size(); i++){
+					fachmodel.addElement(fachzws.get(i));
 				}
 
 				defaultFelder = serverConnection.getDefaultFelder();
@@ -2183,13 +2185,13 @@ public class mainscreen {
 									// Listen neu abrufen
 									// dann zur Bearbeiten Übersicht wechseln
 									serverConnection.acceptModul(m);
-									ArrayList<Modul> module = serverConnection.getModule(false);
+									//ArrayList<Modul> module = serverConnection.getModule(false);
 									lm.removeAllElements();
 									for (int i = 0; i < module.size(); i++) {
 										lm.addElement(module.get(i));
 									}
 
-									module = serverConnection.getModule(true);
+									//module = serverConnection.getModule(true);
 									lm_ack.removeAllElements();
 									for (int i = 0; i < module.size(); i++) {
 										lm_ack.addElement(module.get(i));
@@ -2220,22 +2222,34 @@ public class mainscreen {
 		JPanel panel = new JPanel();
 		nichtakzeptiert.add(panel, BorderLayout.NORTH);
 		
-		JLabel lblStudiengang = new JLabel("Studiengang: ");
-		panel.add(lblStudiengang);
+		JLabel lblModBuch = new JLabel("Modulhandbuch: ");
+		panel.add(lblModBuch);
 		
-		final JComboBox comboBox = new JComboBox(cbmodel);
+		final JComboBox<Modulhandbuch> comboBox= new JComboBox<Modulhandbuch>(cbModBuchMo);
 		comboBox.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {
 	        	System.out.println(arg0.getItem());
-	        	Studiengang s = (Studiengang) comboBox.getSelectedItem();
-	        	module = serverConnection.getModule(false);
 	        	lm.removeAllElements();
-				for (int i = 0; i < module.size(); i++) {
-					Modul m = module.get(i);
-					if(m.getStudiengangID()==s.getId()){
-						lm.addElement(module.get(i));
-					}
-				}
+	        	
+	        	for(int i=0;i<studienlist.size();i++){
+	        		ArrayList<Modulhandbuch> mbs = studienlist.get(i).getModbuch();
+	        		for(int j=0;j<mbs.size();j++){
+	        			Modulhandbuch mb = mbs.get(j);
+	        			ArrayList<Fach> fs=mb.getFach();
+	        			for(int k=0;k<fs.size();k++){
+	        				Fach f = fs.get(k);
+	        				ArrayList<Modul> module = f.getModlist();
+	        				for (int l = 0; l < module.size(); l++) {
+	        					Modul m = module.get(l);
+	        					if(m.getStatus()<3){
+	        						lm.addElement(module.get(i));
+	        					}
+	        				}
+	        			}
+	        		}
+	        	}
+
+				
 					
 	        }
 	    });
@@ -2313,18 +2327,28 @@ public class mainscreen {
 		JLabel label = new JLabel("Studiengang: ");
 		panel_1.add(label);
 		
-		final JComboBox comboBox_1 = new JComboBox(cbmodel);
+		final JComboBox<Modulhandbuch> comboBox_1 = new JComboBox<Modulhandbuch>(cbModBuchMo);
 		comboBox_1.addItemListener(new ItemListener() {
-	        public void itemStateChanged(ItemEvent arg0) {
-	        	Studiengang s = (Studiengang) comboBox_1.getSelectedItem();
-	        	module = serverConnection.getModule(true);
+	        public void itemStateChanged(ItemEvent arg0) {		
+				System.out.println(arg0.getItem());
 				lm_ack.removeAllElements();
-				for (int i = 0; i < module.size(); i++) {
-					Modul m = module.get(i);
-					if(m.getStudiengangID()==s.getId()){
-						lm_ack.addElement(module.get(i));
-					}
-				}
+				for(int i=0;i<studienlist.size();i++){
+	        		ArrayList<Modulhandbuch> mbs = studienlist.get(i).getModbuch();
+	        		for(int j=0;j<mbs.size();j++){
+	        			Modulhandbuch mb = mbs.get(j);
+	        			ArrayList<Fach> fs=mb.getFach();
+	        			for(int k=0;k<fs.size();k++){
+	        				Fach f = fs.get(k);
+	        				ArrayList<Modul> module = f.getModlist();
+	        				for (int l = 0; l < module.size(); l++) {
+	        					Modul m = module.get(l);
+	        					if(m.getStatus()==3){
+	        						lm_ack.addElement(module.get(i));
+	        					}
+	        				}
+	        			}
+	        		}
+	        	}
 					
 	        }
 	    });

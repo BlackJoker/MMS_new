@@ -37,7 +37,10 @@ public class Modulhandbuch {
 	
 	@Override
 	public String toString() {
-		return name + ", "  + jahrgang;
+		if(name!=null){
+			return name+", PO "+pruefungsordnungsjahr+", " +jahrgang;
+		}
+		return "PO "+pruefungsordnungsjahr+", " +jahrgang;
 	}
 
 

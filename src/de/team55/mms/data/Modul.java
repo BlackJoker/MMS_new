@@ -203,13 +203,7 @@ public class Modul {
 
 	public void setKommentar(String kommentar) {
 		this.kommentar = kommentar;
-	}
-
-
-	public int getStudiengangID() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	}	
 
 	
 }

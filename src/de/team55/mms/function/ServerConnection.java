@@ -183,13 +183,13 @@ public class ServerConnection {
 	 *            möchte
 	 * @return eine Liste von Modulen
 	 */
-	public ArrayList<Modul> getModule(boolean b) {
+	public ArrayList<Studiengang> getModule(boolean b) {
 		String accepted = "false";
 		if (b)
 			accepted = "true";
 		if (connect(email, password) == SUCCESS) {
 			return webResource.path("modul/get/List").path(accepted).accept(MediaType.APPLICATION_XML)
-					.get(new GenericType<ArrayList<Modul>>() {
+					.get(new GenericType<ArrayList<Studiengang>>() {
 					});
 		}
 		return null;

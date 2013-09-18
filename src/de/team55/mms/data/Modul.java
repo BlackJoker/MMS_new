@@ -194,7 +194,7 @@ public class Modul {
 
 	@Override
 	public String toString() {
-		return name+", erstellt von: "+user;
+		return name;
 	}
 
 	public String getKommentar() {

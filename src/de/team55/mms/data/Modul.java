@@ -26,7 +26,7 @@ public class Modul {
 		this.name = name;
 		this.version = version;
 	}
-	
+
 	
 	public Modul(String name2,
 			int version2, Date datum2,

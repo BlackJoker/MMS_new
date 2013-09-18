@@ -1343,7 +1343,7 @@ public class mainscreen {
 				// Abfrage aller Zuordnungen und Studiengänge aus der Datenbank
 				// Danach Modelle füllen und zur Card wechseln
 				// typen = serverConnection.getZuordnungen();
-				studienlist = serverConnection.getStudiengaenge(true);
+				studienlist = serverConnection.getStudiengaenge(false);
 				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
 				cbmodel.removeAllElements();
 				
@@ -2217,7 +2217,11 @@ public class mainscreen {
 							mod.add(modeditCard(m), BorderLayout.CENTER);
 							m.setInbearbeitung(true);
 							serverConnection.setModulInEdit(m);
+							try{
 							cards.remove(modeditp);
+							}catch(NullPointerException e){
+								
+							}
 							ArrayList<Modulhandbuch> mb = new ArrayList<Modulhandbuch>();
 							modeditp = new newModulCard(m.getFelder(), mb, serverConnection, current).getPanel();
 							cards.add(modeditp, "modul edit");

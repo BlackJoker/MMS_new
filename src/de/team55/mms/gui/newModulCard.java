@@ -222,6 +222,8 @@ public class newModulCard {
 						dezernat2 = ((JCheckBox) tmp.getComponent(2)).isSelected();
 					} catch (ArrayIndexOutOfBoundsException ex) {
 						dezernat2 = false;
+					}catch(ClassCastException et){
+						dezernat2 = false; 
 					}
 					String value = tmptxt.getText();
 					String label = tmplbl.getText();

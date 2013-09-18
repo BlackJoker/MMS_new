@@ -1001,7 +1001,7 @@ public class sql {
 		if (connect() == true) {
 			try {
 				state = con
-					.prepareStatement("INSERT INTO mod_user_relation (userID, modID) VALUES((SELECT modID from module where modulname =?),(SELECT id from user where email =?))");
+					.prepareStatement("INSERT INTO mod_user_relation (modname, userID) VALUES(?,(SELECT id from user where email =?))");
 				state.setString(1, modul);
 				state.setString(2, user.geteMail());
 				state.executeUpdate();
@@ -1402,7 +1402,10 @@ public class sql {
 							while (res.next()) {
 								String name = res.getString("modulname");
 								int version = res.getInt("Version");
-								modul.add(new Modul(name, version));
+								int status = res.getInt("status");
+								Modul zws = new Modul(name, version);
+								zws.setStatus(status);
+								modul.add(zws);
 							}
 							for (int l = 0; l < modul.size(); l++) {
 								//get Felder

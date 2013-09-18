@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
+import de.team55.mms.data.ModulVerwalter;
 import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Nachricht;
 import de.team55.mms.data.StellvertreterList;
@@ -227,12 +228,25 @@ public class MessageResource {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response setNachricht(Nachricht n) {
 		int status = new sql().createMessage(n);
-		System.out.println(n.getDatum());
 		if (status == 1) {
 			System.out.println("Nachricht von " + n.getAbsender() + " hinzugefügt");
 			return Response.status(201).build();
 		} else {
 			System.out.println("Nachricht von " + n.getAbsender() + " nicht hinzugefügt");
+			return Response.status(500).build();
+		}
+	}
+	
+	@POST
+	@Path("modul/verwalter/post")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setModulVerwalter(ModulVerwalter mv) {
+		int status = new sql().setoneStellvertreter(mv.getUser(), mv.getModname());
+		if (status == 1) {
+			System.out.println("Modulverwalter von " + mv.getModname() + " hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Modulverwalter von " + mv.getModname() + " nicht hinzugefügt");
 			return Response.status(500).build();
 		}
 	}

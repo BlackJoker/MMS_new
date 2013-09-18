@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -1331,16 +1332,19 @@ public class mainscreen {
 				// Danach Modelle füllen und zur Card wechseln
 				// typen = serverConnection.getZuordnungen();
 				studienlist = serverConnection.getStudiengaenge(true);
+				ArrayList<Modulhandbuch> mbs = new ArrayList<Modulhandbuch>();
 				cbmodel.removeAllElements();
 				for (int i = 0; i < studienlist.size(); i++) {
 					cbmodel.addElement(studienlist.get(i));
+					mbs.addAll(studienlist.get(i).getModbuch());
 				}
 				defaultFelder = serverConnection.getDefaultFelder();
 				// cbmodel_Z.removeAllElements();
 				// for (int i = 0; i < typen.size(); i++) {
 				// cbmodel_Z.addElement(typen.get(i));
 				// }
-				cards.add(new newModulCard(defaultFelder).getPanel(),"newmodule");
+				
+				cards.add(new newModulCard(defaultFelder, mbs, serverConnection, current).getPanel(),"newmodule");
 				showCard("newmodule");
 			}
 

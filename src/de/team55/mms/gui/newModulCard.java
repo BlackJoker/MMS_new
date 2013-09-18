@@ -42,10 +42,14 @@ public class newModulCard {
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	final Dimension preferredSize = new Dimension(120, 20);
 
-	public newModulCard(ArrayList<Feld> defaultFelder, ArrayList<Modulhandbuch> mbs, ArrayList<Fach> fs, final ServerConnection serverConnection, User current) {
+	public newModulCard(ArrayList<Feld> defaultFelder, ArrayList<Modulhandbuch> mbs, final ServerConnection serverConnection, final User current) {
 
 		// Alle vorhandenen Felder entfernen
 		modul_panel.removeAll();
+		ArrayList<Fach> fs = new ArrayList<Fach>();
+		for(int i=0;i<mbs.size();i++){
+			fs.addAll(mbs.get(i).getFach());
+		}
 
 		// Liste dynamischer Buttons leeren
 		if (!buttonmap.isEmpty()) {
@@ -198,13 +202,7 @@ public class newModulCard {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// ArrayList<Zuordnung> zlist = new ArrayList<Zuordnung>();
-				String jg = ((JTextArea) ((JPanel) modul_panel.getComponent(2)).getComponent(1)).getText();
-				int jahrgang;
-				try {
-					jahrgang = Integer.parseInt(jg);
-				} catch (NumberFormatException nfe) {
-					jahrgang = 0;
-				}
+				
 				boolean filled = true;
 				Modulhandbuch mb = (Modulhandbuch) cbModelMb.getSelectedItem();
 				Fach f = (Fach) cbModelF.getSelectedItem();
@@ -240,7 +238,7 @@ public class newModulCard {
 					if (n == 0) {
 						int x= serverConnection.setModul(neu, f.getName(),mb.getId()).getStatus();
 						if(x==201){
-							aava
+							x=serverConnection.setModulVerwalter(current,name).getStatus();
 							
 						}
 					}

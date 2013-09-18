@@ -39,6 +39,7 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
+import de.team55.mms.data.ModulVerwalter;
 import de.team55.mms.data.Modulhandbuch;
 import de.team55.mms.data.Nachricht;
 import de.team55.mms.data.StellvertreterList;
@@ -742,6 +743,15 @@ public class ServerConnection {
 	public ClientResponse setFach(Fach neu) {
 		if (connect(email, password) == SUCCESS) {
 			return webResource.path("fach/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
+		} else {
+			return null;
+		}
+	}
+
+	public ClientResponse setModulVerwalter(User current, String name) {
+		ModulVerwalter mv = new ModulVerwalter(current, name);
+		if (connect(email, password) == SUCCESS) {
+			return webResource.path("modul/verwalter/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, mv);
 		} else {
 			return null;
 		}

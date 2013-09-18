@@ -46,6 +46,7 @@ import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import de.team55.mms.data.Fach;
+import de.team55.mms.data.FachTransfer;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
@@ -905,7 +906,7 @@ public class mainscreen {
 		
 		fachzws = new ArrayList<Fach>();
 		
-		JList<Fach> fachlist = new JList<Fach>(fachmodel);
+		final JList<Fach> fachlist = new JList<Fach>(fachmodel);
 		JButton fach_save = new JButton("neues Fach");
 		JButton fach_edit = new JButton("edit Fach");
 		
@@ -933,7 +934,9 @@ public class mainscreen {
 				pnl_name.add(txtName);
 				Object[] options = { "Annehmen", "Abbrechen" };
 				int n = 0;
+				txtName.setText(fachlist.getSelectedValue().getName());
 				String name = "";
+				String old = "";
 				
 				do {
 					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -944,8 +947,10 @@ public class mainscreen {
 				if (n == 0) {
 					Fach neu = new Fach(name);
 					fachmodel.addElement(neu);
+					fachmodel.removeElement(old);
+					fachzws.remove(old);
 					fachzws.add(neu);
-					serverConnection.setFach(neu);
+					serverConnection.updateFach(new FachTransfer(old, neu.getName()));
 				}
 				
 			}
@@ -971,6 +976,7 @@ public class mainscreen {
 				pnl_name.add(txtName);
 				Object[] options = { "Annehmen", "Abbrechen" };
 				int n = 0;
+				txtName.setText("");
 				String name = "";
 				
 				do {

@@ -22,10 +22,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
+import de.team55.mms.data.Feld;
+
 public class newModulCard {
 	
 	private static JFrame frame;
 	private static JPanel modul_panel = new JPanel();
+	private static ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
 	
 	public newModulCard() {
@@ -141,9 +144,7 @@ public class newModulCard {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Card wieder erneuern und zur Startseite wechseln
-				newmodulecard();
-				modul_panel.revalidate();
-				showCard("welcome page");
+				status=0;
 			}
 		});
 		pnl_bottom.add(btnHome);

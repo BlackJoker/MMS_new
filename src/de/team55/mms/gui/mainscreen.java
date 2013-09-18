@@ -895,14 +895,15 @@ public class mainscreen {
 		
 		
 		JPanel pnl_fach = new JPanel();
-		tabbedPane.addTab("Fächer", null, pnl_fach, "Fächer verwalten");
-		pnl_felder.setLayout(new BorderLayout(0, 0));
+		tabbedPane.addTab("Standard Felder", null, pnl_fach, "Standard Felder von Modulen verwalten");
+		pnl_fach.setLayout(new BorderLayout(0, 0));
 
 //		JScrollPane scrollPane_1 = new JScrollPane();
-//		pnl_fach.add(scrollPane_1, BorderLayout.CENTER);
+//		pnl_felder.add(scrollPane_1, BorderLayout.CENTER);
 		JPanel pnl_fach_content = new JPanel();
 		JPanel pnl_fach_btns = new JPanel();
 		
+		//angefangen fach hinzuzufügen model muss woanderst gefüllt werden/serverconnection wonaderst 
 		fachzws = new ArrayList<Fach>();
 		
 		JList<Fach> fachlist = new JList<Fach>(fachmodel);

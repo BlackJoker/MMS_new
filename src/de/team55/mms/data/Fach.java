@@ -35,6 +35,10 @@ public class Fach {
 	public void setModlist(ArrayList<Modul> modlist) {
 		this.modlist = new ArrayList<Modul>(modlist);
 	}
-	
+	@Override
+	public String toString(){
+		return name;
+		
+	}
 	
 }

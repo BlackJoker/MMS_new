@@ -30,6 +30,7 @@ import de.team55.mms.data.Fach;
 import de.team55.mms.data.Feld;
 import de.team55.mms.data.Modul;
 import de.team55.mms.data.Modulhandbuch;
+import de.team55.mms.data.Nachricht;
 import de.team55.mms.data.User;
 import de.team55.mms.function.ServerConnection;
 
@@ -241,14 +242,22 @@ public class newModulCard {
 					int version = serverConnection.getModulVersion(name) + 1;
 
 					Date d = new Date();
-					Modul neu = new Modul(name, felder, version, d, 0, false, new ArrayList<String>(), "");
+					Modul neu = new Modul(name, felder, version, d, 1, false, new ArrayList<String>(), "");
 					int n = JOptionPane.showConfirmDialog(frame, "Sind Sie sicher, dass Sie dieses Modul einreichen wollen?",
 							"Bestätigung", JOptionPane.YES_NO_OPTION);
 					if (n == 0) {
 						int x = serverConnection.setModul(neu, f.getName(), mb.getId()).getStatus();
 						if (x == 201) {
 							x = serverConnection.setModulVerwalter(current, name).getStatus();
-
+							Nachricht na = new Nachricht();
+							na.setAbsenderID(current.getId());
+							na.setBetreff("Es wurde ein neues Modul eingereicht");
+							String uname = current.getTitel()+" "+current.getVorname()+" "+current.getNachname();
+							uname = uname.trim();
+							na.setNachricht(uname+" hat ein neues Modul eingereicht.");
+							na.setDatum(new Date());
+							na.setEmpfaengerID(-1);
+							x = serverConnection.setNachricht(na).getStatus();
 						}
 					}
 				} // Fehler, wenn nicht alle ausgefüllt wurden

@@ -228,7 +228,26 @@ public class MessageResource {
 	@Path("/nachrichten/post/")
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response setNachricht(Nachricht n) {
-		int status = new sql().createMessage(n);
+		int status = 0;
+		if(n.getEmpfaengerID()==-1){
+			ArrayList<User> u = new sql().userload(true);
+			for(int i=0;i<u.size();i++){
+				if(u.get(i).getRedaktion()){
+					n.setEmpfaengerID(u.get(i).getId());
+					status = new sql().createMessage(n);
+				}
+			}
+		} else if(n.getEmpfaengerID()==-2){
+			ArrayList<User> u = new sql().userload(true);
+			for(int i=0;i<u.size();i++){
+				if(u.get(i).getAcceptModule()){
+					n.setEmpfaengerID(u.get(i).getId());
+					status = new sql().createMessage(n);
+				}
+			}
+		}else {
+			status = new sql().createMessage(n);
+		}
 		if (status == 1) {
 			System.out.println("Nachricht von " + n.getAbsender() + " hinzugefügt");
 			return Response.status(201).build();

@@ -653,10 +653,10 @@ public class MessageResource {
 	public Response setPO(pordnung p) {
 		int status = new sql().setPO(p.getStudname(), p.getStudabschluss(), p.getPjahr());
 		if (status == 1) {
-			System.out.println("Deadline hinzugefügt");
+			System.out.println("Prüfungsordnung hinzugefügt");
 			return Response.status(201).build();
 		} else {
-			System.out.println("Deadline nicht hinzugefügt");
+			System.out.println("Prüfungsordnung nicht hinzugefügt");
 			return Response.status(500).build();
 		}
 	}
@@ -667,6 +667,20 @@ public class MessageResource {
 	public ArrayList<Fach> getFach(){
 		System.out.println("Fächer abgefragt");
 		return new sql().getFach();
+	}
+	
+	@POST
+	@Path("/fach/post")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setFach(Fach name) {
+		int status = new sql().setFach(name.getName());
+		if (status == 1) {
+			System.out.println("Fach hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Fach nicht hinzugefügt");
+			return Response.status(500).build();
+		}
 	}
 	
 }

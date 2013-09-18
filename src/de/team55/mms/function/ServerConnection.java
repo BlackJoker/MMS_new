@@ -738,4 +738,12 @@ public class ServerConnection {
 			return null;
 		}
 	}
+
+	public ClientResponse setFach(Fach neu) {
+		if (connect(email, password) == SUCCESS) {
+			return webResource.path("fach/post").type(MediaType.APPLICATION_XML).post(ClientResponse.class, neu);
+		} else {
+			return null;
+		}
+	}
 }

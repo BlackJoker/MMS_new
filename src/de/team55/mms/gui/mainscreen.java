@@ -912,6 +912,83 @@ public class mainscreen {
 		pnl_fach_btns.add(fach_save);
 		pnl_fach_btns.add(fach_edit);
 		
+		fach_save.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				JPanel panel = new JPanel();
+				JPanel p = new JPanel();
+				panel.add(p);
+				p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+
+				JPanel pnl_name = new JPanel();
+				pnl_name.setToolTipText("Bestimmt den Namen des neuen Fachs");
+				p.add(pnl_name);
+				pnl_name.setLayout(new GridLayout(0, 2, 5, 5));
+				JLabel lblNameDesFeldes = new JLabel("Name des Fachs:");
+				pnl_name.add(lblNameDesFeldes);
+				JTextField txtName = new JTextField();
+				pnl_name.add(txtName);
+				Object[] options = { "Annehmen", "Abbrechen" };
+				int n = 0;
+				String name = "";
+				
+				do {
+					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+							null, options, options[0]);
+					name = txtName.getText();
+				} while (name.isEmpty() && (n == 0));
+				
+				if (n == 0) {
+					Fach neu = new Fach(name);
+					fachmodel.addElement(neu);
+					fachzws.add(neu);
+					serverConnection.setFach(neu);
+				}
+				
+			}
+		});
+		
+		fach_edit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				JPanel panel = new JPanel();
+				JPanel p = new JPanel();
+				panel.add(p);
+				p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+
+				JPanel pnl_name = new JPanel();
+				pnl_name.setToolTipText("Bestimmt den Namen des neuen Fachs");
+				p.add(pnl_name);
+				pnl_name.setLayout(new GridLayout(0, 2, 5, 5));
+				JLabel lblNameDesFeldes = new JLabel("Name des Fachs:");
+				pnl_name.add(lblNameDesFeldes);
+				JTextField txtName = new JTextField();
+				pnl_name.add(txtName);
+				Object[] options = { "Annehmen", "Abbrechen" };
+				int n = 0;
+				String name = "";
+				
+				do {
+					n = JOptionPane.showOptionDialog(frame, panel, "Neues Feld", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+							null, options, options[0]);
+					name = txtName.getText();
+				} while (name.isEmpty() && (n == 0));
+				
+				if (n == 0) {
+					Fach neu = new Fach(name);
+					fachmodel.addElement(neu);
+					fachzws.add(neu);
+					serverConnection.setFach(neu);
+				}
+			}
+		});
+		
+		
+		
 		pnl_fach_content.setLayout(new BorderLayout(0, 0));
 		JScrollPane scp_1 = new JScrollPane();
 		scp_1.add(fachlist);
@@ -919,8 +996,7 @@ public class mainscreen {
 		
 		pnl_fach.add(pnl_fach_content, BorderLayout.CENTER);
 		pnl_fach.add(pnl_fach_btns, BorderLayout.SOUTH);
-		scp_1.setViewportView(fachlist);
-		
+		scp_1.setViewportView(fachlist);		
 		
 		
 	}

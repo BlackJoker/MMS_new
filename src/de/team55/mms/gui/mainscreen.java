@@ -2250,67 +2250,68 @@ public class mainscreen {
 				if (m != null) {
 					// Prüfe, ob Modul in Bearbeitung ist
 					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
-					if (!m.isInbearbeitung()) {
-						if (m.getName().isEmpty()) {
-							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!", "Fehler im Modul",
-									JOptionPane.ERROR_MESSAGE);
-						} else {
-							// Prüfe, ob ein Feld für das Dezernat 2 markiert
-							// wurde
-							// und ob alle Felder ausgefüllt wurden
-							boolean hasDezernat = false;
-							boolean isCorrect = true;
-							ArrayList<Feld> felder = m.getFelder();
-							for (int i = 0; i < felder.size(); i++) {
-								if (felder.get(i).getValue().isEmpty()) {
-									JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
-											"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
-									isCorrect = false;
-									break;
-								}
-								if (felder.get(i).isDezernat()) {
-									hasDezernat = true;
-								}
-							}
-
-							if (isCorrect) {
-								boolean checked = true;
-								// Wenn Felder als Dezernat 2 markiert wurden,
-								// nach Bestätigung fragen
-								if (hasDezernat) {
-									int n = JOptionPane.showConfirmDialog(frame,
-											"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?",
-											"Bestätigung", JOptionPane.YES_NO_OPTION);
-									if (n == 0) {
-										checked = true;
-									} else {
-										checked = false;
-									}
-								}
-								if (checked) {
-									// Bei bestätigung Modul akzeptieren und
-									// Listen neu abrufen
-									// dann zur Bearbeiten Übersicht wechseln
-									serverConnection.acceptModul(m);
-									//ArrayList<Modul> module = serverConnection.getModule(false);
-									lm.removeAllElements();
-									for (int i = 0; i < module.size(); i++) {
-										lm.addElement(module.get(i));
-									}
-
-									//module = serverConnection.getModule(true);
-									lm_ack.removeAllElements();
-									for (int i = 0; i < module.size(); i++) {
-										lm_ack.addElement(module.get(i));
-									}
-									showCard("modulbearbeiten");
-								}
-							}
-						}
-					} else {
-						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
-								JOptionPane.ERROR_MESSAGE);
-					}
+//					if (!m.isInbearbeitung()) {
+//						if (m.getName().isEmpty()) {
+//							JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!", "Fehler im Modul",
+//									JOptionPane.ERROR_MESSAGE);
+//						} else {
+//							// Prüfe, ob ein Feld für das Dezernat 2 markiert
+//							// wurde
+//							// und ob alle Felder ausgefüllt wurden
+//							boolean hasDezernat = false;
+//							boolean isCorrect = true;
+//							ArrayList<Feld> felder = m.getFelder();
+//							for (int i = 0; i < felder.size(); i++) {
+//								if (felder.get(i).getValue().isEmpty()) {
+//									JOptionPane.showMessageDialog(frame, "Bei diesem Modul sind nicht alle Felder ausgefüllt!",
+//											"Fehler im Modul", JOptionPane.ERROR_MESSAGE);
+//									isCorrect = false;
+//									break;
+//								}
+//								if (felder.get(i).isDezernat()) {
+//									hasDezernat = true;
+//								}
+//							}
+//
+//							if (isCorrect) {
+//								boolean checked = true;
+//								// Wenn Felder als Dezernat 2 markiert wurden,
+//								// nach Bestätigung fragen
+//								if (hasDezernat) {
+//									int n = JOptionPane.showConfirmDialog(frame,
+//											"Dieses Modul besitzt Felder, die vom Dezernat2 überprüft werden müssen, wurde das getan?",
+//											"Bestätigung", JOptionPane.YES_NO_OPTION);
+//									if (n == 0) {
+//										checked = true;
+//									} else {
+//										checked = false;
+//									}
+//								}
+//								if (checked) {
+//									// Bei bestätigung Modul akzeptieren und
+//									// Listen neu abrufen
+//									// dann zur Bearbeiten Übersicht wechseln
+//									serverConnection.acceptModul(m);
+//									//ArrayList<Modul> module = serverConnection.getModule(false);
+//									lm.removeAllElements();
+//									for (int i = 0; i < module.size(); i++) {
+//										lm.addElement(module.get(i));
+//									}
+//
+//									//module = serverConnection.getModule(true);
+//									lm_ack.removeAllElements();
+//									for (int i = 0; i < module.size(); i++) {
+//										lm_ack.addElement(module.get(i));
+//									}
+//									showCard("modulbearbeiten");
+//								}
+//							}
+//						}
+//					} else {
+//						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
+//								JOptionPane.ERROR_MESSAGE);
+//					}
+					serverConnection.acceptModul(m);
 				}
 			}
 		});
@@ -2373,48 +2374,6 @@ public class mainscreen {
 
 		JPanel buttonpnl2 = new JPanel();
 		akzeptiert.add(buttonpnl2, BorderLayout.SOUTH);
-
-		// akzeptierte Module bearbeiten
-		JButton btnModulBearbeiten2 = new JButton("Modul bearbeiten");
-//		btnModulBearbeiten2.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				Modul m = list_ack.getSelectedValue();
-//				if (m != null) {
-//					// Prüfe, ob Modul in Bearbeitung ist
-//					m.setInbearbeitung(serverConnection.getModulInEdit(m.getName()));
-//					if (!m.isInbearbeitung()) {
-//						// Prüfe, ob User das Recht hat, dieses Modul zu
-//						// bearbeiten
-//						boolean rights = false;
-//						if (m.getUser().equals(current.geteMail())) {
-//							rights = true;
-//						} else {
-//							ArrayList<String> rel = serverConnection.getUserRelation(current.geteMail());
-//							if (rel.contains(m.getUser())) {
-//								rights = true;
-//							}
-//						}
-//						if (rights) {
-//							// Zur Bearbeitung wechseln
-//							mod.removeAll();
-//							mod.add(modeditCard(m), BorderLayout.CENTER);
-//							showCard("modBearbeiten");
-//						} else {
-//							JOptionPane.showMessageDialog(frame,
-//									"Sie besitzen nicht die n\u00f6tigen Rechte, um dieses Modul zu bearbeiten!", "Zugriff verweigert",
-//									JOptionPane.ERROR_MESSAGE);
-//						}
-//					} else {
-//						JOptionPane.showMessageDialog(frame, "Dieses Modul befindet sich gerade in bearbeitung!", "Zugriff verweigert",
-//								JOptionPane.ERROR_MESSAGE);
-//
-//					}
-//				}
-//
-//			}
-//		});
-		buttonpnl2.add(btnModulBearbeiten2);
 
 		// Zurück zur Startseite
 		JButton btnZurck2 = new JButton("Zur\u00FCck");

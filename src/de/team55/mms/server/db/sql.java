@@ -1634,7 +1634,6 @@ public class sql {
 				state.setString(4, n.getNachricht());
 				state.setBoolean(5, n.isGelesen());
 				state.setTimestamp(6, dateConverterUtil2SQL(n.getDatum()));
-				System.out.println(state);
 				state.executeUpdate();
 				status = SUCCESS;
 			} catch (SQLException e) {
@@ -1813,7 +1812,6 @@ public class sql {
 				int nID = Integer.parseInt(id);
 				state = this.con.prepareStatement("DELETE FROM nachrichten WHERE id=?");
 				state.setInt(1, nID);
-				System.out.println(state);
 				state.executeUpdate();
 				this.con.commit();
 				state.close();
@@ -1838,7 +1836,6 @@ public class sql {
 				state.setBoolean(5, n.isGelesen());
 				state.setTimestamp(6, dateConverterUtil2SQL(n.getDatum()));
 				state.setInt(7, n.getId());
-				System.out.println(state);
 				state.executeUpdate();
 				status = SUCCESS;
 				state.close();

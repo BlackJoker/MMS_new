@@ -28,10 +28,13 @@ public class newModulCard {
 	
 	private static JFrame frame;
 	private static JPanel modul_panel = new JPanel();
-	private static ArrayList<Feld> defaultFelder = new ArrayList<Feld>();
+	private static ArrayList<String> labels = new ArrayList<String>();
 	private HashMap<JButton, Integer> buttonmap = new HashMap<JButton, Integer>();
+	final Dimension preferredSize = new Dimension(120, 20);
+
 	
-	public newModulCard() {
+	public newModulCard(ArrayList<Feld> defaultFelder) {	
+
 		// Alle vorhandenen Felder entfernen
 		modul_panel.removeAll();
 		final JPanel pnl_newmod = new JPanel();
@@ -41,12 +44,14 @@ public class newModulCard {
 			for (int i = 0; i < buttonmap.size(); i++)
 				buttonmap.remove(i);
 		}
+		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		// Liste mit bereits vorhandenen Felder erstellen und mit den
 		// Standartfeldern füllen
-		final ArrayList<String> labels = new ArrayList<String>();
-		labels.addAll(defaultlabels);
-		final Dimension preferredSize = new Dimension(120, 20);
+		for(int i=0;i<defaultFelder.size();i++){
+			modul_panel.add(defaultmodulPanel(defaultFelder.get(i)));
+			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
+		}				
 		pnl_newmod.setLayout(new BorderLayout(0, 0));
 
 		JPanel pnl_bottom = new JPanel();
@@ -82,10 +87,7 @@ public class newModulCard {
 
 					JTextArea txt_tmp = new JTextArea();
 					txt_tmp.setLineWrap(true);
-					pnl_tmp.add(txt_tmp);
-
-					JCheckBox dez = new JCheckBox("Dezernat 2", false);
-					pnl_tmp.add(dez);
+					pnl_tmp.add(txt_tmp);		
 
 					// Button, um das Feld wieder zu entfernen
 					JButton btn_tmp_entf = new JButton("Entfernen");
@@ -144,7 +146,7 @@ public class newModulCard {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Card wieder erneuern und zur Startseite wechseln
-				status=0;
+				//showCard("welcome Page");
 			}
 		});
 		pnl_bottom.add(btnHome);
@@ -201,16 +203,10 @@ public class newModulCard {
 		// pnl_Z.add(btnZuordnungEntfernen);
 		//
 		// modul_panel.add(pnl_Z);
-		modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-
-		// Alle Standartfelder, außer Zuordnung erzeugen
-		for (int i = 3; i < defaultlabels.size(); i++) {
-			modul_panel.add(defaultmodulPanel(defaultlabels.get(i), "", false));
-			modul_panel.add(Box.createRigidArea(new Dimension(0, 5)));
-		}
+		
 
 		// Button zum Annehmen eines Modules
-		JButton btnOk = new JButton("Annehmen");
+		JButton btnOk = new JButton("Einreichen");
 		btnOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -305,11 +301,51 @@ public class newModulCard {
 		pnl_bottom.add(btnOk);
 
 		pnl_newmod.add(scrollPane);
-		cards.add(pnl_newmod, "newmodule");
 
 		btnOk.setToolTipText("Klicken, um ihr Modul einzureichen.");
 		btnHome.setToolTipText("Klicken, um zurück in den Hauptbildschirm zu gelangen.");
 		btnNeuesFeld.setToolTipText("Klicken, um ein neues Feld in ihrem Modul zu erstellen.");
 
+	}
+	
+	/**
+	 * Liefert ein Feld mit Label, TextArea und Checkbox
+	 * 
+	 * @return JPanel ausgefülltes Panel
+	 * @param name
+	 *            Beschriftung des Labels
+	 * @param string
+	 *            Inhalt der TextArea
+	 * @param b
+	 *            Gibt an, ob die Checkbox ausgewählt ist
+	 */
+	private JPanel defaultmodulPanel(Feld f) {
+		String name = f.getLabel();
+		String value = f.getValue();
+		boolean b = f.isDezernat();
+		
+		labels.add(name);
+		
+		JPanel pnl = new JPanel();
+		pnl.setLayout(new BoxLayout(pnl, BoxLayout.X_AXIS));
+
+		JLabel label = new JLabel(name);
+		label.setPreferredSize(preferredSize);
+		pnl.add(label);
+
+		JTextArea txt = new JTextArea(value);
+		txt.setLineWrap(true);
+		pnl.add(txt);
+
+		if (b) {
+			JCheckBox dez = new JCheckBox("Dezernat 2", b);
+			dez.setEnabled(false);
+			pnl.add(dez);
+		}
+		return pnl;
+	}
+	
+	public JPanel getPanel(){
+		return modul_panel;
 	}
 }

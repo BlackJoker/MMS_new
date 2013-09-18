@@ -1259,10 +1259,12 @@ public class mainscreen {
 				for (int i = 0; i < studienlist.size(); i++) {
 					cbmodel.addElement(studienlist.get(i));
 				}
+				defaultFelder = serverConnection.getDefaultFelder();
 				// cbmodel_Z.removeAllElements();
 				// for (int i = 0; i < typen.size(); i++) {
 				// cbmodel_Z.addElement(typen.get(i));
 				// }
+				cards.add(new newModulCard(defaultFelder).getPanel(),"newmodule");
 				showCard("newmodule");
 			}
 

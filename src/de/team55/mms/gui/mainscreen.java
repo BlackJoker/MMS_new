@@ -676,7 +676,7 @@ public class mainscreen {
 				int x = 0;
 				int jahr=0;
 				Studiengang s = new Studiengang();
-				while((x==1)&&(jahr==1)){
+				do{
 					x=dialog.showDialog(frame, studienlist);
 					try{
 						jahr=Integer.parseInt(dialog.getJahr());
@@ -684,7 +684,7 @@ public class mainscreen {
 					} catch (NumberFormatException e){
 						jahr=0;
 					}
-				}
+				}while((x==1)&&(jahr==0));
 				if(x==1){
 					pordnung po = new pordnung();
 					po.setPjahr(jahr);
@@ -895,15 +895,13 @@ public class mainscreen {
 		
 		
 		JPanel pnl_fach = new JPanel();
-		tabbedPane.addTab("Standard Felder", null, pnl_fach, "Standard Felder von Modulen verwalten");
+		tabbedPane.addTab("Fächer", null, pnl_fach, "Fächer verwalten");
 		pnl_fach.setLayout(new BorderLayout(0, 0));
 
-//		JScrollPane scrollPane_1 = new JScrollPane();
-//		pnl_felder.add(scrollPane_1, BorderLayout.CENTER);
+
 		JPanel pnl_fach_content = new JPanel();
 		JPanel pnl_fach_btns = new JPanel();
 		
-		//angefangen fach hinzuzufügen model muss woanderst gefüllt werden/serverconnection wonaderst 
 		fachzws = new ArrayList<Fach>();
 		
 		JList<Fach> fachlist = new JList<Fach>(fachmodel);
@@ -915,10 +913,13 @@ public class mainscreen {
 		pnl_fach_btns.add(fach_edit);
 		
 		pnl_fach_content.setLayout(new BorderLayout(0, 0));
-		pnl_fach_content.add(fachlist, BorderLayout.CENTER);
+		JScrollPane scp_1 = new JScrollPane();
+		scp_1.add(fachlist);
+		pnl_fach_content.add(scp_1 , BorderLayout.CENTER);
 		
 		pnl_fach.add(pnl_fach_content, BorderLayout.CENTER);
 		pnl_fach.add(pnl_fach_btns, BorderLayout.SOUTH);
+		scp_1.setViewportView(fachlist);
 		
 		
 		

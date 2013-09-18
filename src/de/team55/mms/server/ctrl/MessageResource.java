@@ -647,6 +647,20 @@ public class MessageResource {
 		return new sql().getallpo();
 	}
 	
+	@POST
+	@Path("/po/post")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response setPO(pordnung p) {
+		int status = new sql().setPO(p.getStudname(), p.getStudabschluss(), p.getPjahr());
+		if (status == 1) {
+			System.out.println("Deadline hinzugefügt");
+			return Response.status(201).build();
+		} else {
+			System.out.println("Deadline nicht hinzugefügt");
+			return Response.status(500).build();
+		}
+	}
+	
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	@Path("/fach/get")

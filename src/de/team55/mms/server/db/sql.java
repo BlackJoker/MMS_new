@@ -1789,7 +1789,7 @@ public class sql {
 		ResultSet res = null;
 		if(connect() == true){
 			try{
-				state = this.con.prepareStatement("Select modulname From module");
+				state = this.con.prepareStatement("SELECT DISTINCT modulname FROM module");
 				res = state.executeQuery();
 				while(res.next()){
 					give.add(res.getString("modulname"));
